@@ -17,11 +17,11 @@ public class MemberResponseDto {
     private int level;
     private int totalClear;
     private int nextLevelExp;
-    private boolean isFriend;
-    private boolean isSecret;
+    private boolean friend;
+    private boolean secret;
 
     @Builder
-    public MemberResponseDto(Long id, String grantType, String accessToken, String refreshToken, Long accessTokenExpiresIn, String nickname, String username, String socialId, String profileImage, int level, int totalClear, int nextLevelExp, boolean isFriend, boolean isSecret) {
+    public MemberResponseDto(Long id, String grantType, String accessToken, String refreshToken, Long accessTokenExpiresIn, String nickname, String username, String socialId, String profileImage, int level, int totalClear, int nextLevelExp, boolean friend, boolean secret) {
         this.id = id;
         this.grantType = grantType;
         this.accessToken = accessToken;
@@ -34,8 +34,8 @@ public class MemberResponseDto {
         this.level = level;
         this.totalClear = totalClear;
         this.nextLevelExp = nextLevelExp;
-        this.isFriend = isFriend;
-        this.isSecret = isSecret;
+        this.friend = friend;
+        this.secret = secret;
     }
 }
 

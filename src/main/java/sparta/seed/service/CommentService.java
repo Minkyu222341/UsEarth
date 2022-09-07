@@ -1,6 +1,8 @@
 package sparta.seed.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import sparta.seed.domain.Comment;
@@ -41,7 +43,7 @@ public class CommentService {
 					.proofId(comment.getProof().getId())
 					.nickname(comment.getNickname())
 					.content(comment.getContent())
-					.isWriter(userDetails !=null && comment.getMemberId().equals(userDetails.getId()))
+					.writer(userDetails !=null && comment.getMemberId().equals(userDetails.getId()))
 					.build());
 		}
 
@@ -83,7 +85,7 @@ public class CommentService {
 					.nickname(comment.getNickname())
 					.content(comment.getContent())
 					.img(comment.getImg())
-					.isWriter(true)
+					.writer(true)
 					.build();
 
 		}else {
@@ -101,7 +103,7 @@ public class CommentService {
 					.proofId(comment.getProof().getId())
 					.nickname(comment.getNickname())
 					.content(comment.getContent())
-					.isWriter(true)
+					.writer(true)
 					.build();
 		}
 	}
@@ -110,13 +112,13 @@ public class CommentService {
 	 * 댓글 수정
 	 */
 	@Transactional
-	public CommentResponseDto updateComment(Long commentId, CommentRequestDto commentRequestDto,
-	                                        MultipartFile multipartFile, UserDetailsImpl userDetails) throws IOException {
+	public ResponseEntity<CommentResponseDto> updateComment(Long commentId, CommentRequestDto commentRequestDto,
+	                                                        MultipartFile multipartFile, UserDetailsImpl userDetails) throws IOException {
 
 		Comment comment = commentRepository.findById(commentId)
 				.orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
 
-		if(comment.getMemberId().equals(userDetails.getId())){
+		if(userDetails !=null && comment.getMemberId().equals(userDetails.getId())){
 			comment.update(commentRequestDto.getContent());
 
 			if(multipartFile != null){
@@ -137,15 +139,16 @@ public class CommentService {
 
 				imgRepository.save(findImage);
 			}
-		}
-		return CommentResponseDto.builder()
-				.commentId(comment.getId())
-				.proofId(comment.getProof().getId())
-				.nickname(comment.getNickname())
-				.content(comment.getContent())
-				.img(comment.getImg())
-				.isWriter(true)
-				.build();
+			return ResponseEntity.ok().body(CommentResponseDto.builder()
+					.commentId(comment.getId())
+					.proofId(comment.getProof().getId())
+					.nickname(comment.getNickname())
+					.content(comment.getContent())
+					.img(comment.getImg())
+					.writer(true)
+					.build());
+		}else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+
 	}
 
 	/**
