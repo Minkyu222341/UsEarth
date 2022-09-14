@@ -35,7 +35,7 @@ public class S3Uploader {
 
     public S3Dto upload(MultipartFile multipartFile) throws IOException {
 
-        MultipartFile resizeImage = resizeImage(multipartFile, 100);
+        MultipartFile resizeImage = resizeImage(multipartFile, 420);
 
         File uploadFile = convert(resizeImage)  // 파일 변환할 수 없으면 에러
                 .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> 파일 변환 실패"));
