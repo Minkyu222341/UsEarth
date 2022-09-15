@@ -17,6 +17,7 @@ import sparta.seed.exception.ErrorCode;
 import sparta.seed.msg.ResponseMsg;
 import sparta.seed.s3.S3Uploader;
 import sparta.seed.sercurity.UserDetailsImpl;
+import sparta.seed.sse.NotificationService;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
@@ -29,6 +30,7 @@ public class CommentService {
 	private final CommentRepository commentRepository;
 	private final S3Uploader s3Uploader;
 	private final ParticipantsRepository participantsRepository;
+	private final NotificationService notificationService;
 
 	/**
 	 * 댓글 조회
@@ -72,6 +74,9 @@ public class CommentService {
 				proof.addComment(comment);
 
 				commentRepository.save(comment);
+
+				notificationService.notifyAddCommentEvent(proofId);
+
 		return ResponseEntity.ok().body(ResponseMsg.WRITE_SUCCESS.getMsg());
 	}
 
