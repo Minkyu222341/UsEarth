@@ -17,7 +17,6 @@ import sparta.seed.member.domain.dto.requestdto.NicknameRequestDto;
 import sparta.seed.member.domain.dto.responsedto.NicknameResponseDto;
 import sparta.seed.member.domain.dto.responsedto.UserInfoResponseDto;
 import sparta.seed.member.repository.MemberRepository;
-import sparta.seed.member.repository.RefreshTokenRepository;
 import sparta.seed.mission.domain.ClearMission;
 import sparta.seed.mission.domain.dto.requestdto.MissionSearchCondition;
 import sparta.seed.mission.domain.dto.responsedto.ClearMissionResponseDto;
@@ -39,7 +38,6 @@ public class MemberService {
   private final ClearMissionRepository clearMissionRepository;
   private final DateUtil dateUtil;
   private final TokenProvider tokenProvider;
-  private final RefreshTokenRepository refreshTokenRepository;
   /**
    * 마이페이지
    */
@@ -102,6 +100,11 @@ public class MemberService {
   /**
    * 미션 통계 - 주간 , 월간
    */
+  public List<ClearMissionResponseDto> getDailyMissionStats(MissionSearchCondition condition, UserDetailsImpl userDetails) {
+    Long memberId = userDetails.getId();
+
+    return clearMissionRepository.dailyMissionStats(condition,memberId);
+  }
 
   /**
    * 일일 미션 달성 현황 확인
@@ -110,7 +113,7 @@ public class MemberService {
     try {
       List<ClearMission> clearMissionList = clearMissionRepository.findAllByMemberIdAndCreatedAt(userDetails.getId(), LocalDate.parse(selectedDate));
       return ResponseEntity.ok(ClearMissionResponseDto.builder()
-          .selectedDate(selectedDate)
+          .selectedDate(LocalDate.parse(selectedDate))
           .clearMissionList(clearMissionList)
           .clearMissionCnt(clearMissionList.size())
           .build());
@@ -165,11 +168,6 @@ public class MemberService {
     }
   }
 
-  public List<ClearMissionResponseDto> getDailyMissionStats(MissionSearchCondition condition, UserDetailsImpl userDetails) {
-    Long memberId = userDetails.getId();
-
-    return clearMissionRepository.dailyMissionStats(condition,memberId);
-  }
 
   // 유저 정보 뽑기
   private ResponseEntity<UserInfoResponseDto> getUserInfo(Member member) {
