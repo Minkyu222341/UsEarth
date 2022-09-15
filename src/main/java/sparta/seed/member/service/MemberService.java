@@ -90,6 +90,8 @@ public class MemberService {
             .img(community.getImg())
             .currentPercent(((double) community.getParticipantsList().size() / (double) community.getLimitParticipants()) * 100)
             .successPercent((Double.valueOf(proofRepository.getCertifiedProof(community)) / (double) community.getParticipantsList().size()) * 100)
+            .startDate(community.getStartDate())
+            .endDate(community.getEndDate())
             .dateStatus(getDateStatus(community))
             .build());
       }
