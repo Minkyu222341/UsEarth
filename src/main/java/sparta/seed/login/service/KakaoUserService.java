@@ -63,7 +63,7 @@ public class KakaoUserService extends DefaultOAuth2UserService {
     body.add("client_id", "f072c106f2f26c3921bee727b2df0ccd");
 //    body.add("redirect_uri", "http://localhost:8080/user/kakao/callback");
 //    body.add("redirect_uri", "http://localhost:3000/user/kakao/callback");
-    body.add("redirect_uri", "https://us-earth-hqspo2e43-woonhk90.vercel.app/user/kakao/callback");
+    body.add("redirect_uri", "https://us-earth-fe.vercel.app/user/kakao/callback");
     body.add("code", code);
     HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);
     RestTemplate rt = new RestTemplate();
