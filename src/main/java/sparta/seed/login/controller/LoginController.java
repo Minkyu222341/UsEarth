@@ -57,6 +57,6 @@ public class LoginController {
    */
   @GetMapping("/health")
   public String checkHealth() {
-    return "healthy";
+    return "healthyV2";
   }
 }
