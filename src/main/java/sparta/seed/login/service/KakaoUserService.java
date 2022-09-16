@@ -36,11 +36,14 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class KakaoUserService extends DefaultOAuth2UserService {
+public class KakaoUserService{
   private final PasswordEncoder passwordEncoder;
   private final TokenProvider tokenProvider;
   private final MemberRepository memberRepository;
   private final RefreshTokenRepository refreshTokenRepository;
+
+//  @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
+  String kakaoClientId = "http://localhost:8080/user/kakao/callback";
 
 
 
@@ -61,9 +64,7 @@ public class KakaoUserService extends DefaultOAuth2UserService {
     MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
     body.add("grant_type", "authorization_code");
     body.add("client_id", "f072c106f2f26c3921bee727b2df0ccd");
-//    body.add("redirect_uri", "http://localhost:8080/user/kakao/callback");
-//    body.add("redirect_uri", "http://localhost:3000/user/kakao/callback");
-    body.add("redirect_uri", "https://us-earth-fe.vercel.app/user/kakao/callback");
+    body.add("redirect_uri", kakaoClientId);
     body.add("code", code);
     HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);
     RestTemplate rt = new RestTemplate();
