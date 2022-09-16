@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import sparta.seed.exception.CustomException;
+import sparta.seed.exception.ErrorCode;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -74,8 +76,8 @@ public class S3Uploader {
                 fos.write(file.getBytes());
             }
             return Optional.of(convertFile);
-        }
-        return Optional.empty();
+        }else throw new CustomException(ErrorCode.UNSUPPORTED_TOKEN);
+//        return Optional.empty();
     }
 
     public void remove(String filename) {
