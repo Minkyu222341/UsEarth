@@ -52,5 +52,11 @@ public class LoginController {
   public ResponseEntity<String> reissue(@RequestBody RefreshTokenRequestDto requestDto) {
     return memberService.reissue(requestDto);
   }
-
+  /**
+   헬스체크 컨트롤러
+   */
+  @GetMapping("/health")
+  public String checkHealth() {
+    return "healthy";
+  }
 }
