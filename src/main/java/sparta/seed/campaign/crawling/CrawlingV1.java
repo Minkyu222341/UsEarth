@@ -47,14 +47,15 @@ public class CrawlingV1 {
 
     driver.get(url);    //브라우저에서 url로 이동한다.
     Thread.sleep(5000); //브라우저 로딩될때까지 잠시 기다린다.
-
+    
+    // 클릭이벤트 - 스크롤을 전부 내림
     for (int i = 0; i < 50; i++) {
       Thread.sleep(800);
       driver.findElement(By.cssSelector("body > div.outer_block_container > section.advanced-search > div > div.multiple-search-result > div.has-load-more > button")).sendKeys(Keys.ENTER);
       Thread.sleep(800);
     }
 
-
+    //해당되는 html태그를 찾아서 원하는 값을 추출해서 리스트에 삽입 후에 한번에 DB에 저장 
     Thread.sleep(10000);
     List<WebElement> contents = driver.findElements(By.cssSelector("body > div.outer_block_container > section.advanced-search > div > div.multiple-search-result > div.results-list > a"));
     for (WebElement content : contents) {
