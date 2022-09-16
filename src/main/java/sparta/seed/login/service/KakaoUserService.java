@@ -43,7 +43,7 @@ public class KakaoUserService{
   private final RefreshTokenRepository refreshTokenRepository;
 
 //  @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
-  String kakaoClientId = "http://localhost:8080/user/kakao/callback";
+  String kakaoClientId = "https://us-earth-fe.vercel.app/user/kakao/callback";
 
 
 
