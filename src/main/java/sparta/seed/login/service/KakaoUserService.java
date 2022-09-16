@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -43,7 +44,6 @@ public class KakaoUserService extends DefaultOAuth2UserService {
 
 
 
-
   public TokenResponseDto kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
 
     String accessToken = getAccessToken(code);
@@ -61,10 +61,10 @@ public class KakaoUserService extends DefaultOAuth2UserService {
     MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
     body.add("grant_type", "authorization_code");
     body.add("client_id", "f072c106f2f26c3921bee727b2df0ccd");
-    body.add("redirect_uri", "http://localhost:8080/user/kakao/callback");
+//    body.add("redirect_uri", "http://localhost:8080/user/kakao/callback");
 //    body.add("redirect_uri", "http://localhost:3000/user/kakao/callback");
+    body.add("redirect_uri", "https://us-earth-fe.vercel.app/user/kakao/callback");
     body.add("code", code);
-
     HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);
     RestTemplate rt = new RestTemplate();
     ResponseEntity<String> response = rt.exchange(

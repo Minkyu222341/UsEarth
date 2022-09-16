@@ -33,8 +33,8 @@ public class CampaignService {
 	 * 캠페인 리스트
 	 */
 	public List<CampaignResponseDto> getAllCampaign(int page, int size) {
-		Sort.Direction direction = Sort.Direction.DESC;
-		Sort sort = Sort.by(direction, "createdAt");
+		Sort.Direction direction = Sort.Direction.ASC;
+		Sort sort = Sort.by(direction, "id");
 		Pageable pageable = PageRequest.of(page, size, sort);
 		Page<Campaign> campaignPage = campaignRepository.findAll(pageable);
 		List<CampaignResponseDto> campaignResponseDtoList = new ArrayList<>();
@@ -43,6 +43,7 @@ public class CampaignService {
 					.campaignId(campaign.getId())
 					.title(campaign.getTitle())
 					.thumbnail(campaign.getThumbnail())
+					.thumbnailUrl(campaign.getThumbnailUrl())
 					.build());
 		}
 		return campaignResponseDtoList;
@@ -58,7 +59,6 @@ public class CampaignService {
 		return CampaignResponseDto.builder()
 				.campaignId(campaign.getId())
 				.title(campaign.getTitle())
-				.imgList(campaign.getImgList())
 				.build();
 	}
 
@@ -82,7 +82,6 @@ public class CampaignService {
 				campaign.setThumbnail(findImage.getImgUrl());
 				imgRepository.save(findImage);
 			}else {
-				campaign.addImg(findImage);
 				imgRepository.save(findImage);
 			}
 		}
@@ -93,7 +92,6 @@ public class CampaignService {
 				.campaignId(campaign.getId())
 				.title(campaign.getTitle())
 				.thumbnail(campaign.getThumbnail())
-				.imgList(campaign.getImgList())
 				.build();
 	}
 

@@ -22,23 +22,21 @@ public class Campaign extends Timestamped {
   private String thumbnail;
   //제목
   private String title;
-  //이미지
-  @OneToMany(mappedBy = "campaign", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-  @JsonManagedReference
-  private List<Img> imgList = new ArrayList<>();
 
+  private String thumbnailUrl;
 
   @Builder
-  public Campaign(String thumbnail, String title) {
+  public Campaign(Long id, String thumbnail, String title, String thumbnailUrl) {
+    this.id = id;
     this.thumbnail = thumbnail;
     this.title = title;
+    this.thumbnailUrl = thumbnailUrl;
   }
+
 
 
   public void setThumbnail(String thumbnail) {
     this.thumbnail = thumbnail;
   }
-  public void addImg(Img img){
-    this.imgList.add(img);
-  }
+
 }
