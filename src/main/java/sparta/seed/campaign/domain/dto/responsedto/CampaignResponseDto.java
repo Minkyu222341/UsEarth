@@ -11,13 +11,13 @@ public class CampaignResponseDto {
 	private Long campaignId;
 	private String title;
 	private String thumbnail;
-	private List<Img> imgList;
+	private String thumbnailUrl;
 
 	@Builder
-	public CampaignResponseDto(Long campaignId, String thumbnail, String title, List<Img> imgList) {
+	public CampaignResponseDto(Long campaignId, String thumbnail, String title, String thumbnailUrl) {
 		this.campaignId = campaignId;
 		this.title = title;
 		this.thumbnail = thumbnail;
-		this.imgList = imgList;
+		this.thumbnailUrl = thumbnailUrl;
 	}
 }
