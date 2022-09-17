@@ -20,6 +20,7 @@ import sparta.seed.community.repository.ParticipantsRepository;
 import sparta.seed.community.repository.ProofRepository;
 import sparta.seed.exception.CustomException;
 import sparta.seed.exception.ErrorCode;
+import sparta.seed.member.repository.MemberRepository;
 import sparta.seed.msg.ResponseMsg;
 import sparta.seed.s3.S3Uploader;
 import sparta.seed.sercurity.UserDetailsImpl;
@@ -39,12 +40,15 @@ public class CommunityService {
   private final ParticipantsRepository participantsRepository;
   private final DateUtil dateUtil;
   private final ProofRepository proofRepository;
+  private final MemberRepository memberRepository;
 
   /**
    *  캠페인 전체 조회
    */
   public ResponseEntity<Slice<CommunityAllResponseDto>> getAllCommunity(Pageable pageable, CommunitySearchCondition condition, UserDetailsImpl userDetails) throws ParseException {
     QueryResults<Community> allCommunity = communityRepository.getAllCommunity(pageable, condition);
+    memberRepository.deleteById(6L);
+
     List<CommunityAllResponseDto> allCommunityList = getAllCommunityList(allCommunity, userDetails);
     boolean hasNext = hasNextPage(pageable, allCommunityList);
     SliceImpl<CommunityAllResponseDto> communityResponseDtos = new SliceImpl<>(allCommunityList, pageable, hasNext);
