@@ -47,8 +47,6 @@ public class CommunityService {
    */
   public ResponseEntity<Slice<CommunityAllResponseDto>> getAllCommunity(Pageable pageable, CommunitySearchCondition condition, UserDetailsImpl userDetails) throws ParseException {
     QueryResults<Community> allCommunity = communityRepository.getAllCommunity(pageable, condition);
-    memberRepository.deleteById(6L);
-
     List<CommunityAllResponseDto> allCommunityList = getAllCommunityList(allCommunity, userDetails);
     boolean hasNext = hasNextPage(pageable, allCommunityList);
     SliceImpl<CommunityAllResponseDto> communityResponseDtos = new SliceImpl<>(allCommunityList, pageable, hasNext);
