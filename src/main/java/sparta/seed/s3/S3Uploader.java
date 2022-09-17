@@ -3,6 +3,7 @@ package sparta.seed.s3;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,10 +36,11 @@ public class S3Uploader {
     @Value("${cloud.aws.s3.bucket}")
     public String bucket;  // S3 버킷 이름
 
+
     public S3Dto upload(MultipartFile multipartFile) throws IOException {
 
-        MultipartFile resizeImage = resizeImage(multipartFile, 100);
-        File uploadFile = convert(resizeImage)  // 파일 변환할 수 없으면 에러
+        MultipartFile resizeImage = resizeImage(multipartFile, 1000);
+        File uploadFile = convert(multipartFile)  // 파일 변환할 수 없으면 에러
                 .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> 파일 변환 실패"));
         return uploadToS3(uploadFile);
     }
