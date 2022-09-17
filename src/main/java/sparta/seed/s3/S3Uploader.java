@@ -1,8 +1,7 @@
 package sparta.seed.s3;
 
-import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
@@ -12,82 +11,52 @@ import org.marvinproject.image.transform.scale.Scale;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-import sparta.seed.exception.CustomException;
-import sparta.seed.exception.ErrorCode;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
-import java.util.Optional;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class S3Uploader {
-
-
-    private final AmazonS3 amazonS3;
-
+    private final AmazonS3Client amazonS3Client;
 
     @Value("${cloud.aws.s3.bucket}")
-    public String bucket;  // S3 버킷 이름
+    private String bucket;
 
+    public S3Dto upload(MultipartFile multipartFile) {
 
-    public S3Dto upload(MultipartFile multipartFile) throws IOException {
+        String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
+        String fileFormatName = multipartFile.getContentType().substring(multipartFile.getContentType().lastIndexOf("/") + 1);
 
-        MultipartFile resizeImage = resizeImage(multipartFile, 1000);
-        File uploadFile = convert(multipartFile)  // 파일 변환할 수 없으면 에러
-                .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> 파일 변환 실패"));
-        return uploadToS3(uploadFile);
-    }
+        String result = amazonS3Client.getUrl(bucket, fileName).toString();
 
-    // S3로 파일 업로드하기
-    @Transactional
-    public S3Dto uploadToS3(File uploadFile) {
-        String fileName = UUID.randomUUID() + uploadFile.getName();   // S3에 저장된 파일 이름
-        String uploadImageUrl = putS3(uploadFile, fileName); // s3로 업로드
-        removeNewFile(uploadFile);
+        MultipartFile resizedFile = resizeImage(fileName, fileFormatName, multipartFile, 5000);
 
-        return new S3Dto(fileName, uploadImageUrl);
-    }
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(resizedFile.getSize());
+        objectMetadata.setContentType(multipartFile.getContentType());
 
-    // S3로 업로드
-    private String putS3(File uploadFile, String fileName) {
-        amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
-        return amazonS3.getUrl(bucket, fileName).toString();
-    }
-
-    // 로컬에 저장된 이미지 지우기
-    private void removeNewFile(File targetFile) {
-        if (targetFile.delete()) {
-            log.info("File delete success");
-            return;
+        try (InputStream inputStream = resizedFile.getInputStream()) {
+            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.");
         }
-        log.info("File delete fail");
+
+        return new S3Dto(fileName, result);
+
     }
 
-    // 로컬에 파일 업로드 하기
-    private Optional<File> convert(MultipartFile file) throws IOException {
-        File convertFile = new File(file.getOriginalFilename());     // 현재 프로젝트 절대경로
-        if (convertFile.createNewFile()) {
-            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-                fos.write(file.getBytes());
-            }
-            return Optional.of(convertFile);
-        }else throw new CustomException(ErrorCode.UNSUPPORTED_TOKEN);
-//        return Optional.empty();
-    }
 
-    public void remove(String filename) {
-        DeleteObjectRequest request = new DeleteObjectRequest(bucket, filename);
-        amazonS3.deleteObject(request);
-    }
-
-    MultipartFile resizeImage(MultipartFile originalImage, int targetWidth) {
+    public MultipartFile resizeImage(String fileName, String fileFormatName, MultipartFile originalImage,
+                                     int targetWidth) {
         try {
             // MultipartFile -> BufferedImage Convert
             BufferedImage image = ImageIO.read(originalImage.getInputStream());
@@ -96,29 +65,34 @@ public class S3Uploader {
             int originHeight = image.getHeight();
 
             // origin 이미지가 resizing될 사이즈보다 작을 경우 resizing 작업 안 함
-            if(originWidth < targetWidth)
+            if (originWidth < targetWidth) {
+
                 return originalImage;
+            } else {
 
-            MarvinImage imageMarvin = new MarvinImage(image);
 
-            Scale scale = new Scale();
-            scale.load();
-            scale.setAttribute("newWidth", targetWidth);
-            scale.setAttribute("newHeight", targetWidth * originHeight / originWidth);
-            scale.process(imageMarvin.clone(), imageMarvin, null, null, false);
+                MarvinImage imageMarvin = new MarvinImage(image);
 
-            String fileFormatName = originalImage.getContentType().substring(originalImage.getContentType().lastIndexOf("/") + 1);
 
-            BufferedImage imageNoAlpha = imageMarvin.getBufferedImageNoAlpha();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(imageNoAlpha, fileFormatName, baos);
-            baos.flush();
+                Scale scale = new Scale();
+                scale.load();
+                scale.setAttribute("newWidth", targetWidth);
+                scale.setAttribute("newHeight", targetWidth * originHeight / originWidth);
+                scale.process(imageMarvin.clone(), imageMarvin, null, null, false);
 
-            return new MultipartFileImpl(baos.toByteArray(), originalImage);
+                BufferedImage imageNoAlpha = imageMarvin.getBufferedImageNoAlpha();
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write(imageNoAlpha, fileFormatName, baos);
+                baos.flush();
+
+                return new MultipartFileImpl(baos.toByteArray() ,originalImage);
+            }
 
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 리사이즈에 실패했습니다.");
         }
     }
+
 
 }
