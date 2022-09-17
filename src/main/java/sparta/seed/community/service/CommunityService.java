@@ -20,6 +20,7 @@ import sparta.seed.community.repository.ParticipantsRepository;
 import sparta.seed.community.repository.ProofRepository;
 import sparta.seed.exception.CustomException;
 import sparta.seed.exception.ErrorCode;
+import sparta.seed.member.repository.MemberRepository;
 import sparta.seed.msg.ResponseMsg;
 import sparta.seed.s3.S3Uploader;
 import sparta.seed.sercurity.UserDetailsImpl;
@@ -39,6 +40,7 @@ public class CommunityService {
   private final ParticipantsRepository participantsRepository;
   private final DateUtil dateUtil;
   private final ProofRepository proofRepository;
+  private final MemberRepository memberRepository;
 
   /**
    *  캠페인 전체 조회
@@ -54,20 +56,20 @@ public class CommunityService {
   /**
    *  캠페인 작성
    */
-  public ResponseEntity<String> createCommunity(CommunityRequestDto requestDto, MultipartFile multipartFile, UserDetailsImpl userDetails){
-    try {
-      Long loginUserId = userDetails.getId();
-      String nickname = userDetails.getNickname();
+  public ResponseEntity<String> createCommunity(CommunityRequestDto requestDto, MultipartFile multipartFile, UserDetailsImpl userDetails) throws IOException {
+    Long loginUserId = userDetails.getId();
+    String nickname = userDetails.getNickname();
 
-      Community community = createCommunity(requestDto, multipartFile, loginUserId, nickname);
-      Participants groupLeader = getGroupLeader(loginUserId, nickname, community);
+    Community community = createCommunity(requestDto, multipartFile, loginUserId, nickname);
+    Participants groupLeader = getGroupLeader(loginUserId, nickname, community);
 
-      communityRepository.save(community);
-      participantsRepository.save(groupLeader);
+    communityRepository.save(community);
+    participantsRepository.save(groupLeader);
 
-      return ResponseEntity.ok().body(ResponseMsg.WRITE_SUCCESS.getMsg());
+    return ResponseEntity.ok().body(ResponseMsg.WRITE_SUCCESS.getMsg());
 
-    }catch (Exception e) {throw new CustomException(ErrorCode.UNKNOWN_USER);}
+//    try {
+//    }catch (Exception e) {throw new CustomException(ErrorCode.UNKNOWN_USER);}
   }
 
   /**

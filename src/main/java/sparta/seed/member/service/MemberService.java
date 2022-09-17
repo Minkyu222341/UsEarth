@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sparta.seed.community.domain.Community;
 import sparta.seed.community.domain.dto.responsedto.CommunityMyJoinResponseDto;
 import sparta.seed.community.repository.CommunityRepository;
+import sparta.seed.community.repository.ProofRepository;
 import sparta.seed.exception.CustomException;
 import sparta.seed.exception.ErrorCode;
 import sparta.seed.jwt.TokenProvider;
@@ -37,7 +38,7 @@ public class MemberService {
   private final ClearMissionRepository clearMissionRepository;
   private final DateUtil dateUtil;
   private final TokenProvider tokenProvider;
-  private final RefreshTokenRepository refreshTokenRepository;
+  private final ProofRepository proofRepository;
   /**
    * 마이페이지
    */
@@ -83,10 +84,15 @@ public class MemberService {
       List<CommunityMyJoinResponseDto> responseDtoList = new ArrayList<>();
       for (Community community : communityList) {
         responseDtoList.add(CommunityMyJoinResponseDto.builder()
-            .communityId(community.getId())
-            .title(community.getTitle())
-            .img(community.getImg())
-            .build());
+                .communityId(community.getId())
+                .title(community.getTitle())
+                .img(community.getImg())
+                .currentPercent(((double) community.getParticipantsList().size() / (double) community.getLimitParticipants()) * 100)
+                .successPercent((Double.valueOf(proofRepository.getCertifiedProof(community)) / (double) community.getParticipantsList().size()) * 100)
+                .startDate(community.getStartDate())
+                .endDate(community.getEndDate())
+                .dateStatus(getDateStatus(community))
+                .build());
       }
       return ResponseEntity.ok().body(responseDtoList);
     }catch (Exception e) {throw new CustomException(ErrorCode.UNKNOWN_USER);}

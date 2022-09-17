@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.stereotype.Service;
@@ -36,12 +37,18 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class KakaoUserService extends DefaultOAuth2UserService {
+public class KakaoUserService {
   private final PasswordEncoder passwordEncoder;
   private final TokenProvider tokenProvider;
   private final MemberRepository memberRepository;
   private final RefreshTokenRepository refreshTokenRepository;
 
+  @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
+  String kakaoRedirectURL;
+  @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
+  String kakaoClientId;
+  @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
+  String kakaoClientSecret;
 
 
   public TokenResponseDto kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
@@ -52,7 +59,9 @@ public class KakaoUserService extends DefaultOAuth2UserService {
 
     Member kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
 
-    return forceLogin(kakaoUser,response);
+    Authentication authentication = securityLogin(kakaoUser);
+
+    return jwtToken(authentication, response);
   }
 
   private String getAccessToken(String code) throws JsonProcessingException {
@@ -60,10 +69,9 @@ public class KakaoUserService extends DefaultOAuth2UserService {
     headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
     MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
     body.add("grant_type", "authorization_code");
-    body.add("client_id", "f072c106f2f26c3921bee727b2df0ccd");
-//    body.add("redirect_uri", "http://localhost:8080/user/kakao/callback");
-//    body.add("redirect_uri", "http://localhost:3000/user/kakao/callback");
-    body.add("redirect_uri", "https://us-earth-fe.vercel.app/user/kakao/callback");
+    body.add("client_id", kakaoClientId);
+    body.add("redirect_uri", kakaoRedirectURL);
+    body.add("client_secret", kakaoClientSecret);
     body.add("code", code);
     HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);
     RestTemplate rt = new RestTemplate();
@@ -97,7 +105,7 @@ public class KakaoUserService extends DefaultOAuth2UserService {
     JsonNode jsonNode = objectMapper.readTree(responseBody);
 
     Random rnd = new Random();
-    String rdNick="";
+    String rdNick = "";
     for (int i = 0; i < 8; i++) {
       rdNick += String.valueOf(rnd.nextInt(10));
     }
@@ -120,7 +128,7 @@ public class KakaoUserService extends DefaultOAuth2UserService {
   private Member registerKakaoUserIfNeeded(SocialMemberRequestDto kakaoUserInfo) {
     String socialId = kakaoUserInfo.getSocialId();
     Member member = memberRepository.findBySocialId(socialId).orElse(null);
-    if (member==null) {
+    if (member == null) {
       // 회원가입
       String username = kakaoUserInfo.getUsername();
       String nickname = kakaoUserInfo.getNickname();
@@ -140,14 +148,20 @@ public class KakaoUserService extends DefaultOAuth2UserService {
     return member;
   }
 
-  private TokenResponseDto forceLogin(Member kakaoUser,HttpServletResponse response) {
-    UserDetailsImpl member = new UserDetailsImpl(kakaoUser);
-    String accessToken = tokenProvider.generateAccessToken(String.valueOf(member.getId()),member.getNickname());
-    String refreshToken = tokenProvider.generateRefreshToken(String.valueOf(member.getId()));
-    Authentication authentication = new UsernamePasswordAuthenticationToken(member, null, member.getAuthorities());
+  private Authentication securityLogin(Member foundUser) {
+    UserDetails userDetails = new UserDetailsImpl(foundUser);
+    Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     SecurityContextHolder.getContext().setAuthentication(authentication);
-    response.setHeader("Authorization", "Bearer " + accessToken);
+    return authentication;
+  }
 
+  private TokenResponseDto jwtToken(Authentication authentication, HttpServletResponse response) {
+    UserDetailsImpl member = ((UserDetailsImpl) authentication.getPrincipal());
+    String accessToken = tokenProvider.generateAccessToken(String.valueOf(member.getId()), member.getNickname());
+    String refreshToken = tokenProvider.generateRefreshToken(String.valueOf(member.getId()));
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+    response.addHeader("Authorization", "Bearer " + accessToken);
     RefreshToken saveRefreshToken = RefreshToken.builder()
             .refreshKey(member.getId())
             .refreshValue(refreshToken)

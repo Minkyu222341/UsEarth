@@ -56,16 +56,12 @@ public class DateUtil {
     int startCompare = start.compareTo(today);
     int endCompare = end.compareTo(today);
 
-    if (startCompare > -1 && endCompare > -1) {
+    if (startCompare > 0) {
       return "before";
     }
-    if (endCompare == -1) {
+    if (endCompare < 0) {
       return "end";
     }
-    if (startCompare == -1 && endCompare >= 0) {
-      return "ongoing";
-    }
-    return "check";
+    return "ongoing";
   }
-
 }
