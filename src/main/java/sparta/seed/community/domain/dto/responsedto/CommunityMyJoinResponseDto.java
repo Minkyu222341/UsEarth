@@ -1,7 +1,9 @@
 package sparta.seed.community.domain.dto.responsedto;
 
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 public class CommunityMyJoinResponseDto {
 	private Long communityId;
 	private String title;
