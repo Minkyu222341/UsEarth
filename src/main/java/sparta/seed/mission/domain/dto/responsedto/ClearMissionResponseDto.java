@@ -11,8 +11,6 @@ import java.util.List;
 
 @Getter
 public class ClearMissionResponseDto {
-	private String selectedDate;
-	private int clearMissionCnt;
 	private List<ClearMission> clearMissionList;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
@@ -20,9 +18,9 @@ public class ClearMissionResponseDto {
 
 	private long count;
 	@Builder
-	public ClearMissionResponseDto(String selectedDate, List<ClearMission> clearMissionList, int clearMissionCnt) {
-		this.selectedDate = selectedDate;
-		this.clearMissionCnt = clearMissionCnt;
+	public ClearMissionResponseDto(LocalDate createdAt, List<ClearMission> clearMissionList, int count) {
+		this.createdAt = createdAt;
+		this.count = count;
 		this.clearMissionList = clearMissionList;
 	}
 	@QueryProjection

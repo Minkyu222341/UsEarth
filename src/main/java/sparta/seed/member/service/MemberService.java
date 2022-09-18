@@ -101,6 +101,11 @@ public class MemberService {
   /**
    * 미션 통계 - 주간 , 월간
    */
+  public List<ClearMissionResponseDto> getDailyMissionStats(MissionSearchCondition condition, UserDetailsImpl userDetails) {
+    Long memberId = userDetails.getId();
+
+    return clearMissionRepository.dailyMissionStats(condition,memberId);
+  }
 
   /**
    * 일일 미션 달성 현황 확인
@@ -109,9 +114,9 @@ public class MemberService {
     try {
       List<ClearMission> clearMissionList = clearMissionRepository.findAllByMemberIdAndCreatedAt(userDetails.getId(), LocalDate.parse(selectedDate));
       return ResponseEntity.ok(ClearMissionResponseDto.builder()
-          .selectedDate(selectedDate)
+          .createdAt( LocalDate.parse(selectedDate))
           .clearMissionList(clearMissionList)
-          .clearMissionCnt(clearMissionList.size())
+          .count(clearMissionList.size())
           .build());
     }catch (Exception e) {throw new CustomException(ErrorCode.UNKNOWN_USER);}
   }
@@ -162,12 +167,6 @@ public class MemberService {
     } catch (Exception e) {
       throw new CustomException(ErrorCode.MEMBER_MISMATCH);
     }
-  }
-
-  public List<ClearMissionResponseDto> getDailyMissionStats(MissionSearchCondition condition, UserDetailsImpl userDetails) {
-    Long memberId = userDetails.getId();
-
-    return clearMissionRepository.dailyMissionStats(condition,memberId);
   }
 
   // 유저 정보 뽑기
