@@ -33,11 +33,10 @@ public class S3Uploader {
     public S3Dto upload(MultipartFile multipartFile) {
 
         String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
-        String fileFormatName = multipartFile.getContentType().substring(multipartFile.getContentType().lastIndexOf("/") + 1);
 
         String result = amazonS3Client.getUrl(bucket, fileName).toString();
 
-        MultipartFile resizedFile = resizeImage(fileName, fileFormatName, multipartFile, 5000);
+        MultipartFile resizedFile = resizeImage(multipartFile, 1000);
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(resizedFile.getSize());
@@ -55,8 +54,7 @@ public class S3Uploader {
     }
 
 
-    public MultipartFile resizeImage(String fileName, String fileFormatName, MultipartFile originalImage,
-                                     int targetWidth) {
+    public MultipartFile resizeImage(MultipartFile originalImage, int targetWidth) {
         try {
             // MultipartFile -> BufferedImage Convert
             BufferedImage image = ImageIO.read(originalImage.getInputStream());
@@ -80,6 +78,7 @@ public class S3Uploader {
                 scale.setAttribute("newHeight", targetWidth * originHeight / originWidth);
                 scale.process(imageMarvin.clone(), imageMarvin, null, null, false);
 
+                String fileFormatName = originalImage.getContentType().substring(originalImage.getContentType().lastIndexOf("/") + 1);
                 BufferedImage imageNoAlpha = imageMarvin.getBufferedImageNoAlpha();
 
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();

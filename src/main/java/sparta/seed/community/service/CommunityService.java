@@ -56,7 +56,7 @@ public class CommunityService {
   /**
    *  캠페인 작성
    */
-  public ResponseEntity<String> createCommunity(CommunityRequestDto requestDto, MultipartFile multipartFile, UserDetailsImpl userDetails) throws IOException {
+  public ResponseEntity<String> createCommunity(CommunityRequestDto requestDto, MultipartFile multipartFile, UserDetailsImpl userDetails) {
     Long loginUserId = userDetails.getId();
     String nickname = userDetails.getNickname();
 
@@ -107,7 +107,7 @@ public class CommunityService {
    */
  @Transactional
 public ResponseEntity<String> updateCommunity(Long id, CommunityRequestDto communityRequestDto,
-                                               MultipartFile multipartFile, UserDetailsImpl userDetails) throws IOException {
+                                               MultipartFile multipartFile, UserDetailsImpl userDetails) {
 
    Community community = findTheCommunityByMemberId(id);
 
@@ -217,7 +217,7 @@ public ResponseEntity<String> updateCommunity(Long id, CommunityRequestDto commu
     return participantsRepository.existsByCommunityAndMemberId(community, userDetails.getId());
   }
 
-  private Community createCommunity(CommunityRequestDto requestDto, MultipartFile multipartFile, Long loginUserId, String nickname) throws IOException {
+  private Community createCommunity(CommunityRequestDto requestDto, MultipartFile multipartFile, Long loginUserId, String nickname) {
     return Community.builder()
             .title(requestDto.getTitle())
             .content(requestDto.getContent())
@@ -259,7 +259,7 @@ public ResponseEntity<String> updateCommunity(Long id, CommunityRequestDto commu
     return dateUtil.dateStatus(community.getStartDate(), community.getEndDate());
   }
 
-  private String returnImageUrl(MultipartFile multipartFile) throws IOException {
+  private String returnImageUrl(MultipartFile multipartFile) {
     if (multipartFile != null) {
       return s3Uploader.upload(multipartFile).getUploadImageUrl();
     }else return null;
@@ -271,20 +271,23 @@ public ResponseEntity<String> updateCommunity(Long id, CommunityRequestDto commu
           userDetails) throws ParseException {
     List<CommunityAllResponseDto> communityList = new ArrayList<>();
     for (Community community : communities) {
-      Long certifiedProof = getCertifiedProof(community);
-      communityList.add(CommunityAllResponseDto.builder()
-              .communityId(community.getId())
-              .nickname(community.getNickname())
-              .title(community.getTitle())
-              .img(community.getImg())
-              .currentPercent(((double) community.getParticipantsList().size() / (double) community.getLimitParticipants()) * 100)
-              .successPercent((Double.valueOf(certifiedProof) / community.getParticipantsList().size()) * 100)
-              .dateStatus(getDateStatus(community))
-              .secret(community.isPasswordFlag())
-              .password(community.getPassword())
-              .writer(userDetails != null && community.getMemberId().equals(userDetails.getId()))
-              .build());
+      if(!community.isPasswordFlag()) {
+        Long certifiedProof = getCertifiedProof(community);
+        communityList.add(CommunityAllResponseDto.builder()
+            .communityId(community.getId())
+            .nickname(community.getNickname())
+            .title(community.getTitle())
+            .img(community.getImg())
+            .currentPercent(((double) community.getParticipantsList().size() / (double) community.getLimitParticipants()) * 100)
+            .successPercent((Double.valueOf(certifiedProof) / community.getParticipantsList().size()) * 100)
+            .dateStatus(getDateStatus(community))
+            .secret(community.isPasswordFlag())
+            .password(community.getPassword())
+            .writer(userDetails != null && community.getMemberId().equals(userDetails.getId()))
+            .build());
+      }
     }
     return communityList;
   }
 }
+
