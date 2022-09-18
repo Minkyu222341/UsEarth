@@ -17,7 +17,6 @@ import sparta.seed.member.domain.dto.requestdto.NicknameRequestDto;
 import sparta.seed.member.domain.dto.responsedto.NicknameResponseDto;
 import sparta.seed.member.domain.dto.responsedto.UserInfoResponseDto;
 import sparta.seed.member.repository.MemberRepository;
-import sparta.seed.member.repository.RefreshTokenRepository;
 import sparta.seed.mission.domain.ClearMission;
 import sparta.seed.mission.domain.dto.requestdto.MissionSearchCondition;
 import sparta.seed.mission.domain.dto.responsedto.ClearMissionResponseDto;

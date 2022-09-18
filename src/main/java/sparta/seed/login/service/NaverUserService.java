@@ -22,9 +22,9 @@ import org.springframework.web.client.RestTemplate;
 import sparta.seed.jwt.TokenProvider;
 import sparta.seed.login.domain.RefreshToken;
 import sparta.seed.login.domain.dto.requestdto.SocialMemberRequestDto;
+import sparta.seed.login.domain.dto.responsedto.TokenResponseDto;
 import sparta.seed.member.domain.Authority;
 import sparta.seed.member.domain.Member;
-import sparta.seed.login.domain.dto.responsedto.TokenResponseDto;
 import sparta.seed.member.repository.MemberRepository;
 import sparta.seed.member.repository.RefreshTokenRepository;
 import sparta.seed.sercurity.UserDetailsImpl;
@@ -170,8 +170,9 @@ public class NaverUserService {
     String accessToken = tokenProvider.generateAccessToken(String.valueOf(member.getId()),member.getNickname());
     String refreshToken = tokenProvider.generateRefreshToken(String.valueOf(member.getId()));
     SecurityContextHolder.getContext().setAuthentication(authentication);
-
     response.addHeader("Authorization", "Bearer " + accessToken);
+    response.addHeader("RefreshToken", "Bearer " + refreshToken);
+
     RefreshToken saveRefreshToken = RefreshToken.builder()
             .refreshKey(member.getId())
             .refreshValue(refreshToken)

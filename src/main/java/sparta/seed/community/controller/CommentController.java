@@ -7,14 +7,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sparta.seed.community.domain.dto.requestdto.CommentRequestDto;
-import sparta.seed.community.domain.dto.responsedto.CommentResponseDto;
 import sparta.seed.community.domain.dto.responsedto.CommentResponseListDto;
 import sparta.seed.community.service.CommentService;
 import sparta.seed.sercurity.UserDetailsImpl;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
