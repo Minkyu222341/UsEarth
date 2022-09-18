@@ -13,6 +13,7 @@ public class ProofResponseDto {
 	private Long proofId;
 	private LocalDate creatAt;
 	private String nickname;
+	private String profileImage;
 	private String title;
 	private String content;
 	private List<Img> img;
@@ -22,10 +23,11 @@ public class ProofResponseDto {
 	private boolean heart;
 
 	@Builder
-	public ProofResponseDto(Long proofId, LocalDate creatAt, String nickname, String title, String content, List<Img> img, int commentCnt, int heartCnt, boolean writer, boolean heart) {
+	public ProofResponseDto(Long proofId, LocalDate creatAt, String nickname, String profileImage,String title, String content, List<Img> img, int commentCnt, int heartCnt, boolean writer, boolean heart) {
 		this.proofId = proofId;
 		this.creatAt = creatAt;
 		this.nickname = nickname;
+		this.profileImage = profileImage;
 		this.title = title;
 		this.content = content;
 		this.img = img;
