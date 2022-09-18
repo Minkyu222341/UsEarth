@@ -5,7 +5,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import sparta.seed.mission.domain.Mission;
 import sparta.seed.mission.domain.dto.requestdto.MissionRequestDto;
-import sparta.seed.mission.domain.dto.responsedto.MissionDetailResponseDto;
+import sparta.seed.mission.domain.dto.responsedto.MissionClearResponseDto;
 import sparta.seed.mission.domain.dto.responsedto.MissionResponseDto;
 import sparta.seed.mission.service.MissionService;
 import sparta.seed.sercurity.UserDetailsImpl;
@@ -37,8 +37,8 @@ public class MissionController {
 	 * 미션 완료
 	 */
 	@PatchMapping("/api/missions")
-	public MissionDetailResponseDto completeMission(@AuthenticationPrincipal UserDetailsImpl userDetails,
-	                                                @RequestBody MissionRequestDto missionRequestDto) throws ParseException {
+	public MissionClearResponseDto completeMission(@AuthenticationPrincipal UserDetailsImpl userDetails,
+	                                               @RequestBody MissionRequestDto missionRequestDto) throws ParseException {
 		return missionService.completeMission(userDetails, missionRequestDto);
 	}
 }
