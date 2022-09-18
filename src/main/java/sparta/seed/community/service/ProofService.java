@@ -54,7 +54,7 @@ public class ProofService {
 	public List<ProofResponseDto> getAllProof(Long communityId, int page, int size, UserDetailsImpl userDetails) {
 
 		Sort.Direction direction = Sort.Direction.DESC;
-		Sort sort = Sort.by(direction, "createdAt");
+		Sort sort = Sort.by(direction, "id");
 		Pageable pageable = PageRequest.of(page, size, sort);
 		try {
 		Page<Proof> replayList = proofRepository.findAllByCommunity_Id(communityId, pageable);
@@ -78,7 +78,7 @@ public class ProofService {
 	 * 인증글 작성
 	 */
 	public ResponseEntity<String> createProof(Long communityId, ProofRequestDto proofRequestDto,
-	                                                     List<MultipartFile> multipartFile, UserDetailsImpl userDetails) throws IOException, ParseException {
+	                                                     List<MultipartFile> multipartFile, UserDetailsImpl userDetails) throws ParseException {
 		if(userDetails != null) {
 			Community community = communityRepository.findById(communityId)
 					.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_COMMUNITY));
@@ -106,7 +106,7 @@ public class ProofService {
 	 * 인증글 수정
 	 */
 	public ResponseEntity<String> updateProof(Long proofId, ProofRequestDto proofRequestDto,
-	                                                    List<MultipartFile> multipartFile, UserDetailsImpl userDetails) throws IOException {
+	                                                    List<MultipartFile> multipartFile, UserDetailsImpl userDetails) {
 		Proof proof = findTheProofById(proofId);
 		if(userDetails !=null && proof.getMemberId().equals(userDetails.getId())){
 			proof.updateProof(proofRequestDto);
@@ -224,7 +224,7 @@ public class ProofService {
 				.build();
 	}
 
-	private void buildImgList(List<MultipartFile> multipartFile, Proof proof, List<Img> imgList) throws IOException {
+	private void buildImgList(List<MultipartFile> multipartFile, Proof proof, List<Img> imgList) {
 		for (MultipartFile file : multipartFile) {
 			if(multipartFile.size() < 6 && proof.getImgList().size() < 11){
 				S3Dto upload = s3Uploader.upload(file);
