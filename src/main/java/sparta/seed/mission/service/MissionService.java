@@ -9,6 +9,7 @@ import sparta.seed.member.repository.MemberRepository;
 import sparta.seed.mission.domain.ClearMission;
 import sparta.seed.mission.domain.Mission;
 import sparta.seed.mission.domain.dto.requestdto.MissionRequestDto;
+import sparta.seed.mission.domain.dto.responsedto.MissionClearResponseDto;
 import sparta.seed.mission.domain.dto.responsedto.MissionDetailResponseDto;
 import sparta.seed.mission.domain.dto.responsedto.MissionResponseDto;
 import sparta.seed.mission.repository.ClearMissionRepository;
@@ -70,7 +71,7 @@ public class MissionService {
    * 미션 완료
    */
   @Transactional
-  public MissionDetailResponseDto completeMission(UserDetailsImpl userDetails, MissionRequestDto missionRequestDto) throws ParseException {
+  public MissionClearResponseDto completeMission(UserDetailsImpl userDetails, MissionRequestDto missionRequestDto) throws ParseException {
     Member loginMember = memberRepository.findById(userDetails.getId())
         .orElseThrow(()-> new CustomException(ErrorCode.UNKNOWN_USER));
     String weekOfMonth = dateUtil.weekOfMonth();
@@ -83,7 +84,18 @@ public class MissionService {
     if (!loginMember.getDailyMission().get(missionRequestDto.getMissionName())) {
       loginMember.getDailyMission().put(missionRequestDto.getMissionName(), true);
       clearMissionRepository.save(clearMission);
-      return new MissionDetailResponseDto(missionRequestDto.getMissionName(),true);
+
+      double clearMissionCnt = clearMissionRepository.countAllByMemberId(loginMember.getId());
+      double missionDiv = clearMissionCnt / 5;
+      String stringDiv = missionDiv +"";
+      String[] split = stringDiv.split("\\.");
+
+      return MissionClearResponseDto.builder()
+          .missionName(missionRequestDto.getMissionName())
+          .complete(true)
+          .level((int) (missionDiv + 1))
+          .nextLevelExp(5 - (Integer.parseInt(split[1]) / 2))
+          .totalClear((int) clearMissionCnt).build();
     }else throw new CustomException(ErrorCode.ACCESS_DENIED);
   }
 

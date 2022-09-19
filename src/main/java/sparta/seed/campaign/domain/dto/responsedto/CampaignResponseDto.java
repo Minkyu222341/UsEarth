@@ -2,9 +2,6 @@ package sparta.seed.campaign.domain.dto.responsedto;
 
 import lombok.Builder;
 import lombok.Getter;
-import sparta.seed.img.domain.Img;
-
-import java.util.List;
 
 @Getter
 public class CampaignResponseDto {
