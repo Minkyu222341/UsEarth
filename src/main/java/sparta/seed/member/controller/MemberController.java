@@ -5,15 +5,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import sparta.seed.community.domain.dto.responsedto.CommunityMyJoinResponseDto;
+import sparta.seed.member.domain.dto.requestdto.NicknameRequestDto;
 import sparta.seed.member.domain.dto.responsedto.NicknameResponseDto;
 import sparta.seed.member.domain.dto.responsedto.UserInfoResponseDto;
-import sparta.seed.member.domain.dto.requestdto.NicknameRequestDto;
 import sparta.seed.member.service.MemberService;
 import sparta.seed.mission.domain.dto.requestdto.MissionSearchCondition;
 import sparta.seed.mission.domain.dto.responsedto.ClearMissionResponseDto;
 import sparta.seed.sercurity.UserDetailsImpl;
 
-import java.text.ParseException;
 import java.util.List;
 
 @RestController
