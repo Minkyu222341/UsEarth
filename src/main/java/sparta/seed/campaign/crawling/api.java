@@ -1,34 +1,31 @@
 package sparta.seed.campaign.crawling;
 
+import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import sparta.seed.campaign.domain.AqApiData;
+import sparta.seed.campaign.repository.AqApiDataRepository;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-
+import java.util.ArrayList;
+import java.util.List;
+@RequiredArgsConstructor
+@Service
 public class api {
-	public static void main(String[] args) {
+	@Value("${openapi.serviceKey}")
+	String serviceKey;
+	private final AqApiDataRepository aqApiDataRepository;
 
-StringBuilder result = new StringBuilder();
-try {
-
-	  String serviceUrl = "http://apis.data.go.kr/B552584/ArpltnStatsSvc/getCtprvnMesureLIst?serviceKey=";
-		String serviceKey = "";
-		String returnType = "json";
-		int numOfRows = 100;
-		int pageNo = 1;
-		String itemCode = "PM10"; // CO, O3, PM10, PM2.5 == CO일산화탄소, O3오존
-		String dataGubun = "HOUR";
-
-		String urlstr = serviceUrl+serviceKey
-		+"&returnType="+returnType+"&numOfRows="+numOfRows
-				+"&pageNo="+pageNo+"&itemCode="+itemCode+"&dataGubun="+dataGubun;
-
-		String zzz = "https://www.career.go.kr/cnet/openapi/getOpenApi?apiKey=8b6987e3437f2f606c0b32a837986a81&svcType=api&svcCode=SCHOOL&contentType=json&gubun=high_list&perPage=2378&searchSchulNm=%EA%B3%A0%EB%93%B1%ED%95%99%EA%B5%90";
-
+	public void saveApiData(String itemCode) throws IOException {
+		StringBuilder result = new StringBuilder();
+		String urlstr = "http://apis.data.go.kr/B552584/ArpltnStatsSvc/getCtprvnMesureLIst?serviceKey="+serviceKey+"&returnType=json&numOfRows=100&pageNo=1&itemCode="+itemCode+"&dataGubun=HOUR";
 
 	URL url = new URL(urlstr);
 	HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -39,34 +36,22 @@ try {
 	String returnLine;
 
 	while ((returnLine = br.readLine()) != null){
-		result.append(returnLine + "\n");
+		result.append(returnLine).append("\n");
 	}
 	urlConnection.disconnect();
 
-} catch (Exception e) {
-	e.printStackTrace();
-}
 		JSONObject rjson = new JSONObject(result.toString());
-//		System.out.println(rjson);
-		JSONArray jsonArray = rjson.getJSONObject("dataSearch").getJSONArray("content");
 
-//		System.out.println(jsonArray);
+		JSONArray jsonArray = rjson.getJSONObject("response").getJSONObject("body").getJSONArray("items");
+		String[] regionList = {"jeonbuk", "gyeonggi", "gangwon", "gwangju", "ulsan", "sejong", "chungbuk", "seoul",
+				"gyeongnam", "chungnam", "daejeon", "busan", "gyeongbuk", "jeju", "daegu", "incheon", "jeonnam"};
 
-		for (int i = 0; i < jsonArray.length(); i++) {
-			System.out.println(jsonArray.getJSONObject(i).get("schoolName"));
-		}
-
-
-//		System.out.println(rjson.getJSONObject("response"));
-//		System.out.println(rjson.getJSONObject("response").getJSONObject("body"));
-//
-//		System.out.println("---------------");
-//		JSONArray jsonArray = rjson.getJSONObject("response").getJSONObject("body").getJSONArray("items");
-//
-//		for (int i = 0; i < jsonArray.length(); i++) {
-//			System.out.println(jsonArray.getJSONObject(i));
-//			System.out.println("-----");
-		}
-		// 6개 -> 6
-//	}
+		List<AqApiData> aqApiDataList = new ArrayList<>();
+			for (String region : regionList) {
+				AqApiData aqApiData = AqApiData.builder().category(itemCode).region(region).amount((String) jsonArray.getJSONObject(0).get(region)).build();
+				aqApiData.setDatetime((String) jsonArray.getJSONObject(0).get("dataTime"));
+				aqApiDataList.add(aqApiData);
+			}
+		aqApiDataRepository.saveAll(aqApiDataList);
+	}
 }
