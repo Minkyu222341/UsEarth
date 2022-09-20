@@ -44,55 +44,52 @@ public class S3Uploader {
     String fileFormatName = multipartFile.getContentType().substring(multipartFile.getContentType().lastIndexOf("/") + 1);
     String result = amazonS3Client.getUrl(bucket, fileName).toString();
 
-    File resize = resize(fileName, fileFormatName, multipartFile).orElseThrow(() -> new io.jsonwebtoken.io.IOException("변환실패"));
+    MultipartFile resizedFile = resizeImage(fileName, fileFormatName, multipartFile, 400);
 
-    amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resize));
-    removeNewFile(resize);
+    ObjectMetadata objectMetadata = new ObjectMetadata();
+    objectMetadata.setContentLength(resizedFile.getSize());
+    objectMetadata.setContentType(multipartFile.getContentType());
+
+    try (InputStream inputStream = resizedFile.getInputStream()) {
+      amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
+              .withCannedAcl(CannedAccessControlList.PublicRead));
+    } catch (IOException e) {
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.");
+    }
+
     return new S3Dto(fileName, result);
+
   }
 
-  private Optional<File> resize(String fileName, String fileFormatName, MultipartFile originalImage) throws IOException {
 
-    // 요청 받은 파일로 부터 BufferedImage 객체를 생성합니다.
-    BufferedImage srcImg = ImageIO.read(originalImage.getInputStream());
 
-    int demandWidth = 600, demandHeight = 600;
+  public MultipartFile resizeImage(String fileName, String fileFormatName, MultipartFile originalImage, int targetWidth) {
+    try {
+      BufferedImage image = ImageIO.read(originalImage.getInputStream());
+      int originWidth = image.getWidth();
+      int originHeight = image.getHeight();
+      if (originWidth < targetWidth) {
 
-    // 원본 이미지의 너비와 높이 입니다.
-    int originWidth = srcImg.getWidth();
-    int originHeight = srcImg.getHeight();
+        return originalImage;
+      } else {
+        MarvinImage imageMarvin = new MarvinImage(image);
+        Scale scale = new Scale();
+        scale.load();
+        scale.setAttribute("newWidth", targetWidth);
+        scale.setAttribute("newHeight", targetWidth * originHeight / originWidth);
+        scale.process(imageMarvin.clone(), imageMarvin, null, null, false);
 
-    // 원본 너비를 기준으로 하여 썸네일의 비율로 높이를 계산합니다.
-    int newWidth = originWidth;
-    int newHeight = (originWidth * demandHeight) / demandWidth;
+        BufferedImage imageNoAlpha = imageMarvin.getBufferedImageNoAlpha();
 
-    // 계산된 높이가 원본보다 높다면 crop 이 안되므로
-    // 원본 높이를 기준으로 썸네일의 비율로 너비를 계산합니다.
-    if (newHeight > originHeight) {
-      newWidth = (originHeight * demandWidth) / demandHeight;
-      newHeight = originHeight;
-    }
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(imageNoAlpha, fileFormatName, baos);
+        baos.flush();
 
-    // 계산된 크기로 원본이미지를 가운데에서 crop 합니다.
-    BufferedImage cropImg = Scalr.crop(srcImg, (originWidth - newWidth) / 2, (originHeight - newHeight) / 2, newWidth, newHeight);
+        return new MockMultipartFile(fileName, baos.toByteArray());
+      }
 
-    // crop 된 이미지로 썸네일을 생성합니다.
-    BufferedImage destImg = Scalr.resize(cropImg, demandWidth, demandHeight);
-
-    // 썸네일을 저장합니다.
-    File resizedImage = new File(fileName);
-    if (resizedImage.createNewFile()) {
-      ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
-      return Optional.of(resizedImage);
-    }
-    return Optional.empty();
-  }
-
-  private void removeNewFile(File targetFile) {
-    if (targetFile.delete()) {
-      log.info("파일이 삭제되었습니다.");
-    } else {
-      log.info("파일이 삭제되지 못했습니다.");
+    } catch (IOException e) {
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 리사이즈에 실패했습니다.");
     }
   }
 }
