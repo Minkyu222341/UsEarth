@@ -26,6 +26,7 @@ import sparta.seed.s3.S3Uploader;
 import sparta.seed.sercurity.UserDetailsImpl;
 import sparta.seed.util.DateUtil;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +56,7 @@ public class CommunityService {
   /**
    *  캠페인 작성
    */
-  public ResponseEntity<String> createCommunity(CommunityRequestDto requestDto, MultipartFile multipartFile, UserDetailsImpl userDetails) {
+  public ResponseEntity<String> createCommunity(CommunityRequestDto requestDto, MultipartFile multipartFile, UserDetailsImpl userDetails) throws IOException {
     Long loginUserId = userDetails.getId();
     String nickname = userDetails.getNickname();
 
@@ -106,14 +107,14 @@ public class CommunityService {
    */
  @Transactional
 public ResponseEntity<String> updateCommunity(Long id, CommunityRequestDto communityRequestDto,
-                                               MultipartFile multipartFile, UserDetailsImpl userDetails) {
+                                               MultipartFile multipartFile, UserDetailsImpl userDetails) throws IOException {
 
    Community community = findTheCommunityByMemberId(id);
 
    if (userDetails != null && community.getMemberId().equals(userDetails.getId())) {
      community.update(communityRequestDto);
 
-     if (communityRequestDto.isDelete() | multipartFile != null) {
+     if (communityRequestDto.isDelete()) {
        community.setImg(returnImageUrl(multipartFile));
      }
 
@@ -216,7 +217,7 @@ public ResponseEntity<String> updateCommunity(Long id, CommunityRequestDto commu
     return participantsRepository.existsByCommunityAndMemberId(community, userDetails.getId());
   }
 
-  private Community createCommunity(CommunityRequestDto requestDto, MultipartFile multipartFile, Long loginUserId, String nickname) {
+  private Community createCommunity(CommunityRequestDto requestDto, MultipartFile multipartFile, Long loginUserId, String nickname) throws IOException {
     return Community.builder()
             .title(requestDto.getTitle())
             .content(requestDto.getContent())
@@ -258,10 +259,15 @@ public ResponseEntity<String> updateCommunity(Long id, CommunityRequestDto commu
     return dateUtil.dateStatus(community.getStartDate(), community.getEndDate());
   }
 
-  private String returnImageUrl(MultipartFile multipartFile) {
+  private String returnImageUrl(MultipartFile multipartFile) throws IOException {
+    String[] defaultImgList = {"https://usearth.s3.ap-northeast-2.amazonaws.com/usimg/defaultImg1.png",
+        "https://usearth.s3.ap-northeast-2.amazonaws.com/usimg/defaultImg2.png",
+        "https://usearth.s3.ap-northeast-2.amazonaws.com/usimg/defaultImg3.png",
+        "https://usearth.s3.ap-northeast-2.amazonaws.com/usimg/defaultImg4.png"};
+
     if (multipartFile != null) {
       return s3Uploader.upload(multipartFile).getUploadImageUrl();
-    }else return null;
+    }else return defaultImgList[(int) (Math.random() * 4)];
   }
 
 

@@ -114,7 +114,6 @@ public class KakaoUserService {
     String username = jsonNode.get("kakao_account").get("email").asText();
     String profileImage = jsonNode.get("kakao_account").get("profile").get("profile_image_url").asText();
 
-    System.out.println("jsonNode = " + jsonNode);
 
     return SocialMemberRequestDto.builder()
             .socialId(id)
