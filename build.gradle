@@ -70,6 +70,9 @@ dependencies {
 
     /*암호화*/
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
+
+    /*웹훅*/
+    implementation 'com.github.maricn:logback-slack-appender:1.4.0'
 }
 
 tasks.named('test') {
