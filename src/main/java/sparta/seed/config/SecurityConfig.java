@@ -63,22 +63,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
                 // 로그인, 회원가입 API 는 토큰이 없는 상태에서 요청이 들어오기 때문에 permitAll 설정
                 .and()
                 //cors관련
                 .cors()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/member/**").permitAll()
-                .antMatchers(HttpMethod.POST,"/api/member/login").permitAll()
-                .antMatchers(HttpMethod.GET,"/api/Community").permitAll()
                 .antMatchers("/oauth2/**").permitAll()
-                .antMatchers("/**").permitAll()
+                .antMatchers("/user/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/campaigns/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/community/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/proof/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/comments/**").permitAll()
                 //CORS관련
                 .antMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
                 .anyRequest().authenticated()   // 나머지 API 는 전부 인증 필요
-
                 // JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
                 .and()
                 .apply(new JwtSecurityConfig(tokenProvider));

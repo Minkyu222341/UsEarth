@@ -48,14 +48,14 @@ public class LoginController {
    * 리프레쉬토큰
    */
 
-  @PostMapping("/reissue")  //재발급을 위한 로직
+  @PostMapping("/user/reissue")  //재발급을 위한 로직
   public ResponseEntity<String> reissue(@RequestBody RefreshTokenRequestDto requestDto) {
     return memberService.reissue(requestDto);
   }
   /**
    헬스체크 컨트롤러
    */
-  @GetMapping("/health")
+  @GetMapping("/user/health")
   public String checkHealth() {
     return "healthyV2";
   }
