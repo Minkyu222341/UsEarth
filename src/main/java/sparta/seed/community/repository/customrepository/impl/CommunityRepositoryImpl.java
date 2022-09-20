@@ -47,7 +47,7 @@ public class CommunityRepositoryImpl implements CommunityRepositoryCustom {
   public List<Community> endOfCommunity() {
     JPAQueryFactory queryFactory = new JPAQueryFactory(em);
     return queryFactory.selectFrom(community)
-            .where(community.startDate.loe(String.valueOf(LocalDate.now())),community.endDate.gt(String.valueOf(LocalDate.now()))) // 종료일 > 현재 시간 , 시작일 <= 현재시간
+            .where(community.startDate.lt(String.valueOf(LocalDate.now())),community.endDate.gt(String.valueOf(LocalDate.now()))) // 종료일 > 현재 시간 , 시작일 <= 현재시간
             .orderBy(community.startDate.desc(),community.participantsList.size().desc()).limit(10)
             .fetch();
   }
