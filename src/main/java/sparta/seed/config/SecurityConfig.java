@@ -70,11 +70,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/member/**").permitAll()
-                .antMatchers(HttpMethod.POST,"/api/member/login").permitAll()
-                .antMatchers(HttpMethod.GET,"/api/Community").permitAll()
                 .antMatchers("/oauth2/**").permitAll()
-                .antMatchers("/**").permitAll()
+                .antMatchers("/user/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/campaigns/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/community/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/proof/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/comments/**").permitAll()
                 //CORS관련
                 .antMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
                 .anyRequest().authenticated()   // 나머지 API 는 전부 인증 필요

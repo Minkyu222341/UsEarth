@@ -99,7 +99,7 @@ public class CommunityController {
   /**
    * 인기그룹
    */
-  @GetMapping("/api/active")
+  @GetMapping("/api/community/active")
   public ResponseEntity<List<CommunityAllResponseDto>> activeCommunity(@AuthenticationPrincipal UserDetailsImpl userDetails) throws ParseException {
     return communityService.activeCommunity(userDetails);
   }
@@ -107,7 +107,7 @@ public class CommunityController {
   /**
    * 종료 임박 그룹
    */
-  @GetMapping("/api/nearDone")
+  @GetMapping("/api/community/nearDone")
   public ResponseEntity<List<CommunityAllResponseDto>> endOfCommunity(@AuthenticationPrincipal UserDetailsImpl userDetails) throws ParseException {
     return communityService.endOfCommunity(userDetails);
   }
