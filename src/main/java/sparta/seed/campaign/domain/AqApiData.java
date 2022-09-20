@@ -22,13 +22,12 @@ public class AqApiData {
 	private String datetime;
 
 	@Builder
-	public AqApiData(String category, String region, String amount) {
+	public AqApiData(String category, String region, String amount, String datetime) {
 		this.category = category;
 		this.region = region;
 		this.amount = amount;
-	}
-
-	public void setDatetime(String datetime) {
 		this.datetime = datetime;
 	}
 }
+
+

@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 @RequiredArgsConstructor
 @Service
-public class api {
+public class AirQualityApi {
 	@Value("${openapi.serviceKey}")
 	String serviceKey;
 	private final AqApiDataRepository aqApiDataRepository;
@@ -48,8 +48,12 @@ public class api {
 
 		List<AqApiData> aqApiDataList = new ArrayList<>();
 			for (String region : regionList) {
-				AqApiData aqApiData = AqApiData.builder().category(itemCode).region(region).amount((String) jsonArray.getJSONObject(0).get(region)).build();
-				aqApiData.setDatetime((String) jsonArray.getJSONObject(0).get("dataTime"));
+				AqApiData aqApiData = AqApiData.builder()
+								.category(itemCode)
+								.region(region)
+								.datetime((String) jsonArray.getJSONObject(0).get("dataTime"))
+								.amount((String) jsonArray.getJSONObject(0).get(region))
+								.build();
 				aqApiDataList.add(aqApiData);
 			}
 		aqApiDataRepository.saveAll(aqApiDataList);
