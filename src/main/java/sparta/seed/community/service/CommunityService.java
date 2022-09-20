@@ -114,7 +114,7 @@ public ResponseEntity<String> updateCommunity(Long id, CommunityRequestDto commu
    if (userDetails != null && community.getMemberId().equals(userDetails.getId())) {
      community.update(communityRequestDto);
 
-     if (communityRequestDto.isDelete() | multipartFile != null) {
+     if (communityRequestDto.isDelete()) {
        community.setImg(returnImageUrl(multipartFile));
      }
 
@@ -260,9 +260,14 @@ public ResponseEntity<String> updateCommunity(Long id, CommunityRequestDto commu
   }
 
   private String returnImageUrl(MultipartFile multipartFile) throws IOException {
+    String[] defaultImgList = {"https://usearth.s3.ap-northeast-2.amazonaws.com/usimg/defaultImg1.png",
+        "https://usearth.s3.ap-northeast-2.amazonaws.com/usimg/defaultImg2.png",
+        "https://usearth.s3.ap-northeast-2.amazonaws.com/usimg/defaultImg3.png",
+        "https://usearth.s3.ap-northeast-2.amazonaws.com/usimg/defaultImg4.png"};
+
     if (multipartFile != null) {
       return s3Uploader.upload(multipartFile).getUploadImageUrl();
-    }else return null;
+    }else return defaultImgList[(int) (Math.random() * 4)];
   }
 
 
