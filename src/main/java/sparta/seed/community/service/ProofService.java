@@ -161,12 +161,13 @@ public class ProofService {
 	/**
 	 * 인증글 댓글 , 좋아요 갯수 조회
 	 */
-	public ProofCountResponseDto countProof(Long proofId) {
+	public ProofCountResponseDto countProof(Long proofId, UserDetailsImpl userDetails) {
 		Proof proof = findTheProofById(proofId);
 		return ProofCountResponseDto.builder()
 				.proofId(proof.getId())
 				.commentCnt(proof.getCommentList().size())
 				.heartCnt(proof.getHeartList().size())
+				.participant(userDetails != null && participantsRepository.existsByCommunityAndMemberId(proof.getCommunity(), userDetails.getId()))
 				.build();
 	}
 
