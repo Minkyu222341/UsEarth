@@ -122,6 +122,7 @@ public class ProofService {
 			if(multipartFile!=null) {
 				buildImgList(multipartFile, proof, imgList);
 			}
+			proofRepository.save(proof);
 			return ResponseEntity.ok().body(ResponseMsg.UPDATE_SUCCESS.getMsg());
 
 		}throw new CustomException(ErrorCode.INCORRECT_USERID);
@@ -236,7 +237,6 @@ public class ProofService {
 				imgList.add(findImage);
 			}else throw new IllegalArgumentException(ErrorCode.EXCEED_IMG_CNT.getMsg());
 		}
-		proofRepository.save(proof);
 	}
 
 	private void isStartedCommunity(Community community) throws ParseException {

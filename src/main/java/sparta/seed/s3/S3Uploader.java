@@ -56,7 +56,7 @@ public class S3Uploader {
     // 요청 받은 파일로 부터 BufferedImage 객체를 생성합니다.
     BufferedImage srcImg = ImageIO.read(originalImage.getInputStream());
 
-    int demandWidth = 1000;
+    int demandWidth = 1920;
 
     // 원본 이미지의 너비와 높이 입니다.
     int originWidth = srcImg.getWidth();
@@ -67,7 +67,7 @@ public class S3Uploader {
     int newHeight;
 
     // 원본 넓이가 더 작을경우 리사이징 안함.
-    if (demandWidth > originWidth) {
+    if (demandWidth >= originWidth) {
       newWidth = originWidth;
       newHeight = originHeight;
     }else {
