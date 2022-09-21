@@ -114,7 +114,7 @@ public ResponseEntity<String> updateCommunity(Long id, CommunityRequestDto commu
    if (userDetails != null && community.getMemberId().equals(userDetails.getId())) {
      community.update(communityRequestDto);
 
-     if (communityRequestDto.isDelete()) {
+     if (communityRequestDto.isDelete() || multipartFile != null) {
        community.setImg(returnImageUrl(multipartFile));
      }
 
