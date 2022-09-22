@@ -8,7 +8,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 // Entity가 자동으로 컬럼으로 인식합니다.
@@ -19,16 +18,12 @@ public abstract class Timestamped { //abstract클래스는 new Timestamped와 �
 
 
     @CreatedDate //생성시간
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-    private LocalDate createdAt; //LocalDateTime 시간을 나타내는 자료형
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdAt; //LocalDateTime 시간을 나타내는 자료형
 
 
     @LastModifiedDate//수정시간
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-    private LocalDate modifiedAt;
-
-    @CreatedDate
-    private LocalDateTime testTime;
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime modifiedAt;
 
 }
