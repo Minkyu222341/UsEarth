@@ -16,14 +16,14 @@ public class ClearMissionResponseDto {
 	private List<ClearMission> clearMissionList;
 
 	@Builder
-	public ClearMissionResponseDto(LocalDate createdAt, List<ClearMission> clearMissionList, int count) {
-		this.createdAt = createdAt;
+	public ClearMissionResponseDto(LocalDate clearTime, List<ClearMission> clearMissionList, int count) {
+		this.clearTime = clearTime;
 		this.count = count;
 		this.clearMissionList = clearMissionList;
 	}
 	@QueryProjection
-	public ClearMissionResponseDto(LocalDate createdAt ,long count) {
-		this.createdAt = createdAt;
+	public ClearMissionResponseDto(LocalDate clearTime ,long count) {
+		this.clearTime = clearTime;
 		this.count = count;
 	}
 }
