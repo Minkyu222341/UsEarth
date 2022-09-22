@@ -19,6 +19,7 @@ import sparta.seed.util.DateUtil;
 
 import javax.transaction.Transactional;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.Map;
 
 @Service
@@ -79,6 +80,7 @@ public class MissionService {
             .memberId(userDetails.getId())
             .content(missionRequestDto.getMissionName())
             .weekOfMonth(weekOfMonth)
+            .clearTime(LocalDate.now())
             .build();
 
     if (!loginMember.getDailyMission().get(missionRequestDto.getMissionName())) {

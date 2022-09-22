@@ -10,5 +10,5 @@ import java.util.List;
 public interface ClearMissionRepository extends JpaRepository<ClearMission,Long>, ClearMissionRepositoryCustom {
 
 	int countAllByMemberId(Long memberId);
-	List<ClearMission> findAllByMemberIdAndCreatedAt(Long memberid, LocalDate targetDay);
+	List<ClearMission> findAllByMemberIdAndClearTime(Long memberId, LocalDate createdAt);
 }

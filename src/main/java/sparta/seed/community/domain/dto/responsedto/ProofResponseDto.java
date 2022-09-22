@@ -4,14 +4,14 @@ import lombok.Builder;
 import lombok.Getter;
 import sparta.seed.img.domain.Img;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 public class ProofResponseDto {
 
 	private Long proofId;
-	private LocalDate creatAt;
+	private LocalDateTime creatAt;
 	private String nickname;
 	private String profileImage;
 	private String title;
@@ -23,7 +23,7 @@ public class ProofResponseDto {
 	private boolean heart;
 
 	@Builder
-	public ProofResponseDto(Long proofId, LocalDate creatAt, String nickname, String profileImage,String title, String content, List<Img> img, int commentCnt, int heartCnt, boolean writer, boolean heart) {
+	public ProofResponseDto(Long proofId, LocalDateTime creatAt, String nickname, String profileImage,String title, String content, List<Img> img, int commentCnt, int heartCnt, boolean writer, boolean heart) {
 		this.proofId = proofId;
 		this.creatAt = creatAt;
 		this.nickname = nickname;
