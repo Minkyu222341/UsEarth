@@ -19,7 +19,7 @@ public abstract class Timestamped { //abstract클래스는 new Timestamped와 �
 
     @CreatedDate //생성시간
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createdAt; //LocalDateTime 시간을 나타내는 자료형
+    private LocalDateTime createdAt;
 
 
     @LastModifiedDate//수정시간

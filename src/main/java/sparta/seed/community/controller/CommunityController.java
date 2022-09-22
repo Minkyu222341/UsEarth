@@ -36,9 +36,8 @@ public class CommunityController {
   @GetMapping("/api/community")
   public ResponseEntity<Slice<CommunityAllResponseDto>> getAllCommunity(Pageable pageable,
                                                                         CommunitySearchCondition condition,
-                                                                        @AuthenticationPrincipal UserDetailsImpl userDetails,
-                                                                        HttpServletRequest servletRequest) throws ParseException {
-    return communityService.getAllCommunity(pageable, condition, userDetails, servletRequest);
+                                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) throws ParseException {
+    return communityService.getAllCommunity(pageable, condition, userDetails);
   }
 
   /**
