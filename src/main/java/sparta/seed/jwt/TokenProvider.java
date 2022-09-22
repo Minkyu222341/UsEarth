@@ -11,13 +11,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import sparta.seed.exception.CustomException;
+import sparta.seed.exception.ErrorCode;
+import sparta.seed.login.domain.dto.responsedto.TokenResponseDto;
 import sparta.seed.member.domain.Authority;
 import sparta.seed.member.domain.Member;
-import sparta.seed.login.domain.dto.responsedto.TokenResponseDto;
 import sparta.seed.sercurity.UserDetailsImpl;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -27,7 +29,7 @@ public class TokenProvider {
 
   private static final String AUTHORITIES_KEY = "auth";
   private static final String BEARER_TYPE = "bearer";
-  private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;            // 30분
+  private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 *15;//* 60 ;//* 30;            // 30분
   private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // 7일
   private static final String MEMBER_USERNAME = "memberUsername";
   private static final String MEMBER_NICKNAME = "memberNickname";
@@ -129,7 +131,7 @@ public class TokenProvider {
     } catch (IllegalArgumentException e) {
       throw new IllegalArgumentException("JWT 토큰이 잘못되었습니다.");
     } catch (ExpiredJwtException e) {
-      throw new ExpiredJwtException(Jwts.header(), Jwts.claims(), "만료된 토큰입니다");
+      throw new ExpiredJwtException(Jwts.header(), Jwts.claims(), ErrorCode.EXPIRED_TOKEN.getMsg());
     }
   }
 
@@ -138,6 +140,24 @@ public class TokenProvider {
       return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
     } catch (ExpiredJwtException e) {
       return e.getClaims();
+    }
+  }
+
+  public void validateHttpHeader(HttpServletRequest servletRequest){
+    String authorization = servletRequest.getHeader("Authorization");
+    try {
+      if (authorization != null) {
+        String token = authorization.substring(7);
+        validateToken(token);
+      }
+    } catch(io.jsonwebtoken.security.SecurityException | MalformedJwtException e){
+      throw new CustomException(ErrorCode.WRONG_TYPE_TOKEN);
+    } catch(UnsupportedJwtException e){
+      throw new CustomException(ErrorCode.UNSUPPORTED_TOKEN);
+    } catch(IllegalArgumentException e){
+      throw new CustomException(ErrorCode.BE_NOT_VALID_TOKEN);
+    } catch(ExpiredJwtException e){
+      throw new CustomException(ErrorCode.EXPIRED_TOKEN);
     }
   }
 }
