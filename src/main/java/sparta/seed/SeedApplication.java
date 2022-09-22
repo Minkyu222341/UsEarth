@@ -13,24 +13,24 @@ import java.util.TimeZone;
 @EnableJpaAuditing
 @EnableScheduling
 public class SeedApplication {
-  public static void main(String[] args) {
-    SpringApplication.run(SeedApplication.class, args);
+//  public static void main(String[] args) {
+//    SpringApplication.run(SeedApplication.class, args);
+//  }
+
+  @PostConstruct
+  public void started(){
+    TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
   }
 
-//  @PostConstruct
-//  public void started(){
-//    TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
-//  }
+  public static final String APPLICATION_LOCATIONS = "spring.config.location="
+          + "classpath:application.properties,"
+          + "/app/config/springboot-webservice/application.yml";
 
-//  public static final String APPLICATION_LOCATIONS = "spring.config.location="
-//          + "classpath:application.properties,"
-//          + "/app/config/springboot-webservice/application.yml";
-//
-//  public static void main(String[] args) {
-//    new SpringApplicationBuilder(SeedApplication.class)
-//            .properties(APPLICATION_LOCATIONS)
-//            .run(args);
-//
-//  }
+  public static void main(String[] args) {
+    new SpringApplicationBuilder(SeedApplication.class)
+            .properties(APPLICATION_LOCATIONS)
+            .run(args);
+
+  }
 
 }
