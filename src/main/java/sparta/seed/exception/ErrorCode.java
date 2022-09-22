@@ -19,7 +19,7 @@ public enum ErrorCode {
     UNKNOWN_ERROR(HttpStatus.BAD_REQUEST, "400", "토큰이 존재하지 않습니다."),
     WRONG_TYPE_TOKEN(HttpStatus.BAD_REQUEST, "400", "변조된 토큰입니다."),
     EXPIRED_TOKEN(HttpStatus.BAD_REQUEST, "401", "만료된 토큰입니다."),
-    UNSUPPORTED_TOKEN(HttpStatus.BAD_REQUEST, "400", "변조된 토큰입니다."),
+    UNSUPPORTED_TOKEN(HttpStatus.BAD_REQUEST, "400", "지원하지 않는 토큰입니다."),
     UNKNOWN_USER(HttpStatus.BAD_REQUEST, "400", "사용자를 알 수 없습니다."),
 
     /**
