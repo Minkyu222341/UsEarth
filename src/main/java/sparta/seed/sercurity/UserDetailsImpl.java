@@ -11,7 +11,7 @@ import java.util.Collection;
 
 public class UserDetailsImpl implements UserDetails {
 
-    Member member;
+    private Member member;
 
     public UserDetailsImpl(Member member) {
         this.member = member;
@@ -22,7 +22,6 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         String authority = "ROLE_USER";
-
         SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authority);
         Collection<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(simpleGrantedAuthority);

@@ -26,16 +26,10 @@ public class Img extends Timestamped {
   @JoinColumn(name = "proofId")
   private Proof proof;
 
-  @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
-  @JsonBackReference
-  @JoinColumn(name = "campaignId")
-  private Campaign campaign;
-
   @Builder
-  public Img(Long id, String imgUrl, Proof proof, Campaign campaign) {
+  public Img(Long id, String imgUrl, Proof proof) {
     this.id = id;
     this.imgUrl = imgUrl;
     this.proof = proof;
-    this.campaign = campaign;
   }
 }

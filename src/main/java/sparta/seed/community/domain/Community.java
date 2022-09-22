@@ -1,5 +1,6 @@
 package sparta.seed.community.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,11 +46,9 @@ public class Community extends Timestamped {
   @ColumnDefault("true")
   private boolean recruitment;
   @OneToMany(mappedBy = "community", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-  @JsonManagedReference
   private List<Proof> proofList = new ArrayList<>();
 
   @OneToMany(mappedBy = "community", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-  @JsonManagedReference
   private List<Participants> participantsList = new ArrayList<>();
 
 

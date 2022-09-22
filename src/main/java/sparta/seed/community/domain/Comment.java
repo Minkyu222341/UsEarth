@@ -25,7 +25,6 @@ public class Comment extends Timestamped {
   private String img;
   //인증글
   @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
-  @JsonBackReference
   @JoinColumn(name = "proof_id")
   private Proof proof;
 

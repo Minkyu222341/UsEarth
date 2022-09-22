@@ -15,6 +15,7 @@ import sparta.seed.community.domain.dto.requestdto.CommunityRequestDto;
 import sparta.seed.community.domain.dto.requestdto.CommunitySearchCondition;
 import sparta.seed.community.domain.dto.responsedto.CommunityAllResponseDto;
 import sparta.seed.community.domain.dto.responsedto.CommunityResponseDto;
+import sparta.seed.community.domain.dto.responsedto.ParticipantResponseDto;
 import sparta.seed.community.repository.CommunityRepository;
 import sparta.seed.community.repository.ParticipantsRepository;
 import sparta.seed.community.repository.ProofRepository;
@@ -68,8 +69,6 @@ public class CommunityService {
 
     return ResponseEntity.ok().body(ResponseMsg.WRITE_SUCCESS.getMsg());
 
-//    try {
-//    }catch (Exception e) {throw new CustomException(ErrorCode.UNKNOWN_USER);}
   }
 
   /**
@@ -85,7 +84,6 @@ public class CommunityService {
         .title(community.getTitle())
         .content(community.getContent())
         .img(community.getImg())
-        .participantsList(community.getParticipantsList())
         .participantsCnt(community.getParticipantsList().size())
         .limitParticipants(community.getLimitParticipants())
         .currentPercent(((double) community.getParticipantsList().size() / (double) community.getLimitParticipants()) * 100)
@@ -159,10 +157,17 @@ public ResponseEntity<String> updateCommunity(Long id, CommunityRequestDto commu
   /**
    *  캠페인 참여자 리스트 조회
    */
-  public ResponseEntity<List<Participants>> getParticipantsList(Long id) {
+  public ResponseEntity<List<ParticipantResponseDto>> getParticipantsList(Long id) {
     Community community = findTheCommunityByMemberId(id);
     List<Participants> participantsList = community.getParticipantsList();
-    return ResponseEntity.ok().body(participantsList);
+    List<ParticipantResponseDto> responseDtoList = new ArrayList<>();
+    for (Participants participants : participantsList) {
+      responseDtoList.add(ParticipantResponseDto.builder()
+              .id(participants.getId())
+              .nickname(participants.getNickname())
+              .build());
+    }
+    return ResponseEntity.ok().body(responseDtoList);
   }
 
   /**
