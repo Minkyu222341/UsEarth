@@ -87,8 +87,8 @@ public class ProofController {
 	 * 인증글 댓글 , 좋아요 갯수 조회
 	 */
 	@GetMapping("/api/proof/count/{proofId}")
-	public ProofCountResponseDto countProof(@PathVariable Long proofId){
-		return proofService.countProof(proofId);
+	public ProofCountResponseDto countProof(@PathVariable Long proofId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+		return proofService.countProof(proofId, userDetails);
 	}
 
 	/**

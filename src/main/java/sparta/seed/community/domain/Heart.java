@@ -16,7 +16,6 @@ public class Heart {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
-    @JsonBackReference
     @JoinColumn(name = "proofId")
     private Proof proof;
     //누른 유저의 Pk

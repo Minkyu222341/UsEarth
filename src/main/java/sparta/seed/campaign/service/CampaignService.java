@@ -75,7 +75,6 @@ public class CampaignService {
 			S3Dto upload = s3Uploader.upload(file);
 			Img findImage = Img.builder()
 					.imgUrl(upload.getUploadImageUrl())
-					.campaign(campaign)
 					.build();
 
 			if(findImage.getImgUrl().contains("[Thumbnail]")){

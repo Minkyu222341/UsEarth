@@ -16,7 +16,6 @@ public class Participants {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   @ManyToOne
-  @JsonBackReference
   private Community community;
   private Long memberId;
   private String nickname;

@@ -32,13 +32,11 @@ public class Proof extends Timestamped {
 
 
   @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
-  @JsonBackReference
   @JoinColumn(name = "community_id")
   private Community community;
 
   //이미지리스트
   @OneToMany(mappedBy = "proof",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-  @JsonManagedReference
   private List<Img> imgList = new ArrayList<>();
 
   //댓글리스트
@@ -47,7 +45,6 @@ public class Proof extends Timestamped {
 
   //좋아요
   @OneToMany(mappedBy = "proof", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-  @JsonManagedReference
   private List<Heart> heartList = new ArrayList<>();
 
   @Builder
