@@ -17,6 +17,7 @@ import sparta.seed.community.domain.dto.responsedto.ParticipantResponseDto;
 import sparta.seed.community.service.CommunityService;
 import sparta.seed.sercurity.UserDetailsImpl;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.text.ParseException;
@@ -35,8 +36,9 @@ public class CommunityController {
   @GetMapping("/api/community")
   public ResponseEntity<Slice<CommunityAllResponseDto>> getAllCommunity(Pageable pageable,
                                                                         CommunitySearchCondition condition,
-                                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) throws ParseException {
-    return communityService.getAllCommunity(pageable, condition, userDetails);
+                                                                        @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                                        HttpServletRequest servletRequest) throws ParseException {
+    return communityService.getAllCommunity(pageable, condition, userDetails, servletRequest);
   }
 
   /**
@@ -44,8 +46,9 @@ public class CommunityController {
    */
   @GetMapping("/api/community/{id}")
   public ResponseEntity<CommunityResponseDto> getDetailCommunity(@PathVariable Long id,
-                                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) throws ParseException {
-    return communityService.getDetailCommunity(id, userDetails);
+                                                                 @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                                 HttpServletRequest servletRequest) throws ParseException {
+    return communityService.getDetailCommunity(id, userDetails, servletRequest);
   }
 
 

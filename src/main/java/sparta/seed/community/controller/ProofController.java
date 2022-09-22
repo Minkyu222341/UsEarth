@@ -13,6 +13,7 @@ import sparta.seed.community.domain.dto.responsedto.ProofResponseDto;
 import sparta.seed.community.service.ProofService;
 import sparta.seed.sercurity.UserDetailsImpl;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.text.ParseException;
@@ -31,17 +32,18 @@ public class ProofController {
 	public List<ProofResponseDto> getAllProof(@PathVariable Long communityId,
 																						@RequestParam("page") int page,
 																						@RequestParam("size") int size,
-																						@AuthenticationPrincipal UserDetailsImpl userDetails){
+																						@AuthenticationPrincipal UserDetailsImpl userDetails,
+																						HttpServletRequest servletRequest){
 
-			return proofService.getAllProof(communityId, page, size, userDetails);
+			return proofService.getAllProof(communityId, page, size, userDetails, servletRequest);
 	}
 
 	/**
 	 * 글에 달린 인증글 상세 조회
 	 */
 	@GetMapping("/api/proof/{proofId}")
-	public ProofResponseDto getProof(@PathVariable Long proofId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-		return proofService.getProof(proofId, userDetails);
+	public ProofResponseDto getProof(@PathVariable Long proofId, @AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletRequest servletRequest){
+		return proofService.getProof(proofId, userDetails, servletRequest);
 	}
 
   /**
@@ -87,8 +89,8 @@ public class ProofController {
 	 * 인증글 댓글 , 좋아요 갯수 조회
 	 */
 	@GetMapping("/api/proof/count/{proofId}")
-	public ProofCountResponseDto countProof(@PathVariable Long proofId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-		return proofService.countProof(proofId, userDetails);
+	public ProofCountResponseDto countProof(@PathVariable Long proofId, @AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletRequest servletRequest){
+		return proofService.countProof(proofId, userDetails, servletRequest);
 	}
 
 	/**
