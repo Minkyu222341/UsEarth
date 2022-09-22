@@ -36,6 +36,7 @@ public class CommunityController {
   public ResponseEntity<Slice<CommunityAllResponseDto>> getAllCommunity(Pageable pageable,
                                                                         CommunitySearchCondition condition,
                                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) throws ParseException {
+    System.out.println(userDetails.getId());
     return communityService.getAllCommunity(pageable, condition, userDetails);
   }
 

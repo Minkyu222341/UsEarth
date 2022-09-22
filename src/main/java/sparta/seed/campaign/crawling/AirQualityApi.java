@@ -6,7 +6,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sparta.seed.campaign.domain.AqApiData;
-import sparta.seed.campaign.repository.AqApiDataRepository;
+import sparta.seed.campaign.repository.AqRepository;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,7 +21,7 @@ import java.util.List;
 public class AirQualityApi {
 	@Value("${openapi.serviceKey}")
 	String serviceKey;
-	private final AqApiDataRepository aqApiDataRepository;
+	private final AqRepository aqApiDataRepository;
 
 	public void saveApiData(String itemCode) throws IOException {
 		StringBuilder result = new StringBuilder();
@@ -52,7 +52,7 @@ public class AirQualityApi {
 								.category(itemCode)
 								.region(region)
 								.datetime((String) jsonArray.getJSONObject(0).get("dataTime"))
-								.amount((String) jsonArray.getJSONObject(0).get(region))
+								.amount(Double.valueOf(String.valueOf(jsonArray.getJSONObject(0).get(region))))
 								.build();
 				aqApiDataList.add(aqApiData);
 			}
