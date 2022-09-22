@@ -122,6 +122,7 @@ public class ProofService {
 			if(multipartFile!=null) {
 				buildImgList(multipartFile, proof, imgList);
 			}
+			proofRepository.save(proof);
 			return ResponseEntity.ok().body(ResponseMsg.UPDATE_SUCCESS.getMsg());
 
 		}throw new CustomException(ErrorCode.INCORRECT_USERID);
@@ -160,12 +161,13 @@ public class ProofService {
 	/**
 	 * 인증글 댓글 , 좋아요 갯수 조회
 	 */
-	public ProofCountResponseDto countProof(Long proofId) {
+	public ProofCountResponseDto countProof(Long proofId, UserDetailsImpl userDetails) {
 		Proof proof = findTheProofById(proofId);
 		return ProofCountResponseDto.builder()
 				.proofId(proof.getId())
 				.commentCnt(proof.getCommentList().size())
 				.heartCnt(proof.getHeartList().size())
+				.participant(userDetails != null && participantsRepository.existsByCommunityAndMemberId(proof.getCommunity(), userDetails.getId()))
 				.build();
 	}
 
@@ -236,7 +238,6 @@ public class ProofService {
 				imgList.add(findImage);
 			}else throw new IllegalArgumentException(ErrorCode.EXCEED_IMG_CNT.getMsg());
 		}
-		proofRepository.save(proof);
 	}
 
 	private void isStartedCommunity(Community community) throws ParseException {
