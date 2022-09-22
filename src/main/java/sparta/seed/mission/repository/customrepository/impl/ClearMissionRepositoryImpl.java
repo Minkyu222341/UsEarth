@@ -27,10 +27,10 @@ public class ClearMissionRepositoryImpl implements ClearMissionRepositoryCustom 
   public List<ClearMissionResponseDto> dailyMissionStats(MissionSearchCondition condition, Long memberId) {
     JPAQueryFactory queryFactory = new JPAQueryFactory(em);
     List<LocalDate> dateScope = dateUtil.scopeOfStats(condition);
-    List<ClearMissionResponseDto> result = queryFactory.select(new QClearMissionResponseDto(clearMission.createdAt, clearMission.count()))
+    List<ClearMissionResponseDto> result = queryFactory.select(new QClearMissionResponseDto(clearMission.clearTime, clearMission.count()))
             .from(clearMission)
-            .where(clearMission.createdAt.between(dateScope.get(0), dateScope.get(1)), clearMission.memberId.eq(memberId))
-            .groupBy(clearMission.createdAt)
+            .where(clearMission.clearTime.between(dateScope.get(0), dateScope.get(1)), clearMission.memberId.eq(memberId))
+            .groupBy(clearMission.clearTime)
             .fetch();
     return result;
   }

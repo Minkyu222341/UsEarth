@@ -3,18 +3,18 @@ package sparta.seed.mission.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import sparta.seed.util.Timestamped;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.time.LocalDate;
 
 
 @Getter
 @NoArgsConstructor
 @Entity
-public class ClearMission extends Timestamped {
+public class ClearMission{
   //PK
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,11 +24,13 @@ public class ClearMission extends Timestamped {
   //완료한 미션
   private String content;
   private String weekOfMonth;
+  private LocalDate clearTime;
 
   @Builder
-  public ClearMission(Long memberId, String content, String weekOfMonth) {
+  public ClearMission(Long memberId, String content, String weekOfMonth, LocalDate clearTime) {
     this.memberId = memberId;
     this.content = content;
     this.weekOfMonth = weekOfMonth;
+    this.clearTime = clearTime;
   }
 }

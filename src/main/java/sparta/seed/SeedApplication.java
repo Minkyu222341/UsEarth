@@ -21,7 +21,6 @@ public class SeedApplication {
   public void started(){
     TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
   }
-
   public static final String APPLICATION_LOCATIONS = "spring.config.location="
           + "classpath:application.properties,"
           + "/app/config/springboot-webservice/application.yml";
@@ -30,7 +29,6 @@ public class SeedApplication {
     new SpringApplicationBuilder(SeedApplication.class)
             .properties(APPLICATION_LOCATIONS)
             .run(args);
-
   }
 
 }
