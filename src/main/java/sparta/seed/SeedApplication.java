@@ -18,7 +18,7 @@ public class SeedApplication {
 //  }
 
   @PostConstruct
-  public void started() {
+  public void started(){
     TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
   }
   public static final String APPLICATION_LOCATIONS = "spring.config.location="
@@ -29,7 +29,6 @@ public class SeedApplication {
     new SpringApplicationBuilder(SeedApplication.class)
             .properties(APPLICATION_LOCATIONS)
             .run(args);
-
   }
 
 }
