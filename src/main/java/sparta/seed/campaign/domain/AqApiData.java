@@ -18,11 +18,11 @@ public class AqApiData {
 	private Long id;
 	private String category;
 	private String region;
-	private Double amount;
+	private double amount;
 	private String datetime;
 
 	@Builder
-	public AqApiData(String category, String region, Double amount, String datetime) {
+	public AqApiData(String category, String region, double amount, String datetime) {
 		this.category = category;
 		this.region = region;
 		this.amount = amount;

@@ -47,13 +47,13 @@ public class JwtFilter extends OncePerRequestFilter {
          }
       } catch (ExpiredJwtException e){
          //만료 에러
-         request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN.getErrorCode());
+         request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN.getMsg());
       } catch (MalformedJwtException e){
          //변조 에러
-         request.setAttribute("exception", ErrorCode.WRONG_TYPE_TOKEN.getErrorCode());
+         request.setAttribute("exception", ErrorCode.WRONG_TYPE_TOKEN.getMsg());
       } catch (SignatureException e){
          //형식, 길이 에러
-         request.setAttribute("exception", ErrorCode.WRONG_TYPE_TOKEN.getErrorCode());
+         request.setAttribute("exception", ErrorCode.WRONG_TYPE_TOKEN.getMsg());
       } catch(JwtException e){
          request.setAttribute("exception", ErrorCode.UNKNOWN_ERROR);
       }
