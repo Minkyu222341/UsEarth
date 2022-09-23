@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sparta.seed.login.domain.dto.requestdto.RefreshTokenRequestDto;
 import sparta.seed.login.domain.dto.responsedto.TokenResponseDto;
 import sparta.seed.login.service.GoogleUserService;
 import sparta.seed.login.service.KakaoUserService;
@@ -49,7 +48,7 @@ public class LoginController {
    * 리프레쉬토큰
    */
 
-  @PostMapping("/user/reissue")  //재발급을 위한 로직
+  @GetMapping("/user/reissue")  //재발급을 위한 로직
   public ResponseEntity<String> reissue(HttpServletRequest request,HttpServletResponse response) {
     return memberService.reissue(request,response);
   }
