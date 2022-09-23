@@ -30,51 +30,70 @@ public class AqService {
       switch (category) {
         case "co":
           aqApiResponseDto.setCategory("일산화탄소");
-          aqApiResponseDto.setMaxAmount("15.1000");
-
-          if (average < 2.1) {
+          if (average < 2.01) {
             aqApiResponseDto.setRisk("좋음");
-          } else if (average < 9.1) {
+            aqApiResponseDto.setMaxAmount("2.0000");
+          } else if (average < 9.01) {
             aqApiResponseDto.setRisk("보통");
-          } else if (average < 15.1) {
+            aqApiResponseDto.setMaxAmount("9.0000");
+          } else if (average < 15.01) {
             aqApiResponseDto.setRisk("나쁨");
-          } else aqApiResponseDto.setRisk("매우 나쁨");
+            aqApiResponseDto.setMaxAmount("15.0000");
+          } else {
+            aqApiResponseDto.setRisk("매우 나쁨");
+            aqApiResponseDto.setMaxAmount("50.0000");
+          }
           break;
+
         case "o3":
           aqApiResponseDto.setCategory("오존");
-          aqApiResponseDto.setMaxAmount("0.2510");
-
           if (average < 0.031) {
             aqApiResponseDto.setRisk("좋음");
+            aqApiResponseDto.setMaxAmount("0.0300");
           } else if (average < 0.091) {
             aqApiResponseDto.setRisk("보통");
+            aqApiResponseDto.setMaxAmount("0.0900");
           } else if (average < 0.151) {
             aqApiResponseDto.setRisk("나쁨");
-          } else aqApiResponseDto.setRisk("매우 나쁨");
+            aqApiResponseDto.setMaxAmount("0.1510");
+          } else {
+            aqApiResponseDto.setRisk("매우 나쁨");
+            aqApiResponseDto.setMaxAmount("0.6000");
+          }
           break;
+
         case "no2":
           aqApiResponseDto.setCategory("이산화질소");
-          aqApiResponseDto.setMaxAmount("0.2010");
-
           if (average < 0.031) {
             aqApiResponseDto.setRisk("좋음");
+            aqApiResponseDto.setMaxAmount("0.0300");
           } else if (average < 0.061) {
             aqApiResponseDto.setRisk("보통");
-          } else if (average < 0.21) {
+            aqApiResponseDto.setMaxAmount("0.0600");
+          } else if (average < 0.201) {
             aqApiResponseDto.setRisk("나쁨");
-          } else aqApiResponseDto.setRisk("매우 나쁨");
+            aqApiResponseDto.setMaxAmount("0.2000");
+          } else {
+            aqApiResponseDto.setRisk("매우 나쁨");
+            aqApiResponseDto.setMaxAmount("2.0000");
+          }
           break;
+
         case "so2":
           aqApiResponseDto.setCategory("아황산가스");
-          aqApiResponseDto.setMaxAmount("0.1510");
-
-          if (average < 0.021) {
+          if (average < 0.0201) {
             aqApiResponseDto.setRisk("좋음");
-          } else if (average < 0.051) {
+            aqApiResponseDto.setMaxAmount("0.0200");
+          } else if (average < 0.0501) {
             aqApiResponseDto.setRisk("보통");
-          } else if (average < 0.151) {
+            aqApiResponseDto.setMaxAmount("0.0500");
+          } else if (average < 0.1501) {
             aqApiResponseDto.setRisk("나쁨");
-          } else aqApiResponseDto.setRisk("매우 나쁨");
+            aqApiResponseDto.setMaxAmount("0.1500");
+          } else {
+            aqApiResponseDto.setRisk("매우 나쁨");
+            aqApiResponseDto.setMaxAmount("1.0000");
+          }
           break;
       }
       aqApiResponseDtoList.add(aqApiResponseDto);
