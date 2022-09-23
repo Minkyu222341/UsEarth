@@ -38,7 +38,6 @@ public class CommunityController {
                                                                         CommunitySearchCondition condition,
                                                                         @AuthenticationPrincipal UserDetailsImpl userDetails,
                                                                         HttpServletRequest servletRequest) throws ParseException {
-
     return communityService.getAllCommunity(pageable, condition, userDetails,servletRequest);
   }
 

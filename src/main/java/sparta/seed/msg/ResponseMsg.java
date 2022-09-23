@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum ResponseMsg {
+  ISSUANCE_SUCCESS("발급 완료"),
   WRITE_SUCCESS("작성 완료"),
   VIEWED_SUCCESS("조회 성공"),
   UPDATE_SUCCESS("수정완료"),
