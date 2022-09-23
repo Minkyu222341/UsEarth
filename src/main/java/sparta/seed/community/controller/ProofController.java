@@ -78,14 +78,6 @@ public class ProofController {
 	}
 
 	/**
-	 * 전체 인증글 댓글 , 좋아요 갯수 조회
-	 */
-	@GetMapping("/api/community/count/{communityId}")
-	public List<ProofCountResponseDto> countAllProof(@PathVariable Long communityId){
-		return proofService.countAllProof(communityId);
-	}
-
-	/**
 	 * 인증글 댓글 , 좋아요 갯수 조회
 	 */
 	@GetMapping("/api/proof/count/{proofId}")
