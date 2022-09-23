@@ -146,7 +146,7 @@ public class TokenProvider {
   public void validateHttpHeader(HttpServletRequest servletRequest){
     String authorization = servletRequest.getHeader("Authorization");
     try {
-      if (authorization != null) {
+      if (!(authorization == null || authorization.equals("undefined"))) {
         String token = authorization.substring(7);
         validateToken(token);
       }
