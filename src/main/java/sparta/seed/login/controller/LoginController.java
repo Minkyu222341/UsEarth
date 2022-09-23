@@ -11,6 +11,7 @@ import sparta.seed.login.service.KakaoUserService;
 import sparta.seed.login.service.NaverUserService;
 import sparta.seed.member.service.MemberService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
@@ -49,8 +50,8 @@ public class LoginController {
    */
 
   @PostMapping("/user/reissue")  //재발급을 위한 로직
-  public ResponseEntity<String> reissue(@RequestBody RefreshTokenRequestDto requestDto) {
-    return memberService.reissue(requestDto);
+  public ResponseEntity<String> reissue(HttpServletRequest request,HttpServletResponse response) {
+    return memberService.reissue(request,response);
   }
   /**
    헬스체크 컨트롤러
