@@ -21,12 +21,13 @@ import sparta.seed.community.repository.ParticipantsRepository;
 import sparta.seed.community.repository.ProofRepository;
 import sparta.seed.exception.CustomException;
 import sparta.seed.exception.ErrorCode;
-import sparta.seed.member.repository.MemberRepository;
+import sparta.seed.jwt.TokenProvider;
 import sparta.seed.msg.ResponseMsg;
 import sparta.seed.s3.S3Uploader;
 import sparta.seed.sercurity.UserDetailsImpl;
 import sparta.seed.util.DateUtil;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -41,12 +42,15 @@ public class CommunityService {
   private final ParticipantsRepository participantsRepository;
   private final DateUtil dateUtil;
   private final ProofRepository proofRepository;
-  private final MemberRepository memberRepository;
+  private final TokenProvider tokenProvider;
 
   /**
    *  캠페인 전체 조회
    */
-  public ResponseEntity<Slice<CommunityAllResponseDto>> getAllCommunity(Pageable pageable, CommunitySearchCondition condition, UserDetailsImpl userDetails) throws ParseException {
+  public ResponseEntity<Slice<CommunityAllResponseDto>> getAllCommunity(Pageable pageable, CommunitySearchCondition condition, UserDetailsImpl userDetails, HttpServletRequest servletRequest) throws ParseException {
+
+    tokenProvider.validateHttpHeader(servletRequest);
+
     QueryResults<Community> allCommunity = communityRepository.getAllCommunity(pageable, condition);
     List<CommunityAllResponseDto> allCommunityList = getAllCommunityList(allCommunity, userDetails);
     boolean hasNext = hasNextPage(pageable, allCommunityList);
@@ -74,7 +78,10 @@ public class CommunityService {
   /**
    *  캠페인 상세 조회
    */
-  public ResponseEntity<CommunityResponseDto> getDetailCommunity(Long id, UserDetailsImpl userDetails) throws ParseException {
+  public ResponseEntity<CommunityResponseDto> getDetailCommunity(Long id, UserDetailsImpl userDetails, HttpServletRequest servletRequest) throws ParseException {
+
+    tokenProvider.validateHttpHeader(servletRequest);
+
     Community community = findTheCommunityByMemberId(id);
     Long certifiedProof = getCertifiedProof(community);
     CommunityResponseDto communityResponseDto = CommunityResponseDto.builder()

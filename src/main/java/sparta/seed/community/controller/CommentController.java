@@ -11,6 +11,7 @@ import sparta.seed.community.domain.dto.responsedto.CommentResponseListDto;
 import sparta.seed.community.service.CommentService;
 import sparta.seed.sercurity.UserDetailsImpl;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 
@@ -23,8 +24,8 @@ public class CommentController {
    * 댓글 조회
    */
 	@GetMapping("/api/comments/{proofId}")
-	public CommentResponseListDto getAllComment(@PathVariable Long proofId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-		return commentService.getAllComment(proofId, userDetails);
+	public CommentResponseListDto getAllComment(@PathVariable Long proofId, @AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletRequest servletRequest){
+		return commentService.getAllComment(proofId, userDetails, servletRequest);
 	}
 
   /**

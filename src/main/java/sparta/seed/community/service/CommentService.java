@@ -14,10 +14,12 @@ import sparta.seed.community.repository.ParticipantsRepository;
 import sparta.seed.community.repository.ProofRepository;
 import sparta.seed.exception.CustomException;
 import sparta.seed.exception.ErrorCode;
+import sparta.seed.jwt.TokenProvider;
 import sparta.seed.msg.ResponseMsg;
 import sparta.seed.s3.S3Uploader;
 import sparta.seed.sercurity.UserDetailsImpl;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
@@ -29,11 +31,15 @@ public class CommentService {
 	private final CommentRepository commentRepository;
 	private final S3Uploader s3Uploader;
 	private final ParticipantsRepository participantsRepository;
+	private final TokenProvider tokenProvider;
 
 	/**
 	 * 댓글 조회
 	 */
-	public CommentResponseListDto getAllComment(Long proofId, UserDetailsImpl userDetails) {
+	public CommentResponseListDto getAllComment(Long proofId, UserDetailsImpl userDetails, HttpServletRequest servletRequest) {
+
+		tokenProvider.validateHttpHeader(servletRequest);
+
 		try {
 			List<Comment> commentList = commentRepository.findAllByProof_Id(proofId);
 			CommentResponseListDto commentResponseListDtoList = new CommentResponseListDto(proofId);

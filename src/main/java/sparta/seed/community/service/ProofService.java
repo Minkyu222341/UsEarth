@@ -23,6 +23,7 @@ import sparta.seed.exception.CustomException;
 import sparta.seed.exception.ErrorCode;
 import sparta.seed.img.domain.Img;
 import sparta.seed.img.repository.ImgRepository;
+import sparta.seed.jwt.TokenProvider;
 import sparta.seed.member.repository.MemberRepository;
 import sparta.seed.msg.ResponseMsg;
 import sparta.seed.s3.S3Dto;
@@ -30,6 +31,7 @@ import sparta.seed.s3.S3Uploader;
 import sparta.seed.sercurity.UserDetailsImpl;
 import sparta.seed.util.DateUtil;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -47,11 +49,14 @@ public class ProofService {
 	private final ImgRepository imgRepository;
 	private final S3Uploader s3Uploader;
 	private final DateUtil dateUtil;
+	private final TokenProvider tokenProvider;
 
 	/**
 	  글에 달린 인증글 조회
 	 */
-	public List<ProofResponseDto> getAllProof(Long communityId, int page, int size, UserDetailsImpl userDetails) {
+	public List<ProofResponseDto> getAllProof(Long communityId, int page, int size, UserDetailsImpl userDetails, HttpServletRequest servletRequest) {
+
+		tokenProvider.validateHttpHeader(servletRequest);
 
 		Sort.Direction direction = Sort.Direction.DESC;
 		Sort sort = Sort.by(direction, "id");
@@ -69,7 +74,10 @@ public class ProofService {
 	/**
 	 * 글에 달린 인증글 상세 조회
 	 */
-	public ProofResponseDto getProof(Long proofId, UserDetailsImpl userDetails) {
+	public ProofResponseDto getProof(Long proofId, UserDetailsImpl userDetails, HttpServletRequest servletRequest) {
+
+		tokenProvider.validateHttpHeader(servletRequest);
+
 		Proof proof = findTheProofById(proofId);
 		return buildProofResponseDto(userDetails, proof);
 	}
@@ -161,7 +169,10 @@ public class ProofService {
 	/**
 	 * 인증글 댓글 , 좋아요 갯수 조회
 	 */
-	public ProofCountResponseDto countProof(Long proofId, UserDetailsImpl userDetails) {
+	public ProofCountResponseDto countProof(Long proofId, UserDetailsImpl userDetails, HttpServletRequest servletRequest) {
+
+		tokenProvider.validateHttpHeader(servletRequest);
+
 		Proof proof = findTheProofById(proofId);
 		return ProofCountResponseDto.builder()
 				.proofId(proof.getId())
