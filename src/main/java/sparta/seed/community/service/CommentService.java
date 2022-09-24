@@ -68,7 +68,7 @@ public class CommentService {
 		Proof proof = proofRepository.findById(proofId)
 				.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PROOF));
 		if (!participantsRepository.existsByCommunityAndMemberId(proof.getCommunity(), userDetails.getId())) {
-			throw new CustomException(ErrorCode.ACCESS_DENIED);
+			throw new CustomException(ErrorCode.NOT_PARTICIPATED);
 		}
 				Comment comment = Comment.builder()
 						.memberId(userDetails.getId())

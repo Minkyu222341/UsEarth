@@ -38,7 +38,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
          setResponse(response, ErrorCode.UNSUPPORTED_TOKEN);
       }
       else {
-         setResponse(response, ErrorCode.ACCESS_DENIED);
+         setResponse(response, ErrorCode.UNKNOWN_ERROR);
       }
    }
    //한글 출력을 위해 getWriter() 사용
