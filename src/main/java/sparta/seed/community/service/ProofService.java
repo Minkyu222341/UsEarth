@@ -149,24 +149,6 @@ public class ProofService {
 	}
 
 	/**
-	 * 전체 인증글 댓글 , 좋아요 갯수 조회
-	 */
-	public List<ProofCountResponseDto> countAllProof(Long communityId) {
-		try {
-			List<Proof> proofList = proofRepository.findAllByCommunity_Id(communityId);
-			List<ProofCountResponseDto> proofResponseDtoList = new ArrayList<>();
-			for (Proof proof : proofList) {
-				proofResponseDtoList.add(ProofCountResponseDto.builder()
-						.proofId(proof.getId())
-						.commentCnt(proof.getCommentList().size())
-						.heartCnt(proof.getHeartList().size())
-						.build());
-			}
-			return proofResponseDtoList;
-		}catch (Exception e) {throw new CustomException(ErrorCode.NOT_FOUND_PROOF);}
-	}
-
-	/**
 	 * 인증글 댓글 , 좋아요 갯수 조회
 	 */
 	public ProofCountResponseDto countProof(Long proofId, UserDetailsImpl userDetails, HttpServletRequest servletRequest) {
@@ -179,6 +161,7 @@ public class ProofService {
 				.commentCnt(proof.getCommentList().size())
 				.heartCnt(proof.getHeartList().size())
 				.participant(userDetails != null && participantsRepository.existsByCommunityAndMemberId(proof.getCommunity(), userDetails.getId()))
+				.heart(userDetails != null && heartRepository.existsByProofAndMemberId(proof, userDetails.getId()))
 				.build();
 	}
 
@@ -189,7 +172,7 @@ public class ProofService {
 		Proof proof = findTheProofById(proofId);
 		Long loginUserId = userDetails.getId();
 		if (!participantsRepository.existsByCommunityAndMemberId(proof.getCommunity(), userDetails.getId())) {
-			throw new CustomException(ErrorCode.ACCESS_DENIED);
+			throw new CustomException(ErrorCode.NOT_PARTICIPATED);
 		}
 		try {
 			if (!heartRepository.existsByProofAndMemberId(proof, loginUserId)) {
@@ -230,10 +213,7 @@ public class ProofService {
 				.title(proof.getTitle())
 				.content(proof.getContent())
 				.img(proof.getImgList())
-				.commentCnt(proof.getCommentList().size())
-				.heartCnt(proof.getHeartList().size())
 				.writer(userDetails != null && proof.getMemberId().equals(userDetails.getId()))
-				.heart(userDetails != null && heartRepository.existsByProofAndMemberId(proof, userDetails.getId()))
 				.build();
 	}
 

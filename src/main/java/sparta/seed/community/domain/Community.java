@@ -1,13 +1,14 @@
 package sparta.seed.community.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import sparta.seed.community.domain.dto.requestdto.CommunityRequestDto;
-import sparta.seed.util.Timestamped;
+import sparta.seed.util.BaseEntity;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @Getter
-public class Community extends Timestamped {
+public class Community extends BaseEntity {
   //PK
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,6 +51,7 @@ public class Community extends Timestamped {
 
   @OneToMany(mappedBy = "community", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
   private List<Participants> participantsList = new ArrayList<>();
+
 
 
   @Builder

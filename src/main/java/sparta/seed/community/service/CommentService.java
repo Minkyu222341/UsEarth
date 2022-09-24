@@ -32,6 +32,7 @@ public class CommentService {
 	private final S3Uploader s3Uploader;
 	private final ParticipantsRepository participantsRepository;
 	private final TokenProvider tokenProvider;
+	private final CommunityService communityService;
 
 	/**
 	 * 댓글 조회
@@ -42,7 +43,8 @@ public class CommentService {
 
 		try {
 			List<Comment> commentList = commentRepository.findAllByProof_Id(proofId);
-			CommentResponseListDto commentResponseListDtoList = new CommentResponseListDto(proofId);
+			CommentResponseListDto commentResponseListDtoList = new CommentResponseListDto(proofId,
+					communityService.getDateStatus(proofRepository.findById(proofId).get().getCommunity()));
 
 			for (Comment comment : commentList) {
 				commentResponseListDtoList.addCommentResponseDto(CommentResponseDto.builder()
@@ -61,12 +63,12 @@ public class CommentService {
 	/**
 	 * 댓글작성
 	 */
-	public ResponseEntity<String> createComment(Long proofId, CommentRequestDto commentRequestDto,
+	public ResponseEntity<CommentResponseDto> createComment(Long proofId, CommentRequestDto commentRequestDto,
 	                                        MultipartFile multipartFile, UserDetailsImpl userDetails) throws IOException {
 		Proof proof = proofRepository.findById(proofId)
 				.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PROOF));
 		if (!participantsRepository.existsByCommunityAndMemberId(proof.getCommunity(), userDetails.getId())) {
-			throw new CustomException(ErrorCode.ACCESS_DENIED);
+			throw new CustomException(ErrorCode.NOT_PARTICIPATED);
 		}
 				Comment comment = Comment.builder()
 						.memberId(userDetails.getId())
@@ -78,14 +80,21 @@ public class CommentService {
 				proof.addComment(comment);
 
 				commentRepository.save(comment);
-		return ResponseEntity.ok().body(ResponseMsg.WRITE_SUCCESS.getMsg());
+		return ResponseEntity.ok().body(CommentResponseDto.builder()
+						.commentId(comment.getId())
+						.content(comment.getContent())
+						.creatAt(comment.getCreatedAt())
+						.img(comment.getImg())
+						.nickname(comment.getNickname())
+						.writer(true)
+						.build());
 	}
 
 	/**
 	 * 댓글 수정
 	 */
 	@Transactional
-	public ResponseEntity<String> updateComment(Long commentId, CommentRequestDto commentRequestDto,
+	public ResponseEntity<CommentResponseDto> updateComment(Long commentId, CommentRequestDto commentRequestDto,
 	                                                        MultipartFile multipartFile, UserDetailsImpl userDetails) throws IOException {
 
 		Comment comment = commentRepository.findById(commentId)
@@ -98,7 +107,14 @@ public class CommentService {
 					comment.setImg(returnImageUrl(multipartFile));
 				}
 
-			return ResponseEntity.ok().body(ResponseMsg.UPDATE_SUCCESS.getMsg());
+			return ResponseEntity.ok().body(CommentResponseDto.builder()
+					.commentId(comment.getId())
+					.content(comment.getContent())
+					.creatAt(comment.getCreatedAt())
+					.img(comment.getImg())
+					.nickname(comment.getNickname())
+					.writer(true)
+					.build());
 		}throw new CustomException(ErrorCode.INCORRECT_USERID);
 	}
 

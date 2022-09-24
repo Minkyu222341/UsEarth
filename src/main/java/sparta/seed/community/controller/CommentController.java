@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sparta.seed.community.domain.dto.requestdto.CommentRequestDto;
+import sparta.seed.community.domain.dto.responsedto.CommentResponseDto;
 import sparta.seed.community.domain.dto.responsedto.CommentResponseListDto;
 import sparta.seed.community.service.CommentService;
 import sparta.seed.sercurity.UserDetailsImpl;
@@ -32,10 +33,10 @@ public class CommentController {
    * 댓글작성
    */
 	@PostMapping(value = "/api/comments/{proofId}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-	public ResponseEntity<String> createComment(@PathVariable Long proofId,
-	                                        @Valid @RequestPart(value = "dto") CommentRequestDto commentRequestDto,
-	                                        @RequestPart(required = false) MultipartFile multipartFile,
-	                                        @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+	public ResponseEntity<CommentResponseDto> createComment(@PathVariable Long proofId,
+	                                                        @Valid @RequestPart(value = "dto") CommentRequestDto commentRequestDto,
+	                                                        @RequestPart(required = false) MultipartFile multipartFile,
+	                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 		return commentService.createComment(proofId, commentRequestDto, multipartFile, userDetails);
 	}
 
@@ -43,7 +44,7 @@ public class CommentController {
 	 * 댓글 수정
 	 */
 	@PatchMapping(value = "/api/comments/{commentId}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-	public ResponseEntity<String> updateComment(@PathVariable Long commentId,
+	public ResponseEntity<CommentResponseDto> updateComment(@PathVariable Long commentId,
 	                                                        @Valid @RequestPart(value = "dto") CommentRequestDto commentRequestDto,
 	                                                        @RequestPart(required = false) MultipartFile multipartFile,
 	                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {

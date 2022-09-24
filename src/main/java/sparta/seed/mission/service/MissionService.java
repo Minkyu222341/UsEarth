@@ -98,7 +98,7 @@ public class MissionService {
           .level((int) (missionDiv + 1))
           .nextLevelExp(5 - (Integer.parseInt(split[1]) / 2))
           .totalClear((int) clearMissionCnt).build();
-    }else throw new CustomException(ErrorCode.ACCESS_DENIED);
+    }else throw new CustomException(ErrorCode.NOT_FOUND_MISSION);
   }
 
 }
