@@ -94,7 +94,7 @@ public class CommentService {
 	 * 댓글 수정
 	 */
 	@Transactional
-	public ResponseEntity<String> updateComment(Long commentId, CommentRequestDto commentRequestDto,
+	public ResponseEntity<CommentResponseDto> updateComment(Long commentId, CommentRequestDto commentRequestDto,
 	                                                        MultipartFile multipartFile, UserDetailsImpl userDetails) throws IOException {
 
 		Comment comment = commentRepository.findById(commentId)
@@ -107,7 +107,14 @@ public class CommentService {
 					comment.setImg(returnImageUrl(multipartFile));
 				}
 
-			return ResponseEntity.ok().body(ResponseMsg.UPDATE_SUCCESS.getMsg());
+			return ResponseEntity.ok().body(CommentResponseDto.builder()
+					.commentId(comment.getId())
+					.content(comment.getContent())
+					.creatAt(comment.getCreatedAt())
+					.img(comment.getImg())
+					.nickname(comment.getNickname())
+					.writer(true)
+					.build());
 		}throw new CustomException(ErrorCode.INCORRECT_USERID);
 	}
 

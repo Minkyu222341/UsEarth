@@ -44,7 +44,7 @@ public class CommentController {
 	 * 댓글 수정
 	 */
 	@PatchMapping(value = "/api/comments/{commentId}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-	public ResponseEntity<String> updateComment(@PathVariable Long commentId,
+	public ResponseEntity<CommentResponseDto> updateComment(@PathVariable Long commentId,
 	                                                        @Valid @RequestPart(value = "dto") CommentRequestDto commentRequestDto,
 	                                                        @RequestPart(required = false) MultipartFile multipartFile,
 	                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
