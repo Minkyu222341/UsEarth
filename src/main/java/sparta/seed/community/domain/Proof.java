@@ -1,13 +1,11 @@
 package sparta.seed.community.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import sparta.seed.community.domain.dto.requestdto.ProofRequestDto;
 import sparta.seed.img.domain.Img;
-import sparta.seed.util.Timestamped;
+import sparta.seed.util.BaseEntity;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -16,7 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Proof extends Timestamped {
+public class Proof extends BaseEntity {
   //PK
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
