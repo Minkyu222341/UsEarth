@@ -29,10 +29,18 @@ public class Scheduler {
 	}
 
 	@Scheduled(cron = "0 30 * * * *")
-	public void saveApiData() throws IOException {
-		String[] itemList = {"co","o3","no2","so2","pm10","pm25"};
-		for (String item : itemList) {
-			api.saveApiData(item, 0);
+	public void saveApiData() throws IOException, InterruptedException {
+		for(int i=0; i<11;) {
+			if(i == 10){
+				api.saveApiData(-1);
+			}
+			try {
+				api.saveApiData(0);
+				break;
+			} catch (Exception e) {
+				i++;
+				Thread.sleep(1000*60*2);
+			}
 		}
 	}
 }
