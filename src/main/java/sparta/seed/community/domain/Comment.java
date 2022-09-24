@@ -1,17 +1,16 @@
 package sparta.seed.community.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import sparta.seed.util.Timestamped;
+import sparta.seed.util.BaseEntity;
 
 import javax.persistence.*;
 
 @Getter
 @Entity
 @NoArgsConstructor
-public class Comment extends Timestamped {
+public class Comment extends BaseEntity {
   //PK
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
