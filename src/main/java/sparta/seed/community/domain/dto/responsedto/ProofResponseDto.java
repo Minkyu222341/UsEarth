@@ -1,5 +1,6 @@
 package sparta.seed.community.domain.dto.responsedto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import sparta.seed.img.domain.Img;
@@ -11,6 +12,7 @@ import java.util.List;
 public class ProofResponseDto {
 
 	private Long proofId;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
 	private LocalDateTime creatAt;
 	private String nickname;
 	private String profileImage;

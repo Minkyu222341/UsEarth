@@ -1,5 +1,6 @@
 package sparta.seed.community.domain.dto.responsedto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 public class CommentResponseDto {
 	private Long commentId;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
 	private LocalDateTime creatAt;
 	private String nickname;
 	private String content;
