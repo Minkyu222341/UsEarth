@@ -1,5 +1,6 @@
 package sparta.seed.community.domain.dto.responsedto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import sparta.seed.img.domain.Img;
@@ -11,19 +12,17 @@ import java.util.List;
 public class ProofResponseDto {
 
 	private Long proofId;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
 	private LocalDateTime creatAt;
 	private String nickname;
 	private String profileImage;
 	private String title;
 	private String content;
 	private List<Img> img;
-	private int commentCnt;
-	private int heartCnt;
 	private boolean writer;
-	private boolean heart;
 
 	@Builder
-	public ProofResponseDto(Long proofId, LocalDateTime creatAt, String nickname, String profileImage,String title, String content, List<Img> img, int commentCnt, int heartCnt, boolean writer, boolean heart) {
+	public ProofResponseDto(Long proofId, LocalDateTime creatAt, String nickname, String profileImage,String title, String content, List<Img> img, boolean writer) {
 		this.proofId = proofId;
 		this.creatAt = creatAt;
 		this.nickname = nickname;
@@ -31,9 +30,6 @@ public class ProofResponseDto {
 		this.title = title;
 		this.content = content;
 		this.img = img;
-		this.commentCnt = commentCnt;
-		this.heartCnt = heartCnt;
 		this.writer = writer;
-		this.heart = heart;
 	}
 }

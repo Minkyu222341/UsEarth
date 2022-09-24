@@ -22,23 +22,23 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
       if(exception.equals("null") ) {
          setResponse(response, ErrorCode.UNKNOWN_ERROR);
       }
-      else if(exception.equals(ErrorCode.UNKNOWN_ERROR.getErrorCode())){
+      else if(exception.equals(ErrorCode.UNKNOWN_ERROR.getMsg())){
          setResponse(response, ErrorCode.UNKNOWN_ERROR);
       }
       //잘못된 타입의 토큰인 경우
-      else if(exception.equals(ErrorCode.WRONG_TYPE_TOKEN.getErrorCode())) {
+      else if(exception.equals(ErrorCode.WRONG_TYPE_TOKEN.getMsg())) {
          setResponse(response, ErrorCode.WRONG_TYPE_TOKEN);
       }
       //토큰 만료된 경우
-      else if(exception.equals(ErrorCode.EXPIRED_TOKEN.getErrorCode())) {
+      else if(exception.equals(ErrorCode.EXPIRED_TOKEN.getMsg())) {
          setResponse(response, ErrorCode.EXPIRED_TOKEN);
       }
       //지원되지 않는 토큰인 경우
-      else if(exception.equals(ErrorCode.UNSUPPORTED_TOKEN.getErrorCode())) {
+      else if(exception.equals(ErrorCode.UNSUPPORTED_TOKEN.getMsg())) {
          setResponse(response, ErrorCode.UNSUPPORTED_TOKEN);
       }
       else {
-         setResponse(response, ErrorCode.ACCESS_DENIED);
+         setResponse(response, ErrorCode.UNKNOWN_ERROR);
       }
    }
    //한글 출력을 위해 getWriter() 사용

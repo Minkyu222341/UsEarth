@@ -42,11 +42,11 @@ public class S3Uploader {
 
     String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
     String fileFormatName = multipartFile.getContentType().substring(multipartFile.getContentType().lastIndexOf("/") + 1);
+    String result = amazonS3Client.getUrl(bucket, fileName).toString();
 
     File resize = resize(fileName, fileFormatName, multipartFile).orElseThrow(() -> new io.jsonwebtoken.io.IOException("변환실패"));
     amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resize));
 
-    String result = amazonS3Client.getUrl(bucket, fileName).toString();
     removeNewFile(resize);
     return new S3Dto(fileName, result);
   }

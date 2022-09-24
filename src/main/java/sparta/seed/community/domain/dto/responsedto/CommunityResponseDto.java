@@ -14,7 +14,7 @@ import java.util.List;
 public class CommunityResponseDto {
 
   private Long communityId;
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
   private String createAt;
   private String nickname;
   private String title;
