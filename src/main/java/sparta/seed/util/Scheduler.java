@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import sparta.seed.campaign.crawling.AirQualityApi;
-import sparta.seed.community.service.CommunityService;
 import sparta.seed.member.domain.Member;
 import sparta.seed.member.repository.MemberRepository;
 
@@ -33,7 +32,7 @@ public class Scheduler {
 	public void saveApiData() throws IOException {
 		String[] itemList = {"co","o3","no2","so2","pm10","pm25"};
 		for (String item : itemList) {
-			api.saveApiData(item);
+			api.saveApiData(item, 0);
 		}
 	}
 }

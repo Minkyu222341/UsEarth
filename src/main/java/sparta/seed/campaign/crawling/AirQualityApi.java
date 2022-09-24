@@ -23,7 +23,7 @@ public class AirQualityApi {
 	String serviceKey;
 	private final AqRepository aqApiDataRepository;
 
-	public void saveApiData(String itemCode) throws IOException {
+	public void saveApiData(String itemCode, int index) throws IOException {
 		StringBuilder result = new StringBuilder();
 		String urlstr = "http://apis.data.go.kr/B552584/ArpltnStatsSvc/getCtprvnMesureLIst?serviceKey="+serviceKey+"&returnType=json&numOfRows=100&pageNo=1&itemCode="+itemCode+"&dataGubun=HOUR";
 
@@ -51,8 +51,8 @@ public class AirQualityApi {
 				AqApiData aqApiData = AqApiData.builder()
 								.category(itemCode)
 								.region(region)
-								.datetime((String) jsonArray.getJSONObject(0).get("dataTime"))
-								.amount(Double.valueOf(String.valueOf(jsonArray.getJSONObject(0).get(region))))
+								.datetime((String) jsonArray.getJSONObject(index).get("dataTime"))
+								.amount(Double.parseDouble(String.valueOf(jsonArray.getJSONObject(index).get(region))))
 								.build();
 				aqApiDataList.add(aqApiData);
 			}

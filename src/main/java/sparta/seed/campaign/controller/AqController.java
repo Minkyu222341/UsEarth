@@ -20,7 +20,7 @@ public class AqController {
   public String apiTest() throws IOException {
     String[] itemList = {"co", "o3", "no2", "so2", "pm10", "pm25"};
     for (String item : itemList) {
-      api.saveApiData(item);
+      api.saveApiData(item, 1);
     }
     return "ok";
   }
