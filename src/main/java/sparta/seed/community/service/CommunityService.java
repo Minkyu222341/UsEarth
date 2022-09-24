@@ -267,7 +267,7 @@ public ResponseEntity<String> updateCommunity(Long id, CommunityRequestDto commu
     } else throw new CustomException(ErrorCode.INCORRECT_USERID);
   }
 
-  private String getDateStatus(Community community) throws ParseException {
+  public String getDateStatus(Community community) throws ParseException {
     return dateUtil.dateStatus(community.getStartDate(), community.getEndDate());
   }
 
