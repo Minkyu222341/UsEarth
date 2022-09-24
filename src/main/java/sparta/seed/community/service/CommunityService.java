@@ -288,8 +288,7 @@ public ResponseEntity<String> updateCommunity(Long id, CommunityRequestDto commu
           userDetails) throws ParseException {
     List<CommunityAllResponseDto> communityList = new ArrayList<>();
     for (Community community : communities) {
-      if (community.getLimitParticipants() > community.getParticipantsList().size()) {
-        if (!community.isPasswordFlag()) {
+        if (!community.isPasswordFlag() && community.getLimitParticipants() > community.getParticipantsList().size()) {
           Long certifiedProof = getCertifiedProof(community);
           communityList.add(CommunityAllResponseDto.builder()
               .communityId(community.getId())
@@ -303,7 +302,6 @@ public ResponseEntity<String> updateCommunity(Long id, CommunityRequestDto commu
               .password(community.getPassword())
               .writer(userDetails != null && community.getMemberId().equals(userDetails.getId()))
               .build());
-        }
       }
     }
     return communityList;
