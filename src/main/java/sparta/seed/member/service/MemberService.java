@@ -1,6 +1,7 @@
 package sparta.seed.member.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import sparta.seed.member.domain.dto.requestdto.NicknameRequestDto;
 import sparta.seed.member.domain.dto.responsedto.NicknameResponseDto;
 import sparta.seed.member.domain.dto.responsedto.UserInfoResponseDto;
 import sparta.seed.member.repository.MemberRepository;
+import sparta.seed.member.repository.RefreshTokenRepository;
 import sparta.seed.mission.domain.ClearMission;
 import sparta.seed.mission.domain.dto.requestdto.MissionSearchCondition;
 import sparta.seed.mission.domain.dto.responsedto.ClearMissionResponseDto;
@@ -40,6 +42,7 @@ public class MemberService {
   private final DateUtil dateUtil;
   private final TokenProvider tokenProvider;
   private final ProofRepository proofRepository;
+  private final RefreshTokenRepository refreshTokenRepository;
   public static final String BEARER_PREFIX = "Bearer ";
   public static final String AUTHORIZATION_HEADER = "Authorization";
 
@@ -180,6 +183,21 @@ public class MemberService {
     }
   }
 
+  /**
+   * 로그아웃
+   */
+  public ResponseEntity<String> logout(Long id) {
+    try {
+      refreshTokenRepository.deleteById(id);
+      return ResponseEntity.ok().body(ResponseMsg.LOGOUT_SUCCESS.getMsg());
+    } catch (EmptyResultDataAccessException e) {
+      throw new CustomException(ErrorCode.NEED_A_LOGIN);
+    }
+
+  }
+
+
+
   // 유저 정보 뽑기
   private ResponseEntity<UserInfoResponseDto> getUserInfo(Member member) {
     double clearMission = clearMissionRepository.countAllByMemberId(member.getId());
@@ -199,4 +217,6 @@ public class MemberService {
             .build();
     return ResponseEntity.ok().body(userInfoResponseDto);
   }
+
+
 }
