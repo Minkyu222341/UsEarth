@@ -20,12 +20,10 @@ import static sparta.seed.community.domain.QCommunity.community;
 
 @RequiredArgsConstructor
 public class CommunityRepositoryImpl implements CommunityRepositoryCustom {
-  @PersistenceContext
-  EntityManager em;
+  private final JPAQueryFactory queryFactory;
 
   @Override
   public QueryResults<Community> getAllCommunity(Pageable pageable, CommunitySearchCondition condition) {
-    JPAQueryFactory queryFactory = new JPAQueryFactory(em);
     return queryFactory // querydsl 강의 뒷쪽 페이징 참고
             .selectFrom(community)
             .where(titleEq(condition))
@@ -37,7 +35,6 @@ public class CommunityRepositoryImpl implements CommunityRepositoryCustom {
   }
 
   public List<Community> activeCommunity() {
-    JPAQueryFactory queryFactory = new JPAQueryFactory(em);
     return queryFactory.selectFrom(community)
             .where(community.endDate.gt(String.valueOf(LocalDate.now())), community.startDate.loe(String.valueOf(LocalDate.now()))) // 종료일 > 현재 시간 , 시작일 <= 현재시간
             .orderBy(community.proofList.size().desc()).limit(10) // 인증글 갯수대로 정렬 , 10개 출력
@@ -45,7 +42,6 @@ public class CommunityRepositoryImpl implements CommunityRepositoryCustom {
   }
 
   public List<Community> endOfCommunity() {
-    JPAQueryFactory queryFactory = new JPAQueryFactory(em);
     return queryFactory.selectFrom(community)
             .where(community.startDate.gt(String.valueOf(LocalDate.now()))) // 종료일 > 현재 시간 , 시작일 <= 현재시간
             .orderBy(community.startDate.desc(),community.participantsList.size().desc()).limit(10)
