@@ -19,13 +19,11 @@ import static sparta.seed.mission.domain.QClearMission.clearMission;
 @RequiredArgsConstructor
 public class ClearMissionRepositoryImpl implements ClearMissionRepositoryCustom {
 
-  @PersistenceContext
-  EntityManager em;
+  private final JPAQueryFactory queryFactory;
   private final DateUtil dateUtil;
 
   @Override
   public List<ClearMissionResponseDto> dailyMissionStats(MissionSearchCondition condition, Long memberId) {
-    JPAQueryFactory queryFactory = new JPAQueryFactory(em);
     List<LocalDate> dateScope = dateUtil.scopeOfStats(condition);
     List<ClearMissionResponseDto> result = queryFactory.select(new QClearMissionResponseDto(clearMission.clearTime, clearMission.count()))
             .from(clearMission)
@@ -37,7 +35,6 @@ public class ClearMissionRepositoryImpl implements ClearMissionRepositoryCustom 
 
   @Override
   public List<Long> WeekMissionStats(MissionSearchCondition condition, Long memberId) {
-    JPAQueryFactory queryFactory = new JPAQueryFactory(em);
     return null;
   }
 }

@@ -1,6 +1,7 @@
 package sparta.seed.member.repository.custom.impl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.RequiredArgsConstructor;
 import sparta.seed.member.domain.Member;
 import sparta.seed.member.repository.custom.MemberRepositoryCustom;
 
@@ -10,12 +11,11 @@ import javax.persistence.PersistenceContext;
 import static sparta.seed.login.domain.QRefreshToken.refreshToken;
 import static sparta.seed.member.domain.QMember.member;
 
+@RequiredArgsConstructor
 public class MemberRepositoryImpl implements MemberRepositoryCustom {
-  @PersistenceContext
-  EntityManager em;
+  private final JPAQueryFactory queryFactory;
 
   public Member secondVerification(String reissueTokenValue) { // 전달받은 리프레쉬토큰 값
-    JPAQueryFactory queryFactory = new JPAQueryFactory(em);
     return queryFactory.select(member)
             .from(member)
             .leftJoin(refreshToken) // 멤버에 리프레쉬토큰을 레프트조인 
