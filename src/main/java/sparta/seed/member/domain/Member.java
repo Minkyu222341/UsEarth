@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import sparta.seed.member.domain.dto.requestdto.NicknameRequestDto;
-import sparta.seed.util.Timestamped;
+import sparta.seed.util.BaseEntity;
 
 import javax.persistence.*;
 import java.util.HashMap;
@@ -14,7 +14,7 @@ import java.util.Map;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Member extends Timestamped {
+public class Member extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

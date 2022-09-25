@@ -4,16 +4,15 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import sparta.seed.campaign.domain.Campaign;
 import sparta.seed.community.domain.Proof;
-import sparta.seed.util.Timestamped;
+import sparta.seed.util.BaseEntity;
 
 import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor
 @Getter
-public class Img extends Timestamped {
+public class Img extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

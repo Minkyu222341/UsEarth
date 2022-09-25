@@ -3,7 +3,7 @@ package sparta.seed.campaign.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import sparta.seed.util.Timestamped;
+import sparta.seed.util.BaseEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,7 +13,7 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @Getter
 @Entity
-public class Campaign extends Timestamped {
+public class Campaign extends BaseEntity {
   //PK
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

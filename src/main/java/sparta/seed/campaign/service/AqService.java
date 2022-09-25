@@ -27,10 +27,13 @@ public class AqService {
       double average = aqApiDataRepository.airQualityData(category, datetime);
       String format = String.format("%.4f", average);
       AqApiResponseDto aqApiResponseDto = AqApiResponseDto.builder().category(category).amount(format).build();
+
       switch (category) {
         case "co":
           aqApiResponseDto.setCategory("일산화탄소");
-          if (average < 2.01) {
+          if(format.equals("NaN")){
+            aqApiResponseDto.setRisk("상태를 불러올 수 없습니다.");
+          } else if (average < 2.01) {
             aqApiResponseDto.setRisk("좋음");
             aqApiResponseDto.setMaxAmount("2.0000");
           } else if (average < 9.01) {
@@ -47,7 +50,9 @@ public class AqService {
 
         case "o3":
           aqApiResponseDto.setCategory("오존");
-          if (average < 0.031) {
+          if(format.equals("NaN")){
+            aqApiResponseDto.setRisk("상태를 불러올 수 없습니다.");
+          } else if (average < 0.031) {
             aqApiResponseDto.setRisk("좋음");
             aqApiResponseDto.setMaxAmount("0.0300");
           } else if (average < 0.091) {
@@ -64,7 +69,9 @@ public class AqService {
 
         case "no2":
           aqApiResponseDto.setCategory("이산화질소");
-          if (average < 0.031) {
+          if(format.equals("NaN")){
+            aqApiResponseDto.setRisk("상태를 불러올 수 없습니다.");
+          } else if (average < 0.031) {
             aqApiResponseDto.setRisk("좋음");
             aqApiResponseDto.setMaxAmount("0.0300");
           } else if (average < 0.061) {
@@ -81,7 +88,9 @@ public class AqService {
 
         case "so2":
           aqApiResponseDto.setCategory("아황산가스");
-          if (average < 0.0201) {
+          if(format.equals("NaN")){
+            aqApiResponseDto.setRisk("상태를 불러올 수 없습니다.");
+          } else if (average < 0.0201) {
             aqApiResponseDto.setRisk("좋음");
             aqApiResponseDto.setMaxAmount("0.0200");
           } else if (average < 0.0501) {

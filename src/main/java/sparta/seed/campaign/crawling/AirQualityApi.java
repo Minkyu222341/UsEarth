@@ -23,39 +23,43 @@ public class AirQualityApi {
 	String serviceKey;
 	private final AqRepository aqApiDataRepository;
 
-	public void saveApiData(String itemCode) throws IOException {
-		StringBuilder result = new StringBuilder();
-		String urlstr = "http://apis.data.go.kr/B552584/ArpltnStatsSvc/getCtprvnMesureLIst?serviceKey="+serviceKey+"&returnType=json&numOfRows=100&pageNo=1&itemCode="+itemCode+"&dataGubun=HOUR";
-
-	URL url = new URL(urlstr);
-	HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-	urlConnection.setRequestMethod("GET");
-
-	BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), StandardCharsets.UTF_8));
-
-	String returnLine;
-
-	while ((returnLine = br.readLine()) != null){
-		result.append(returnLine).append("\n");
-	}
-	urlConnection.disconnect();
-
-		JSONObject rjson = new JSONObject(result.toString());
-
-		JSONArray jsonArray = rjson.getJSONObject("response").getJSONObject("body").getJSONArray("items");
-		String[] regionList = {"jeonbuk", "gyeonggi", "gangwon", "gwangju", "ulsan", "sejong", "chungbuk", "seoul",
-				"gyeongnam", "chungnam", "daejeon", "busan", "gyeongbuk", "jeju", "daegu", "incheon", "jeonnam"};
-
+	public void saveApiData(int index) throws IOException {
+		String[] itemCodeList = {"co", "o3", "no2", "so2", "pm10", "pm25"};
 		List<AqApiData> aqApiDataList = new ArrayList<>();
+		for (String itemCode : itemCodeList) {
+
+			StringBuilder result = new StringBuilder();
+			String urlstr = "http://apis.data.go.kr/B552584/ArpltnStatsSvc/getCtprvnMesureLIst?serviceKey=" + serviceKey + "&returnType=json&numOfRows=100&pageNo=1&itemCode=" + itemCode + "&dataGubun=HOUR";
+
+			URL url = new URL(urlstr);
+			HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+			urlConnection.setRequestMethod("GET");
+
+			BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), StandardCharsets.UTF_8));
+
+			String returnLine;
+
+			while ((returnLine = br.readLine()) != null) {
+				result.append(returnLine).append("\n");
+			}
+			urlConnection.disconnect();
+
+			JSONObject rjson = new JSONObject(result.toString());
+
+			JSONArray jsonArray = rjson.getJSONObject("response").getJSONObject("body").getJSONArray("items");
+			String[] regionList = {"jeonbuk", "gyeonggi", "gangwon", "gwangju", "ulsan", "sejong", "chungbuk", "seoul",
+					"gyeongnam", "chungnam", "daejeon", "busan", "gyeongbuk", "jeju", "daegu", "incheon", "jeonnam"};
+
 			for (String region : regionList) {
 				AqApiData aqApiData = AqApiData.builder()
-								.category(itemCode)
-								.region(region)
-								.datetime((String) jsonArray.getJSONObject(0).get("dataTime"))
-								.amount(Double.valueOf(String.valueOf(jsonArray.getJSONObject(0).get(region))))
-								.build();
+						.category(itemCode)
+						.region(region)
+						.datetime((String) jsonArray.getJSONObject(index).get("dataTime"))
+						.amount(Double.parseDouble(String.valueOf(jsonArray.getJSONObject(index).get(region))))
+						.build();
 				aqApiDataList.add(aqApiData);
 			}
+		}
 		aqApiDataRepository.saveAll(aqApiDataList);
 	}
 }

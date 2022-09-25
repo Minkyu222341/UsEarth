@@ -172,7 +172,7 @@ public class ProofService {
 		Proof proof = findTheProofById(proofId);
 		Long loginUserId = userDetails.getId();
 		if (!participantsRepository.existsByCommunityAndMemberId(proof.getCommunity(), userDetails.getId())) {
-			throw new CustomException(ErrorCode.ACCESS_DENIED);
+			throw new CustomException(ErrorCode.NOT_PARTICIPATED);
 		}
 		try {
 			if (!heartRepository.existsByProofAndMemberId(proof, loginUserId)) {
