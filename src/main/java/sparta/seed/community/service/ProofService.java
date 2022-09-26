@@ -92,9 +92,14 @@ public class ProofService {
 					.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_COMMUNITY));
 			isStartedCommunity(community);
 
+			String nickname = userDetails.getNickname();
+			if(proofRequestDto.getChangeNickname() != null){
+				nickname = proofRequestDto.getChangeNickname();
+			}
+
 			Proof proof = Proof.builder()
 					.memberId(userDetails.getId())
-					.nickname(userDetails.getNickname())
+					.nickname(nickname)
 					.title(proofRequestDto.getTitle())
 					.content(proofRequestDto.getContent())
 					.community(community)
@@ -117,7 +122,13 @@ public class ProofService {
 	                                                    List<MultipartFile> multipartFile, UserDetailsImpl userDetails) throws IOException {
 		Proof proof = findTheProofById(proofId);
 		if(userDetails !=null && proof.getMemberId().equals(userDetails.getId())){
-			proof.updateProof(proofRequestDto);
+
+			String nickname = userDetails.getNickname();
+			if(proofRequestDto.getChangeNickname() != null){
+				nickname = proofRequestDto.getChangeNickname();
+			}
+
+			proof.updateProof(proofRequestDto.getTitle(), proofRequestDto.getContent(), nickname);
 
 			if(proofRequestDto.getImgIdList().length > 0){
 				for (int i=0; i<proofRequestDto.getImgIdList().length; i++){
