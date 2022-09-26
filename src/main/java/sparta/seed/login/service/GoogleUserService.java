@@ -19,13 +19,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import sparta.seed.jwt.TokenProvider;
-import sparta.seed.login.domain.RefreshToken;
 import sparta.seed.login.domain.dto.requestdto.SocialMemberRequestDto;
 import sparta.seed.login.domain.dto.responsedto.TokenResponseDto;
 import sparta.seed.member.domain.Authority;
 import sparta.seed.member.domain.Member;
 import sparta.seed.member.repository.MemberRepository;
-import sparta.seed.member.repository.RefreshTokenRepository;
 import sparta.seed.sercurity.UserDetailsImpl;
 
 import javax.servlet.http.HttpServletResponse;
@@ -46,7 +44,6 @@ public class GoogleUserService {
 
   private final TokenProvider tokenProvider;
   private final MemberRepository memberRepository;
-  private final RefreshTokenRepository refreshTokenRepository;
 
   public TokenResponseDto googleLogin(String code, HttpServletResponse response) throws JsonProcessingException {
 
@@ -159,21 +156,16 @@ public class GoogleUserService {
 
   private TokenResponseDto jwtToken(Authentication authentication, HttpServletResponse response) {
     UserDetailsImpl member = ((UserDetailsImpl) authentication.getPrincipal());
-    String accessToken = tokenProvider.generateAccessToken(String.valueOf(member.getId()),member.getNickname());
+    String accessToken = tokenProvider.generateAccessToken(String.valueOf(member.getId()),member.getNickname(),member.getAuthority());
     String refreshToken = tokenProvider.generateRefreshToken(String.valueOf(member.getId()));
     SecurityContextHolder.getContext().setAuthentication(authentication);
     response.addHeader("Authorization", "Bearer " + accessToken);
     response.addHeader("RefreshToken", "Bearer " + refreshToken);
 
-    RefreshToken saveRefreshToken = RefreshToken.builder()
-            .refreshKey(member.getId())
-            .refreshValue(refreshToken)
-            .build();
-    refreshTokenRepository.save(saveRefreshToken);
-
     return TokenResponseDto.builder()
             .accessToken(accessToken)
             .refreshToken(refreshToken)
+            .memberId(member.getId())
             .build();
   }
 }

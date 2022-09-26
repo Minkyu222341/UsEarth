@@ -7,4 +7,5 @@ public class ProofRequestDto {
 	private String title;
 	private String content;
 	private Long[] imgIdList;
+	private String changeNickname;
 }

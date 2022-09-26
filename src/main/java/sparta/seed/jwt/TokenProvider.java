@@ -8,80 +8,50 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import sparta.seed.exception.CustomException;
 import sparta.seed.exception.ErrorCode;
-import sparta.seed.login.domain.dto.responsedto.TokenResponseDto;
 import sparta.seed.member.domain.Authority;
 import sparta.seed.member.domain.Member;
 import sparta.seed.sercurity.UserDetailsImpl;
+import sparta.seed.util.RedisService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
+import java.time.Duration;
 import java.util.Date;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 public class TokenProvider {
 
   private static final String AUTHORITIES_KEY = "auth";
-  private static final String BEARER_TYPE = "bearer";
+  private static final String BEARER_TYPE = "bearer ";
   private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;            // 30분
-  private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // 7일
+  private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 ;  // 1일
   private static final String MEMBER_USERNAME = "memberUsername";
   private static final String MEMBER_NICKNAME = "memberNickname";
   private static final String MEMBER_ID = "memberId";
-  private static final String MEMBER = "member";
+  private final RedisService redisService;
   private Authority authority;
 
 
   private final Key key;
 
-  public TokenProvider(@Value("${jwt.secret}") String secretKey) {
+  public TokenProvider(@Value("${jwt.secret}") String secretKey, RedisService redisService) {
+    this.redisService = redisService;
     byte[] keyBytes = Decoders.BASE64.decode(secretKey);
     this.key = Keys.hmacShaKeyFor(keyBytes);
   }
 
-  public TokenResponseDto generateTokenDto(Authentication authentication, UserDetailsImpl member) {
-    String authorities = authentication.getAuthorities().stream()
-            .map(GrantedAuthority::getAuthority)
-            .collect(Collectors.joining(","));
-
-    long now = (new Date()).getTime();
-
-    Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
-    String accessToken = Jwts.builder()
-            .setSubject(String.valueOf(member.getId()))
-            .claim(AUTHORITIES_KEY, authorities)
-            .claim(MEMBER_USERNAME, member.getUsername())
-            .claim(MEMBER_NICKNAME, member.getNickname())
-            .setExpiration(accessTokenExpiresIn)
-            .signWith(key, SignatureAlgorithm.HS512)
-            .compact();
-
-    String refreshToken = Jwts.builder()
-            .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
-            .signWith(key, SignatureAlgorithm.HS512)
-            .setHeaderParam("JWT_HEADER_PARAM_TYPE", "headerType")
-            .compact();
-
-    return TokenResponseDto.builder()
-            .accessToken(accessToken)
-            .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
-            .refreshToken(refreshToken)
-            .username(authentication.getName())
-            .build();
-  }
-
-  public String generateAccessToken(String memberId,String memberNickname) {
+  public String generateAccessToken(String memberId,String memberNickname, String memberAuthority) {
     long now = (new Date()).getTime();
     Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
     String accessToken = Jwts.builder()
-            .setSubject(String.valueOf(memberId))
+            .setSubject(memberId)
             .claim(MEMBER_NICKNAME,memberNickname)
+            .claim(AUTHORITIES_KEY,memberAuthority)
             .setExpiration(accessTokenExpiresIn)
             .signWith(key, SignatureAlgorithm.HS512)
             .compact();
@@ -96,8 +66,11 @@ public class TokenProvider {
             .signWith(key, SignatureAlgorithm.HS512)
             .setHeaderParam("JWT_HEADER_PARAM_TYPE", "headerType")
             .compact();
+    redisService.setValues(memberId,refreshToken, Duration.ofMillis(REFRESH_TOKEN_EXPIRE_TIME));
     return refreshToken;
   }
+
+
 
   public Authentication getAuthentication(String accessToken) {
 
@@ -147,7 +120,7 @@ public class TokenProvider {
     String authorization = servletRequest.getHeader("Authorization");
     try {
       if (!(authorization == null || authorization.equals("undefined"))) {
-        String token = authorization.substring(7);
+        String token = authorization.substring(BEARER_TYPE.length());
         validateToken(token);
       }
     } catch(io.jsonwebtoken.security.SecurityException | MalformedJwtException e){

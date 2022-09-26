@@ -20,13 +20,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import sparta.seed.jwt.TokenProvider;
-import sparta.seed.login.domain.RefreshToken;
 import sparta.seed.login.domain.dto.requestdto.SocialMemberRequestDto;
 import sparta.seed.login.domain.dto.responsedto.TokenResponseDto;
 import sparta.seed.member.domain.Authority;
 import sparta.seed.member.domain.Member;
 import sparta.seed.member.repository.MemberRepository;
-import sparta.seed.member.repository.RefreshTokenRepository;
 import sparta.seed.sercurity.UserDetailsImpl;
 
 import javax.servlet.http.HttpServletResponse;
@@ -40,7 +38,6 @@ public class KakaoUserService {
   private final PasswordEncoder passwordEncoder;
   private final TokenProvider tokenProvider;
   private final MemberRepository memberRepository;
-  private final RefreshTokenRepository refreshTokenRepository;
 
   @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
   String kakaoRedirectURL;
@@ -48,6 +45,10 @@ public class KakaoUserService {
   String kakaoClientId;
   @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
   String kakaoClientSecret;
+  @Value("${admin.social.id.1}")
+  String socialId01;
+  @Value("${admin.social.id.2}")
+  String socialId02;
 
 
   public TokenResponseDto kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
@@ -132,6 +133,10 @@ public class KakaoUserService {
       String nickname = kakaoUserInfo.getNickname();
       String password = passwordEncoder.encode(UUID.randomUUID().toString());
       String profileImage = kakaoUserInfo.getProfileImage();
+      Authority authority = Authority.ROLE_USER;
+      if(kakaoUserInfo.getSocialId().equals(socialId01) || kakaoUserInfo.getSocialId().equals(socialId02)){
+        authority = Authority.ROLE_ADMIN;
+      }
 
       Member signUp = Member.builder()
               .socialId(socialId)
@@ -139,7 +144,7 @@ public class KakaoUserService {
               .nickname(nickname)
               .password(password)
               .profileImage(profileImage)
-              .authority(Authority.ROLE_USER)
+              .authority(authority)
               .build();
       return memberRepository.save(signUp);
     }
@@ -155,22 +160,16 @@ public class KakaoUserService {
 
   private TokenResponseDto jwtToken(Authentication authentication, HttpServletResponse response) {
     UserDetailsImpl member = ((UserDetailsImpl) authentication.getPrincipal());
-    String accessToken = tokenProvider.generateAccessToken(String.valueOf(member.getId()), member.getNickname());
+    String accessToken = tokenProvider.generateAccessToken(String.valueOf(member.getId()), member.getNickname(), member.getAuthority());
     String refreshToken = tokenProvider.generateRefreshToken(String.valueOf(member.getId()));
     SecurityContextHolder.getContext().setAuthentication(authentication);
     response.addHeader("Authorization", "Bearer " + accessToken);
     response.addHeader("RefreshToken", "Bearer " + refreshToken);
 
-
-    RefreshToken saveRefreshToken = RefreshToken.builder()
-            .refreshKey(member.getId())
-            .refreshValue(refreshToken)
-            .build();
-    refreshTokenRepository.save(saveRefreshToken);
-
     return TokenResponseDto.builder()
             .accessToken(accessToken)
             .refreshToken(refreshToken)
+            .memberId(member.getId())
             .build();
   }
 }

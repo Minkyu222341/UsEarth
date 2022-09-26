@@ -17,7 +17,6 @@ import sparta.seed.member.domain.dto.requestdto.NicknameRequestDto;
 import sparta.seed.member.domain.dto.responsedto.NicknameResponseDto;
 import sparta.seed.member.domain.dto.responsedto.UserInfoResponseDto;
 import sparta.seed.member.repository.MemberRepository;
-import sparta.seed.member.repository.RefreshTokenRepository;
 import sparta.seed.mission.domain.ClearMission;
 import sparta.seed.mission.domain.dto.requestdto.MissionSearchCondition;
 import sparta.seed.mission.domain.dto.responsedto.ClearMissionResponseDto;
@@ -25,6 +24,7 @@ import sparta.seed.mission.repository.ClearMissionRepository;
 import sparta.seed.msg.ResponseMsg;
 import sparta.seed.sercurity.UserDetailsImpl;
 import sparta.seed.util.DateUtil;
+import sparta.seed.util.RedisService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,9 +42,9 @@ public class MemberService {
   private final DateUtil dateUtil;
   private final TokenProvider tokenProvider;
   private final ProofRepository proofRepository;
-  private final RefreshTokenRepository refreshTokenRepository;
   public static final String BEARER_PREFIX = "Bearer ";
   public static final String AUTHORIZATION_HEADER = "Authorization";
+  private final RedisService redisService;
 
   /**
    * 마이페이지
@@ -169,31 +169,31 @@ public class MemberService {
    */
   @Transactional
   public ResponseEntity<String> reissue(HttpServletRequest request, HttpServletResponse response) {
-    String refreshToken = request.getHeader("refreshToken").substring(7);
+    String refreshToken = request.getHeader("refreshToken").substring(BEARER_PREFIX.length());
+    String memberId = request.getHeader("memberId");
+
     if (!tokenProvider.validateToken(refreshToken)) {
       throw new CustomException(ErrorCode.BE_NOT_VALID_TOKEN);
     }
-    try {
-      Member member = memberRepository.secondVerification(refreshToken);
-      String accessToken = tokenProvider.generateAccessToken(String.valueOf(member.getId()), member.getNickname());
+      Member member = memberRepository.findById(Long.valueOf(memberId)).orElseThrow(()->new CustomException(ErrorCode.MEMBER_MISMATCH));
+      String accessToken = tokenProvider.generateAccessToken(memberId, member.getNickname(),member.getAuthority().toString());
       response.setHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + accessToken);
       return ResponseEntity.ok().body(ResponseMsg.ISSUANCE_SUCCESS.getMsg());
-    } catch (Exception e) {
-      throw new CustomException(ErrorCode.MEMBER_MISMATCH);
-    }
   }
 
   /**
    * 로그아웃
    */
-  public ResponseEntity<String> logout(Long id) {
+  public ResponseEntity<String> logout(UserDetailsImpl userDetails) {
+    if (userDetails == null) {
+      throw new CustomException(ErrorCode.UNKNOWN_ERROR);
+    }
     try {
-      refreshTokenRepository.deleteById(id);
+      redisService.deleteValues(String.valueOf(userDetails.getId()));
       return ResponseEntity.ok().body(ResponseMsg.LOGOUT_SUCCESS.getMsg());
     } catch (EmptyResultDataAccessException e) {
       throw new CustomException(ErrorCode.NEED_A_LOGIN);
     }
-
   }
 
 
@@ -217,6 +217,4 @@ public class MemberService {
             .build();
     return ResponseEntity.ok().body(userInfoResponseDto);
   }
-
-
 }

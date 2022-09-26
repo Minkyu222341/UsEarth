@@ -51,7 +51,12 @@ public enum ErrorCode {
     /**
      * 미션
      */
-    NOT_FOUND_MISSION(HttpStatus.BAD_REQUEST, "400", "오늘의 미션에서 찾을 수 없습니다.");
+    NOT_FOUND_MISSION(HttpStatus.BAD_REQUEST, "400", "오늘의 미션에서 찾을 수 없습니다."),
+
+    /**
+     * 비속어 필터
+     */
+    DISCOVER_SLANG(HttpStatus.BAD_REQUEST, "400", "비속어가 발견되었습니다.");
 
 
 

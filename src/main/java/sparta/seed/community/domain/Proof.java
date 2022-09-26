@@ -3,6 +3,8 @@ package sparta.seed.community.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import sparta.seed.community.domain.dto.requestdto.ProofRequestDto;
 import sparta.seed.img.domain.Img;
 import sparta.seed.util.BaseEntity;
@@ -54,9 +56,10 @@ public class Proof extends BaseEntity {
     this.community = community;
   }
 
-  public void updateProof(ProofRequestDto proofRequestDto) {
-    this.title = proofRequestDto.getTitle();
-    this.content = proofRequestDto.getContent();
+  public void updateProof(String title, String content, String nickname) {
+    this.title = title;
+    this.content = content;
+    this.nickname = nickname;
   }
 
   public void addImg(Img img){
