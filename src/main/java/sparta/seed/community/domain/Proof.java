@@ -56,9 +56,10 @@ public class Proof extends BaseEntity {
     this.community = community;
   }
 
-  public void updateProof(ProofRequestDto proofRequestDto) {
-    this.title = proofRequestDto.getTitle();
-    this.content = proofRequestDto.getContent();
+  public void updateProof(String title, String content, String nickname) {
+    this.title = title;
+    this.content = content;
+    this.nickname = nickname;
   }
 
   public void addImg(Img img){

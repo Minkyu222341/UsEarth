@@ -43,6 +43,7 @@ public class CommunityService {
   private final DateUtil dateUtil;
   private final ProofRepository proofRepository;
   private final TokenProvider tokenProvider;
+  private final SlangService slangService;
 
   /**
    * 캠페인 전체 조회
