@@ -233,6 +233,9 @@ public class CommunityService {
   }
 
   private Community createCommunity(CommunityRequestDto requestDto, MultipartFile multipartFile, Long loginUserId, String nickname) throws IOException {
+
+    slangService.checkSlang(requestDto.getContent());
+
     return Community.builder()
             .title(requestDto.getTitle())
             .content(requestDto.getContent())
