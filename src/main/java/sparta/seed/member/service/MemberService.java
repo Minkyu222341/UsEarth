@@ -3,6 +3,7 @@ package sparta.seed.member.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sparta.seed.community.domain.Community;
@@ -185,9 +186,12 @@ public class MemberService {
   /**
    * 로그아웃
    */
-  public ResponseEntity<String> logout(Long id) {
+  public ResponseEntity<String> logout(UserDetailsImpl userDetails) {
+    if (userDetails == null) {
+      throw new CustomException(ErrorCode.UNKNOWN_ERROR);
+    }
     try {
-      redisService.deleteValues(String.valueOf(id));
+      redisService.deleteValues(String.valueOf(userDetails.getId()));
       return ResponseEntity.ok().body(ResponseMsg.LOGOUT_SUCCESS.getMsg());
     } catch (EmptyResultDataAccessException e) {
       throw new CustomException(ErrorCode.NEED_A_LOGIN);
@@ -215,6 +219,4 @@ public class MemberService {
             .build();
     return ResponseEntity.ok().body(userInfoResponseDto);
   }
-
-
 }

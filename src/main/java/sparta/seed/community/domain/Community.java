@@ -73,7 +73,7 @@ public class Community extends BaseEntity {
     this.participantsList = participantsList;
   }
 
-  public void update(CommunityRequestDto requestDto) {
+  public void update(CommunityRequestDto requestDto,String nickname) {
     this.startDate = requestDto.getStartDate();
     this.endDate = requestDto.getEndDate();
     this.limitScore = requestDto.getLimitScore();
@@ -82,6 +82,7 @@ public class Community extends BaseEntity {
     this.password = requestDto.getPassword();
     this.title = requestDto.getTitle();
     this.content = requestDto.getContent();
+    this.nickname = nickname;
   }
 
   public void addParticipant(Participants participants) {

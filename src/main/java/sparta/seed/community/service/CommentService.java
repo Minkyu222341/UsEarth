@@ -65,14 +65,15 @@ public class CommentService {
 	 */
 	public ResponseEntity<CommentResponseDto> createComment(Long proofId, CommentRequestDto commentRequestDto,
 	                                        MultipartFile multipartFile, UserDetailsImpl userDetails) throws IOException {
-		Proof proof = proofRepository.findById(proofId)
-				.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PROOF));
+		Proof proof = proofRepository.findById(proofId).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PROOF));
 		if (!participantsRepository.existsByCommunityAndMemberId(proof.getCommunity(), userDetails.getId())) {
 			throw new CustomException(ErrorCode.NOT_PARTICIPATED);
 		}
-				Comment comment = Comment.builder()
+		String nickname = isChangedNickname(commentRequestDto, userDetails);
+
+		Comment comment = Comment.builder()
 						.memberId(userDetails.getId())
-						.nickname(userDetails.getNickname())
+						.nickname(nickname)
 						.content(commentRequestDto.getContent())
 						.img(returnImageUrl(multipartFile))
 						.proof(proof)
@@ -85,7 +86,7 @@ public class CommentService {
 						.content(comment.getContent())
 						.creatAt(comment.getCreatedAt())
 						.img(comment.getImg())
-						.nickname(comment.getNickname())
+						.nickname(nickname)
 						.writer(true)
 						.build());
 	}
@@ -95,27 +96,27 @@ public class CommentService {
 	 */
 	@Transactional
 	public ResponseEntity<CommentResponseDto> updateComment(Long commentId, CommentRequestDto commentRequestDto,
-	                                                        MultipartFile multipartFile, UserDetailsImpl userDetails) throws IOException {
-
-		Comment comment = commentRepository.findById(commentId)
-				.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_COMMENT));
+																													MultipartFile multipartFile, UserDetailsImpl userDetails) throws IOException {
+		Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_COMMENT));
+		String nickname = isChangedNickname(commentRequestDto, userDetails);
 
 		if (userDetails != null && comment.getMemberId().equals(userDetails.getId())) {
-			comment.update(commentRequestDto.getContent());
+			comment.update(commentRequestDto.getContent(),nickname);
 
-				if (commentRequestDto.isDelete() | multipartFile != null) {
-					comment.setImg(returnImageUrl(multipartFile));
-				}
+			if (commentRequestDto.isDelete() | multipartFile != null) {
+				comment.setImg(returnImageUrl(multipartFile));
+			}
 
 			return ResponseEntity.ok().body(CommentResponseDto.builder()
-					.commentId(comment.getId())
-					.content(comment.getContent())
-					.creatAt(comment.getCreatedAt())
-					.img(comment.getImg())
-					.nickname(comment.getNickname())
-					.writer(true)
-					.build());
-		}throw new CustomException(ErrorCode.INCORRECT_USERID);
+							.commentId(comment.getId())
+							.content(comment.getContent())
+							.creatAt(comment.getCreatedAt())
+							.img(comment.getImg())
+							.nickname(nickname)
+							.writer(true)
+							.build());
+		}
+		throw new CustomException(ErrorCode.INCORRECT_USERID);
 	}
 
 	/**
@@ -138,5 +139,14 @@ public class CommentService {
 		if (multipartFile != null) {
 			return s3Uploader.upload(multipartFile).getUploadImageUrl();
 		}else return null;
+	}
+
+	private String isChangedNickname(CommentRequestDto commentRequestDto, UserDetailsImpl userDetails) {
+		String nickname;
+		if(commentRequestDto.getChangeNickname()!=null){
+			return nickname = commentRequestDto.getChangeNickname();
+		}else{
+			return nickname =userDetails.getNickname();
+		}
 	}
 }

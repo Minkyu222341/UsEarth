@@ -15,4 +15,5 @@ public class CommunityRequestDto {
   private String title;
   private String content;
   private boolean delete;
+  private String changeNickname;
 }
