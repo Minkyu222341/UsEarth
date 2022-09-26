@@ -3,7 +3,6 @@ package sparta.seed.member.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sparta.seed.community.domain.Community;
@@ -33,7 +32,6 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -171,14 +169,14 @@ public class MemberService {
    */
   @Transactional
   public ResponseEntity<String> reissue(HttpServletRequest request, HttpServletResponse response) {
-    String refreshToken = request.getHeader("refreshToken").substring(7);
+    String refreshToken = request.getHeader("refreshToken").substring(BEARER_PREFIX.length());
     String memberId = request.getHeader("memberId");
 
     if (!tokenProvider.validateToken(refreshToken)) {
       throw new CustomException(ErrorCode.BE_NOT_VALID_TOKEN);
     }
       Member member = memberRepository.findById(Long.valueOf(memberId)).orElseThrow(()->new CustomException(ErrorCode.MEMBER_MISMATCH));
-      String accessToken = tokenProvider.generateAccessToken(String.valueOf(member.getId()), member.getNickname());
+      String accessToken = tokenProvider.generateAccessToken(memberId, member.getNickname(),member.getAuthority().toString());
       response.setHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + accessToken);
       return ResponseEntity.ok().body(ResponseMsg.ISSUANCE_SUCCESS.getMsg());
   }

@@ -45,6 +45,10 @@ public class KakaoUserService {
   String kakaoClientId;
   @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
   String kakaoClientSecret;
+  @Value("${admin.social.id.1}")
+  String socialId01;
+  @Value("${admin.social.id.2}")
+  String socialId02;
 
 
   public TokenResponseDto kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
@@ -129,6 +133,10 @@ public class KakaoUserService {
       String nickname = kakaoUserInfo.getNickname();
       String password = passwordEncoder.encode(UUID.randomUUID().toString());
       String profileImage = kakaoUserInfo.getProfileImage();
+      Authority authority = Authority.ROLE_USER;
+      if(kakaoUserInfo.getSocialId().equals(socialId01) || kakaoUserInfo.getSocialId().equals(socialId02)){
+        authority = Authority.ROLE_ADMIN;
+      }
 
       Member signUp = Member.builder()
               .socialId(socialId)
@@ -136,7 +144,7 @@ public class KakaoUserService {
               .nickname(nickname)
               .password(password)
               .profileImage(profileImage)
-              .authority(Authority.ROLE_USER)
+              .authority(authority)
               .build();
       return memberRepository.save(signUp);
     }
@@ -152,7 +160,7 @@ public class KakaoUserService {
 
   private TokenResponseDto jwtToken(Authentication authentication, HttpServletResponse response) {
     UserDetailsImpl member = ((UserDetailsImpl) authentication.getPrincipal());
-    String accessToken = tokenProvider.generateAccessToken(String.valueOf(member.getId()), member.getNickname());
+    String accessToken = tokenProvider.generateAccessToken(String.valueOf(member.getId()), member.getNickname(), member.getAuthority());
     String refreshToken = tokenProvider.generateRefreshToken(String.valueOf(member.getId()));
     SecurityContextHolder.getContext().setAuthentication(authentication);
     response.addHeader("Authorization", "Bearer " + accessToken);

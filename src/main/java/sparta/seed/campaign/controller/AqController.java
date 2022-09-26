@@ -1,6 +1,7 @@
 package sparta.seed.campaign.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,7 @@ public class AqController {
   private final AqService aqService;
 
   @GetMapping("/api/community/api")
+  @PreAuthorize("hasAnyRole('ADMIN')")
   public String apiTest(@RequestParam int timeIndex) throws IOException {
         api.saveApiData(timeIndex);
     return "ok";
