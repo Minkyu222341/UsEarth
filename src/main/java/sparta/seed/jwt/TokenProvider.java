@@ -17,9 +17,11 @@ import sparta.seed.login.domain.dto.responsedto.TokenResponseDto;
 import sparta.seed.member.domain.Authority;
 import sparta.seed.member.domain.Member;
 import sparta.seed.sercurity.UserDetailsImpl;
+import sparta.seed.util.RedisService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
+import java.time.Duration;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -30,17 +32,18 @@ public class TokenProvider {
   private static final String AUTHORITIES_KEY = "auth";
   private static final String BEARER_TYPE = "bearer";
   private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;            // 30분
-  private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // 7일
+  private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 ;  // 1일
   private static final String MEMBER_USERNAME = "memberUsername";
   private static final String MEMBER_NICKNAME = "memberNickname";
   private static final String MEMBER_ID = "memberId";
-  private static final String MEMBER = "member";
+  private final RedisService redisService;
   private Authority authority;
 
 
   private final Key key;
 
-  public TokenProvider(@Value("${jwt.secret}") String secretKey) {
+  public TokenProvider(@Value("${jwt.secret}") String secretKey, RedisService redisService) {
+    this.redisService = redisService;
     byte[] keyBytes = Decoders.BASE64.decode(secretKey);
     this.key = Keys.hmacShaKeyFor(keyBytes);
   }
@@ -96,8 +99,10 @@ public class TokenProvider {
             .signWith(key, SignatureAlgorithm.HS512)
             .setHeaderParam("JWT_HEADER_PARAM_TYPE", "headerType")
             .compact();
+    redisService.setValues(memberId,refreshToken, Duration.ofMillis(REFRESH_TOKEN_EXPIRE_TIME));
     return refreshToken;
   }
+
 
   public Authentication getAuthentication(String accessToken) {
 
