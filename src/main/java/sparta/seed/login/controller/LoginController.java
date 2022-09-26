@@ -3,12 +3,14 @@ package sparta.seed.login.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import sparta.seed.login.domain.dto.responsedto.TokenResponseDto;
 import sparta.seed.login.service.GoogleUserService;
 import sparta.seed.login.service.KakaoUserService;
 import sparta.seed.login.service.NaverUserService;
 import sparta.seed.member.service.MemberService;
+import sparta.seed.sercurity.UserDetailsImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,13 +46,21 @@ public class LoginController {
   public TokenResponseDto naverLogin(@RequestParam String code, @RequestParam String state, HttpServletResponse response) throws JsonProcessingException {
     return naverUserService.naverLogin(code, state, response);
   }
+
+  /**
+   * 로그아웃
+   */
+  @GetMapping("user/logout")
+  public ResponseEntity<String> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    return memberService.logout(userDetails.getId());
+  }
+
   /**
    * 리프레쉬토큰
    */
-
   @GetMapping("/user/reissue")  //재발급을 위한 로직
-  public ResponseEntity<String> reissue(HttpServletRequest request,HttpServletResponse response) {
-    return memberService.reissue(request,response);
+  public ResponseEntity<String> reissue(HttpServletRequest request, HttpServletResponse response) {
+    return memberService.reissue(request, response);
   }
   /**
    헬스체크 컨트롤러

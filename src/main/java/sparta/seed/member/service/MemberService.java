@@ -1,6 +1,7 @@
 package sparta.seed.member.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,7 @@ import sparta.seed.mission.repository.ClearMissionRepository;
 import sparta.seed.msg.ResponseMsg;
 import sparta.seed.sercurity.UserDetailsImpl;
 import sparta.seed.util.DateUtil;
+import sparta.seed.util.RedisService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,6 +32,7 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +45,7 @@ public class MemberService {
   private final ProofRepository proofRepository;
   public static final String BEARER_PREFIX = "Bearer ";
   public static final String AUTHORIZATION_HEADER = "Authorization";
+  private final RedisService redisService;
 
   /**
    * 마이페이지
@@ -167,18 +171,30 @@ public class MemberService {
   @Transactional
   public ResponseEntity<String> reissue(HttpServletRequest request, HttpServletResponse response) {
     String refreshToken = request.getHeader("refreshToken").substring(7);
+    String memberId = request.getHeader("memberId");
+
     if (!tokenProvider.validateToken(refreshToken)) {
       throw new CustomException(ErrorCode.BE_NOT_VALID_TOKEN);
     }
-    try {
-      Member member = memberRepository.secondVerification(refreshToken);
+      Member member = memberRepository.findById(Long.valueOf(memberId)).orElseThrow(()->new CustomException(ErrorCode.MEMBER_MISMATCH));
       String accessToken = tokenProvider.generateAccessToken(String.valueOf(member.getId()), member.getNickname());
       response.setHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + accessToken);
       return ResponseEntity.ok().body(ResponseMsg.ISSUANCE_SUCCESS.getMsg());
-    } catch (Exception e) {
-      throw new CustomException(ErrorCode.MEMBER_MISMATCH);
+  }
+
+  /**
+   * 로그아웃
+   */
+  public ResponseEntity<String> logout(Long id) {
+    try {
+      redisService.deleteValues(String.valueOf(id));
+      return ResponseEntity.ok().body(ResponseMsg.LOGOUT_SUCCESS.getMsg());
+    } catch (EmptyResultDataAccessException e) {
+      throw new CustomException(ErrorCode.NEED_A_LOGIN);
     }
   }
+
+
 
   // 유저 정보 뽑기
   private ResponseEntity<UserInfoResponseDto> getUserInfo(Member member) {
@@ -199,4 +215,6 @@ public class MemberService {
             .build();
     return ResponseEntity.ok().body(userInfoResponseDto);
   }
+
+
 }
