@@ -48,37 +48,6 @@ public class TokenProvider {
     this.key = Keys.hmacShaKeyFor(keyBytes);
   }
 
-  public TokenResponseDto generateTokenDto(Authentication authentication, UserDetailsImpl member) {
-    String authorities = authentication.getAuthorities().stream()
-            .map(GrantedAuthority::getAuthority)
-            .collect(Collectors.joining(","));
-
-    long now = (new Date()).getTime();
-
-    Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
-    String accessToken = Jwts.builder()
-            .setSubject(String.valueOf(member.getId()))
-            .claim(AUTHORITIES_KEY, authorities)
-            .claim(MEMBER_USERNAME, member.getUsername())
-            .claim(MEMBER_NICKNAME, member.getNickname())
-            .setExpiration(accessTokenExpiresIn)
-            .signWith(key, SignatureAlgorithm.HS512)
-            .compact();
-
-    String refreshToken = Jwts.builder()
-            .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
-            .signWith(key, SignatureAlgorithm.HS512)
-            .setHeaderParam("JWT_HEADER_PARAM_TYPE", "headerType")
-            .compact();
-
-    return TokenResponseDto.builder()
-            .accessToken(accessToken)
-            .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
-            .refreshToken(refreshToken)
-            .username(authentication.getName())
-            .build();
-  }
-
   public String generateAccessToken(String memberId,String memberNickname) {
     long now = (new Date()).getTime();
     Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);

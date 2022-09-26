@@ -165,6 +165,7 @@ public class GoogleUserService {
     return TokenResponseDto.builder()
             .accessToken(accessToken)
             .refreshToken(refreshToken)
+            .memberId(member.getId())
             .build();
   }
 }

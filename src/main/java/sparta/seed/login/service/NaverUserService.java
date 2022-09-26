@@ -173,6 +173,7 @@ public class NaverUserService {
     return TokenResponseDto.builder()
             .accessToken(accessToken)
             .refreshToken(refreshToken)
+            .memberId(member.getId())
             .build();
   }
 }

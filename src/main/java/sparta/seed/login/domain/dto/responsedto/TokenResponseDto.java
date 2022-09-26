@@ -7,16 +7,12 @@ import lombok.Getter;
 public class TokenResponseDto {
   private String accessToken;
   private String refreshToken;
-  private Long accessTokenExpiresIn;
-  private String username;
   private Long memberId;
 
   @Builder
-  public TokenResponseDto(String accessToken, String refreshToken, Long accessTokenExpiresIn, String username,Long memberId) {
+  public TokenResponseDto(String accessToken, String refreshToken,Long memberId) {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
-    this.accessTokenExpiresIn = accessTokenExpiresIn;
-    this.username = username;
     this.memberId = memberId;
   }
 }
