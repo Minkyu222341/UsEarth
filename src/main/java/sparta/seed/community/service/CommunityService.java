@@ -43,6 +43,7 @@ public class CommunityService {
   private final DateUtil dateUtil;
   private final ProofRepository proofRepository;
   private final TokenProvider tokenProvider;
+  private final SlangService slangService;
 
   /**
    *  캠페인 전체 조회
@@ -64,6 +65,8 @@ public class CommunityService {
   public ResponseEntity<String> createCommunity(CommunityRequestDto requestDto, MultipartFile multipartFile, UserDetailsImpl userDetails) throws IOException {
     Long loginUserId = userDetails.getId();
     String nickname = userDetails.getNickname();
+
+    slangService.checkSlang(requestDto.getContent());
 
     Community community = createCommunity(requestDto, multipartFile, loginUserId, nickname);
     Participants groupLeader = getGroupLeader(loginUserId, nickname, community);
