@@ -27,7 +27,6 @@ import sparta.seed.member.domain.Member;
 import sparta.seed.member.repository.MemberRepository;
 import sparta.seed.sercurity.UserDetailsImpl;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Random;
 import java.util.UUID;
@@ -165,7 +164,7 @@ public class NaverUserService {
 
   private TokenResponseDto jwtToken(Authentication authentication, HttpServletResponse response) {
     UserDetailsImpl member = ((UserDetailsImpl) authentication.getPrincipal());
-    String accessToken = tokenProvider.generateAccessToken(String.valueOf(member.getId()),member.getNickname());
+    String accessToken = tokenProvider.generateAccessToken(String.valueOf(member.getId()),member.getNickname(),member.getAuthority());
     String refreshToken = tokenProvider.generateRefreshToken(String.valueOf(member.getId()));
     SecurityContextHolder.getContext().setAuthentication(authentication);
     response.addHeader("Authorization", "Bearer " + accessToken);
