@@ -16,6 +16,7 @@ import sparta.seed.mission.repository.ClearMissionRepository;
 import sparta.seed.mission.repository.MissionRepository;
 import sparta.seed.sercurity.UserDetailsImpl;
 import sparta.seed.util.DateUtil;
+import sparta.seed.util.RedisService;
 
 import javax.transaction.Transactional;
 import java.text.ParseException;
@@ -29,6 +30,7 @@ public class MissionService {
   private final MemberRepository memberRepository;
   private final ClearMissionRepository clearMissionRepository;
   private final DateUtil dateUtil;
+
 
   /**
    * 미션 생성 - 관리자

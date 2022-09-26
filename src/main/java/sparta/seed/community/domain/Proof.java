@@ -3,6 +3,8 @@ package sparta.seed.community.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import sparta.seed.community.domain.dto.requestdto.ProofRequestDto;
 import sparta.seed.img.domain.Img;
 import sparta.seed.util.BaseEntity;
