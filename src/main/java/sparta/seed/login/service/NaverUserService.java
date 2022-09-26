@@ -27,6 +27,7 @@ import sparta.seed.member.domain.Member;
 import sparta.seed.member.repository.MemberRepository;
 import sparta.seed.sercurity.UserDetailsImpl;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Random;
 import java.util.UUID;
