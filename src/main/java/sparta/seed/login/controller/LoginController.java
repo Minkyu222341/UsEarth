@@ -50,9 +50,9 @@ public class LoginController {
   /**
    * 로그아웃
    */
-  @GetMapping("user/logout")
+  @GetMapping("/user/logout")
   public ResponseEntity<String> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-    return memberService.logout(userDetails.getId());
+    return memberService.logout(userDetails);
   }
 
   /**

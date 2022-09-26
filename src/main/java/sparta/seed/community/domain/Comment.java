@@ -36,8 +36,9 @@ public class Comment extends BaseEntity {
     this.proof = proof;
   }
 
-  public void update(String content){
+  public void update(String content,String nickname){
     this.content = content;
+    this.nickname = nickname;
   }
 
   public void setImg(String img) {
