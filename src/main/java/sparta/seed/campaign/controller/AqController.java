@@ -20,7 +20,7 @@ public class AqController {
 
   @GetMapping("/api/community/api")
   @PreAuthorize("hasAnyRole('ADMIN')")
-  public String apiTest(@RequestParam int timeIndex) throws IOException, InterruptedException {
+  public String apiTest(@RequestParam int timeIndex) throws IOException {
         api.saveApiData(timeIndex);
     return "ok";
   }

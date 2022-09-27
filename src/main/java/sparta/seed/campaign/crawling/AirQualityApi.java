@@ -23,7 +23,7 @@ public class AirQualityApi {
 	String serviceKey;
 	private final AqRepository aqApiDataRepository;
 
-	public void saveApiData(int index) throws IOException,InterruptedException {
+	public void saveApiData(int index) throws IOException {
 		String[] itemCodeList = {"co", "o3", "no2", "so2", "pm10", "pm25"};
 		List<AqApiData> aqApiDataList = new ArrayList<>();
 		for (String itemCode : itemCodeList) {
@@ -44,7 +44,6 @@ public class AirQualityApi {
 				result.append(returnLine).append("\n");
 			}
 
-			Thread.sleep(10000);
 			urlConnection.disconnect();
 			JSONObject rjson = new JSONObject(result.toString());
 
@@ -53,13 +52,16 @@ public class AirQualityApi {
 					"gyeongnam", "chungnam", "daejeon", "busan", "gyeongbuk", "jeju", "daegu", "incheon", "jeonnam"};
 
 			for (String region : regionList) {
-				AqApiData aqApiData = AqApiData.builder()
-						.category(itemCode)
-						.region(region)
-						.datetime((String) jsonArray.getJSONObject(index).get("dataTime"))
-						.amount(Double.parseDouble(String.valueOf(jsonArray.getJSONObject(index).get(region))))
-						.build();
-				aqApiDataList.add(aqApiData);
+				String parseAmount = String.valueOf(jsonArray.getJSONObject(index).get(region));
+				if (!parseAmount.equals("null")) {
+					AqApiData aqApiData = AqApiData.builder()
+							.category(itemCode)
+							.region(region)
+							.datetime((String) jsonArray.getJSONObject(index).get("dataTime"))
+							.amount(Double.parseDouble(String.valueOf(jsonArray.getJSONObject(index).get(region))))
+							.build();
+					aqApiDataList.add(aqApiData);
+				}
 			}
 		}
 		aqApiDataRepository.saveAll(aqApiDataList);
