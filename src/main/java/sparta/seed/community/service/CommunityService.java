@@ -116,6 +116,10 @@ public class CommunityService {
     Community community = findTheCommunityByMemberId(id);
     String nickname = isChangedNickname(communityRequestDto, userDetails);
     if (userDetails != null && community.getMemberId().equals(userDetails.getId())) {
+
+      slangService.checkSlang(communityRequestDto.getTitle());
+      slangService.checkSlang(communityRequestDto.getContent());
+
       community.update(communityRequestDto,nickname);
 
       if (communityRequestDto.isDelete() || multipartFile != null) {
@@ -234,6 +238,7 @@ public class CommunityService {
 
   private Community createCommunity(CommunityRequestDto requestDto, MultipartFile multipartFile, Long loginUserId, String nickname) throws IOException {
 
+    slangService.checkSlang(requestDto.getTitle());
     slangService.checkSlang(requestDto.getContent());
 
     return Community.builder()

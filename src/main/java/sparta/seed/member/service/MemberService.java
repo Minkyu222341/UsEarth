@@ -9,6 +9,7 @@ import sparta.seed.community.domain.Community;
 import sparta.seed.community.domain.dto.responsedto.CommunityMyJoinResponseDto;
 import sparta.seed.community.repository.CommunityRepository;
 import sparta.seed.community.repository.ProofRepository;
+import sparta.seed.community.service.SlangService;
 import sparta.seed.exception.CustomException;
 import sparta.seed.exception.ErrorCode;
 import sparta.seed.jwt.TokenProvider;
@@ -45,6 +46,7 @@ public class MemberService {
   public static final String BEARER_PREFIX = "Bearer ";
   public static final String AUTHORIZATION_HEADER = "Authorization";
   private final RedisService redisService;
+  private final SlangService slangService;
 
   /**
    * 마이페이지
@@ -72,6 +74,7 @@ public class MemberService {
   public ResponseEntity<NicknameResponseDto> updateNickname(UserDetailsImpl userDetails, NicknameRequestDto requestDto) {
     Member member = memberRepository.findById(userDetails.getId())
             .orElseThrow(() -> new CustomException(ErrorCode.UNKNOWN_USER));
+    slangService.checkSlang(requestDto.getNickname());
     if (!(member.getNickname().equals(requestDto.getNickname()) && memberRepository.existsByNickname(requestDto.getNickname()))) {
       member.updateNickname(requestDto);
       return ResponseEntity.ok().body(NicknameResponseDto.builder()

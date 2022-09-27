@@ -50,6 +50,7 @@ public class ProofService {
 	private final S3Uploader s3Uploader;
 	private final DateUtil dateUtil;
 	private final TokenProvider tokenProvider;
+	private final SlangService slangService;
 
 	/**
 	  글에 달린 인증글 조회
@@ -97,6 +98,9 @@ public class ProofService {
 				nickname = proofRequestDto.getChangeNickname();
 			}
 
+			slangService.checkSlang(proofRequestDto.getTitle());
+			slangService.checkSlang(proofRequestDto.getContent());
+
 			Proof proof = Proof.builder()
 					.memberId(userDetails.getId())
 					.nickname(nickname)
@@ -127,6 +131,9 @@ public class ProofService {
 			if(proofRequestDto.getChangeNickname() != null){
 				nickname = proofRequestDto.getChangeNickname();
 			}
+
+			slangService.checkSlang(proofRequestDto.getTitle());
+			slangService.checkSlang(proofRequestDto.getContent());
 
 			proof.updateProof(proofRequestDto.getTitle(), proofRequestDto.getContent(), nickname);
 
