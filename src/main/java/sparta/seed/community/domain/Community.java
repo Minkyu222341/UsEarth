@@ -36,9 +36,9 @@ public class Community extends BaseEntity {
   //캠페인마감일
   private String endDate;
   //목표 달성 횟수
-  private long limitScore;
+  private double limitScore;
   //참가인원 제한
-  private long limitParticipants;
+  private double limitParticipants;
   //비밀글여부
   private boolean passwordFlag;
   //글비밀번호
@@ -55,7 +55,7 @@ public class Community extends BaseEntity {
 
 
   @Builder
-  public Community(Long id, String title, String nickname, Long memberId, String content, String img, String startDate, String endDate, long limitScore, long limitParticipants, boolean secret, String password, boolean recruitment, List<Proof> proofList, List<Participants> participantsList) {
+  public Community(Long id, String title, String nickname, Long memberId, String content, String img, String startDate, String endDate, double limitScore, double limitParticipants, boolean secret, String password, boolean recruitment, List<Proof> proofList, List<Participants> participantsList) {
     this.id = id;
     this.title = title;
     this.nickname = nickname;
