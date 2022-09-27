@@ -23,7 +23,7 @@ public class AirQualityApi {
 	String serviceKey;
 	private final AqRepository aqApiDataRepository;
 
-	public void saveApiData(int index) throws IOException {
+	public void saveApiData(int index) throws IOException,InterruptedException {
 		String[] itemCodeList = {"co", "o3", "no2", "so2", "pm10", "pm25"};
 		List<AqApiData> aqApiDataList = new ArrayList<>();
 		for (String itemCode : itemCodeList) {
@@ -43,7 +43,7 @@ public class AirQualityApi {
 				result.append(returnLine).append("\n");
 			}
 			urlConnection.disconnect();
-
+			Thread.sleep(3000);
 			JSONObject rjson = new JSONObject(result.toString());
 
 			JSONArray jsonArray = rjson.getJSONObject("response").getJSONObject("body").getJSONArray("items");

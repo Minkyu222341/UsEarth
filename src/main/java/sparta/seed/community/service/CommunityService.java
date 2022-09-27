@@ -96,7 +96,7 @@ public class CommunityService {
             .currentPercent(((double) community.getParticipantsList().size() / (double) community.getLimitParticipants()) * 100)
             .participant(userDetails != null && participant(userDetails, community))
             .limitScore(community.getLimitScore())
-            .successPercent((Double.valueOf(certifiedProof) / (double) community.getParticipantsList().size()) * 100)
+            .successPercent(((Double.valueOf(certifiedProof) / (double) community.getParticipantsList().size()) / (double) community.getLimitScore()) * 100)
             .startDate(community.getStartDate())
             .endDate(community.getEndDate())
             .dateStatus(getDateStatus(community))
@@ -116,6 +116,10 @@ public class CommunityService {
     Community community = findTheCommunityByMemberId(id);
     String nickname = isChangedNickname(communityRequestDto, userDetails);
     if (userDetails != null && community.getMemberId().equals(userDetails.getId())) {
+
+      slangService.checkSlang(communityRequestDto.getTitle());
+      slangService.checkSlang(communityRequestDto.getContent());
+
       community.update(communityRequestDto,nickname);
 
       if (communityRequestDto.isDelete() || multipartFile != null) {
@@ -218,7 +222,7 @@ public class CommunityService {
               .title(community.getTitle())
               .img(community.getImg())
               .currentPercent(((double) community.getParticipantsList().size() / (double) community.getLimitParticipants()) * 100)
-              .successPercent((Double.valueOf(certifiedProof) / community.getParticipantsList().size()) * 100)
+              .successPercent(((Double.valueOf(certifiedProof) / community.getParticipantsList().size()) / (double) community.getLimitScore()) * 100)
               .dateStatus(getDateStatus(community))
               .secret(community.isPasswordFlag())
               .password(community.getPassword())
@@ -234,6 +238,7 @@ public class CommunityService {
 
   private Community createCommunity(CommunityRequestDto requestDto, MultipartFile multipartFile, Long loginUserId, String nickname) throws IOException {
 
+    slangService.checkSlang(requestDto.getTitle());
     slangService.checkSlang(requestDto.getContent());
 
     return Community.builder()
@@ -301,7 +306,7 @@ public class CommunityService {
                 .title(community.getTitle())
                 .img(community.getImg())
                 .currentPercent(((double) community.getParticipantsList().size() / (double) community.getLimitParticipants()) * 100)
-                .successPercent((Double.valueOf(certifiedProof) / community.getParticipantsList().size()) * 100)
+                .successPercent(((Double.valueOf(certifiedProof) / community.getParticipantsList().size()) / (double) community.getLimitScore()) * 100)
                 .dateStatus(getDateStatus(community))
                 .secret(community.isPasswordFlag())
                 .password(community.getPassword())
