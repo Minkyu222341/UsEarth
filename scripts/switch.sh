@@ -23,7 +23,12 @@ echo "set \$service_url http://127.0.0.1:${TARGET_PORT};" | tee /home/ec2-user/s
 
 echo "> Now Nginx proxies to ${TARGET_PORT}."
 
+
 # Reload nginx
 sudo service nginx reload
+
+TARGET_PID=$(lsof -Fp -i TCP:${CURRENT_PORT} | grep -Po 'p[0-9]+' | grep -Po '[0-9]+')
+sudo kill ${TARGET_PID}
+echo "success kill ${CURRENT_PORT} ."
 
 echo "> Nginx reloaded."
