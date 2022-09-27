@@ -34,6 +34,7 @@ public class AirQualityApi {
 			URL url = new URL(urlstr);
 			HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 			urlConnection.setRequestMethod("GET");
+			urlConnection.setRequestProperty("Content-type", "application/json");
 
 			BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), StandardCharsets.UTF_8));
 
@@ -42,8 +43,9 @@ public class AirQualityApi {
 			while ((returnLine = br.readLine()) != null) {
 				result.append(returnLine).append("\n");
 			}
+
+			Thread.sleep(10000);
 			urlConnection.disconnect();
-			Thread.sleep(3000);
 			JSONObject rjson = new JSONObject(result.toString());
 
 			JSONArray jsonArray = rjson.getJSONObject("response").getJSONObject("body").getJSONArray("items");

@@ -28,7 +28,7 @@ public class Scheduler {
 		}
 	}
 
-	@Scheduled(cron = "0 30 * * * *")
+	@Scheduled(cron = "0 40 * * * *")
 	public void saveApiData() throws IOException, InterruptedException {
 		for(int i=0; i<11;) {
 			if(i == 10){
