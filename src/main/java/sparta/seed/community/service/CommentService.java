@@ -33,6 +33,8 @@ public class CommentService {
 	private final ParticipantsRepository participantsRepository;
 	private final TokenProvider tokenProvider;
 	private final CommunityService communityService;
+	private final SlangService slangService;
+
 
 	/**
 	 * 댓글 조회
@@ -71,6 +73,8 @@ public class CommentService {
 		}
 		String nickname = isChangedNickname(commentRequestDto, userDetails);
 
+		slangService.checkSlang(commentRequestDto.getContent());
+
 		Comment comment = Comment.builder()
 						.memberId(userDetails.getId())
 						.nickname(nickname)
@@ -101,6 +105,7 @@ public class CommentService {
 		String nickname = isChangedNickname(commentRequestDto, userDetails);
 
 		if (userDetails != null && comment.getMemberId().equals(userDetails.getId())) {
+			slangService.checkSlang(commentRequestDto.getContent());
 			comment.update(commentRequestDto.getContent(),nickname);
 
 			if (commentRequestDto.isDelete() | multipartFile != null) {

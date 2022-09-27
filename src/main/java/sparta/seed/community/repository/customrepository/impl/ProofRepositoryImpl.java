@@ -16,7 +16,7 @@ public class ProofRepositoryImpl implements ProofRepositoryCustom {
   private final JPAQueryFactory queryFactory;
 
   @Override
-  public Long getCertifiedProof(Community find) {
+  public long getCertifiedProof(Community find) {
     long result = queryFactory.selectFrom(proof)  // select * from proof p
             .leftJoin(proof.community, community) // 인증글 테이블에 있는 커뮤니티(컬럼)와 겹치는 커뮤니티를 가져와라
             .where(proof.heartList.size().goe(community.participantsList.size().divide(2)).and(proof.community.eq(find))) // 가져온 커뮤니티 중에 인증글의 좋아요갯수가 >= 커뮤니티 참가자의 인원수 /2 이고
