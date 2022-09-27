@@ -14,6 +14,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 @RequiredArgsConstructor
@@ -51,13 +53,23 @@ public class AirQualityApi {
 			String[] regionList = {"jeonbuk", "gyeonggi", "gangwon", "gwangju", "ulsan", "sejong", "chungbuk", "seoul",
 					"gyeongnam", "chungnam", "daejeon", "busan", "gyeongbuk", "jeju", "daegu", "incheon", "jeonnam"};
 
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
 			for (String region : regionList) {
 				String parseAmount = String.valueOf(jsonArray.getJSONObject(index).get(region));
+				String dataTime = (String) jsonArray.getJSONObject(index).get("dataTime");
+
+				if(dataTime.indexOf("24") == 11){
+					dataTime = String.valueOf(LocalDateTime.parse((String) jsonArray.getJSONObject(index).get("dataTime"),
+							formatter)).replace("T", " ");
+				}
+
 				if (!parseAmount.equals("null")) {
 					AqApiData aqApiData = AqApiData.builder()
 							.category(itemCode)
 							.region(region)
-							.datetime((String) jsonArray.getJSONObject(index).get("dataTime"))
+							.datetime(dataTime)
 							.amount(Double.parseDouble(String.valueOf(jsonArray.getJSONObject(index).get(region))))
 							.build();
 					aqApiDataList.add(aqApiData);
