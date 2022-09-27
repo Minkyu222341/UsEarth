@@ -90,7 +90,7 @@ public class MemberService {
    */
   public ResponseEntity<List<CommunityMyJoinResponseDto>> showGroupMissionList(UserDetailsImpl userDetails) {
     try {
-      List<Community> communityList = communityRepository.findByMemberId(userDetails.getId());
+      List<Community> communityList = communityRepository.findByMemberIdOrderByCreatedAtDesc(userDetails.getId());
       List<CommunityMyJoinResponseDto> responseDtoList = new ArrayList<>();
       for (Community community : communityList) {
         responseDtoList.add(CommunityMyJoinResponseDto.builder()
