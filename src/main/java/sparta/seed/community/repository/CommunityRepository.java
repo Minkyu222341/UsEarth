@@ -7,7 +7,7 @@ import sparta.seed.community.repository.customrepository.CommunityRepositoryCust
 import java.util.List;
 
 public interface CommunityRepository extends JpaRepository<Community, Long>, CommunityRepositoryCustom {
-  List<Community> findByMemberId(Long id);
+  List<Community> findByMemberIdOrderByCreatedAtDesc(Long id);
 
 
 }
