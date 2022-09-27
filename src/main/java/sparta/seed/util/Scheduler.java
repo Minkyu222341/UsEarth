@@ -29,10 +29,10 @@ public class Scheduler {
 	}
 
 	@Scheduled(cron = "0 40 * * * *")
-	public void saveApiData() throws IOException, InterruptedException {
+	public void saveApiData() throws InterruptedException {
 		for(int i=0; i<11;) {
 			if(i == 10){
-				api.saveApiData(-1);
+				log.error("대기 API 호출 실패");
 			}
 			try {
 				api.saveApiData(0);
