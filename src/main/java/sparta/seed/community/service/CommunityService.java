@@ -93,10 +93,10 @@ public class CommunityService {
             .img(community.getImg())
             .participantsCnt(community.getParticipantsList().size())
             .limitParticipants(community.getLimitParticipants())
-            .currentPercent(((double) community.getParticipantsList().size() / (double) community.getLimitParticipants()) * 100)
             .participant(userDetails != null && participant(userDetails, community))
             .limitScore(community.getLimitScore())
-            .successPercent(((Double.valueOf(certifiedProof) / (double) community.getParticipantsList().size()) / (double) community.getLimitScore()) * 100)
+            .currentPercent(getCurrentPercent(community))
+            .successPercent(getSuccessPercent(community, certifiedProof))
             .startDate(community.getStartDate())
             .endDate(community.getEndDate())
             .dateStatus(getDateStatus(community))
@@ -221,8 +221,8 @@ public class CommunityService {
               .nickname(community.getNickname())
               .title(community.getTitle())
               .img(community.getImg())
-              .currentPercent(((double) community.getParticipantsList().size() / (double) community.getLimitParticipants()) * 100)
-              .successPercent(((Double.valueOf(certifiedProof) / community.getParticipantsList().size()) / (double) community.getLimitScore()) * 100)
+              .currentPercent(getCurrentPercent(community))
+              .successPercent(getSuccessPercent(community, certifiedProof))
               .dateStatus(getDateStatus(community))
               .secret(community.isPasswordFlag())
               .password(community.getPassword())
@@ -305,8 +305,8 @@ public class CommunityService {
                 .nickname(community.getNickname())
                 .title(community.getTitle())
                 .img(community.getImg())
-                .currentPercent(((double) community.getParticipantsList().size() / (double) community.getLimitParticipants()) * 100)
-                .successPercent(((Double.valueOf(certifiedProof) / community.getParticipantsList().size()) / (double) community.getLimitScore()) * 100)
+                .currentPercent(getCurrentPercent(community))
+                .successPercent(getSuccessPercent(community, certifiedProof))
                 .dateStatus(getDateStatus(community))
                 .secret(community.isPasswordFlag())
                 .password(community.getPassword())
@@ -315,6 +315,14 @@ public class CommunityService {
       }
     }
     return communityList;
+  }
+
+  private double getCurrentPercent(Community community) {
+    return ((double) community.getParticipantsList().size() / community.getLimitParticipants()) * 100;
+  }
+
+  private double getSuccessPercent(Community community, Long certifiedProof) {
+    return (((double)certifiedProof / community.getParticipantsList().size()) / community.getLimitScore()) * 100;
   }
 
   private String isChangedNickname(CommunityRequestDto requestDto, UserDetailsImpl userDetails) {
