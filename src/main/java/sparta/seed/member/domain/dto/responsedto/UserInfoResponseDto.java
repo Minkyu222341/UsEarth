@@ -12,10 +12,11 @@ public class UserInfoResponseDto {
 	private int level;
 	private int totalClear;
 	private int nextLevelExp;
+	private int needNextLevelExp;
 	private boolean isSecret;
 
 	@Builder
-	public UserInfoResponseDto(Long id, String nickname, String username, String profileImage, int level, int totalClear, int nextLevelExp, boolean isSecret) {
+	public UserInfoResponseDto(Long id, String nickname, String username, String profileImage, int level, int totalClear, int nextLevelExp, int needNextLevelExp, boolean isSecret) {
 		this.id = id;
 		this.nickname = nickname;
 		this.username = username;
@@ -23,6 +24,7 @@ public class UserInfoResponseDto {
 		this.level = level;
 		this.totalClear = totalClear;
 		this.nextLevelExp = nextLevelExp;
+		this.needNextLevelExp = needNextLevelExp;
 		this.isSecret = isSecret;
 	}
 }
