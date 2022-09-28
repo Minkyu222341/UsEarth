@@ -34,6 +34,7 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -99,8 +100,9 @@ public class MemberService {
                 .communityId(community.getId())
                 .title(community.getTitle())
                 .img(community.getImg())
-                .currentPercent(((double) community.getParticipantsList().size() /community.getLimitParticipants()) * 100)
-                .successPercent(((Double.valueOf(proofRepository.getCertifiedProof(community)) / (double) community.getParticipantsList().size()) / community.getLimitScore()) * 100)
+                .writer(userDetails.getId().equals(community.getMemberId()))
+                .currentPercent(((double) community.getParticipantsList().size() / community.getLimitParticipants()) * 100)
+                .successPercent((((double) proofRepository.getCertifiedProof(community) / (double) community.getParticipantsList().size()) / community.getLimitScore()) * 100)
                 .startDate(community.getStartDate())
                 .endDate(community.getEndDate())
                 .dateStatus(getDateStatus(community))
