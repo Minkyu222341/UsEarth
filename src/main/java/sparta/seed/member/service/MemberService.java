@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sparta.seed.community.domain.Community;
 import sparta.seed.community.domain.dto.responsedto.CommunityMyJoinResponseDto;
-import sparta.seed.community.repository.CommunityRepository;
-import sparta.seed.community.repository.ParticipantsRepository;
 import sparta.seed.community.repository.ProofRepository;
 import sparta.seed.community.service.SlangService;
 import sparta.seed.exception.CustomException;
@@ -26,6 +24,7 @@ import sparta.seed.mission.repository.ClearMissionRepository;
 import sparta.seed.msg.ResponseMsg;
 import sparta.seed.sercurity.UserDetailsImpl;
 import sparta.seed.util.DateUtil;
+import sparta.seed.util.ExpUtil;
 import sparta.seed.util.RedisService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,6 +46,7 @@ public class MemberService {
   public static final String AUTHORIZATION_HEADER = "Authorization";
   private final RedisService redisService;
   private final SlangService slangService;
+  private final ExpUtil expUtil;
 
   /**
    * 마이페이지
@@ -205,18 +205,17 @@ public class MemberService {
   // 유저 정보 뽑기
   private ResponseEntity<UserInfoResponseDto> getUserInfo(Member member) {
     double clearMission = clearMissionRepository.countAllByMemberId(member.getId());
-    double missionDiv = clearMission / 5;
-    String stringDiv = missionDiv + "";
-    String[] split = stringDiv.split("\\.");
+    Integer needNextLevelExp = expUtil.getNextLevelExp().get(member.getLevel());
 
     UserInfoResponseDto userInfoResponseDto = UserInfoResponseDto.builder()
             .id(member.getId())
             .nickname(member.getNickname())
             .username(member.getUsername())
             .profileImage(member.getProfileImage())
-            .level((int) (missionDiv + 1))
+            .level(member.getLevel())
             .totalClear((int) clearMission)
-            .nextLevelExp(5 - (Integer.parseInt(split[1]) / 2))
+            .nextLevelExp(needNextLevelExp - member.getExp())
+            .needNextLevelExp(needNextLevelExp)
             .isSecret(member.isSecret())
             .build();
     return ResponseEntity.ok().body(userInfoResponseDto);
