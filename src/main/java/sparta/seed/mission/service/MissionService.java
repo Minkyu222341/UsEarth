@@ -16,12 +16,16 @@ import sparta.seed.mission.repository.ClearMissionRepository;
 import sparta.seed.mission.repository.MissionRepository;
 import sparta.seed.sercurity.UserDetailsImpl;
 import sparta.seed.util.DateUtil;
+import sparta.seed.util.ExpUtil;
 import sparta.seed.util.RedisService;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +33,7 @@ public class MissionService {
   private final MissionRepository missionRepository;
   private final MemberRepository memberRepository;
   private final ClearMissionRepository clearMissionRepository;
-  private final DateUtil dateUtil;
+  private final ExpUtil expUtil;
 
 
   /**
@@ -48,18 +52,18 @@ public class MissionService {
   public MissionResponseDto injectMission(UserDetailsImpl userDetails) {
     if (userDetails != null) {
       Member loginMember = memberRepository.findById(userDetails.getId())
-          .orElseThrow(() -> new CustomException(ErrorCode.UNKNOWN_USER));
+              .orElseThrow(() -> new CustomException(ErrorCode.UNKNOWN_USER));
 
       Map<String, Boolean> dailyMission = loginMember.getDailyMission();
 
       while (dailyMission.size() < 5) { // 맴버가 가진 미션해시맵의 길이가 5이 될 때까지 반복
         dailyMission.put(missionRepository.findById((long) (Math.random() * missionRepository.count()))
-            .get().getContent(), false); // 미션의 내용을 맴버가 가진 미션해시맵에 넣어줌
+                .get().getContent(), false); // 미션의 내용을 맴버가 가진 미션해시맵에 넣어줌
       }
 
       MissionResponseDto missionResponseDto = MissionResponseDto.builder()
-          .memberId(userDetails.getId())
-          .build();
+              .memberId(userDetails.getId())
+              .build();
 
       for (String key : dailyMission.keySet()) {
         boolean value = dailyMission.get(key);
@@ -68,41 +72,62 @@ public class MissionService {
       }
 
       return missionResponseDto;
-    }else throw new CustomException(ErrorCode.UNKNOWN_ERROR);
+    } else throw new CustomException(ErrorCode.UNKNOWN_ERROR);
   }
 
   /**
    * 미션 완료
    */
   @Transactional
-  public MissionClearResponseDto completeMission(UserDetailsImpl userDetails, MissionRequestDto missionRequestDto) throws ParseException {
+  public MissionClearResponseDto completeMission(UserDetailsImpl userDetails, MissionRequestDto missionRequestDto) {
+    String difficulty = missionRequestDto.getDifficulty();
+    String clearMissionName = difficulty + missionRequestDto.getMissionName();
     Member loginMember = memberRepository.findById(userDetails.getId())
-        .orElseThrow(()-> new CustomException(ErrorCode.UNKNOWN_USER));
+            .orElseThrow(() -> new CustomException(ErrorCode.UNKNOWN_USER));
     ClearMission clearMission = ClearMission.builder()
             .memberId(userDetails.getId())
             .content(missionRequestDto.getMissionName())
             .clearTime(LocalDate.now())
             .build();
 
-    if (!loginMember.getDailyMission().get(missionRequestDto.getMissionName())) {
-      loginMember.getDailyMission().put(missionRequestDto.getMissionName(), true);
+    if (!loginMember.getDailyMission().get(clearMissionName)) {
+      loginMember.getDailyMission().put(clearMissionName, true);
       clearMissionRepository.save(clearMission);
 
+      Integer needNextLevelExpBeforeAddExp = expUtil.getNextLevelExp().get(loginMember.getLevel());
 
-      
-      double clearMissionCnt = clearMissionRepository.countAllByMemberId(loginMember.getId());
-      double missionDiv = clearMissionCnt / 5;
-      String stringDiv = missionDiv +"";
-      String[] split = stringDiv.split("\\.");
+      if (difficulty.equals("[상]")) {
+        loginMember.addExp(3);
+        currentExpCompareToNeedNextLevelExp(loginMember, needNextLevelExpBeforeAddExp);
+      } else if (difficulty.equals("[중]")) {
+        loginMember.addExp(2);
+        currentExpCompareToNeedNextLevelExp(loginMember, needNextLevelExpBeforeAddExp);
+      } else {
+        loginMember.addExp(1);
+        currentExpCompareToNeedNextLevelExp(loginMember, needNextLevelExpBeforeAddExp);
+      }
+      Integer needNextLevelExpAfterAddExp = expUtil.getNextLevelExp().get(loginMember.getLevel());
 
       return MissionClearResponseDto.builder()
-          .missionName(missionRequestDto.getMissionName())
-          .complete(true)
-          .level((int) (missionDiv + 1))
-          .nextLevelExp(5 - (Integer.parseInt(split[1]) / 2))
-          .totalClear((int) clearMissionCnt).build();
-    }else throw new CustomException(ErrorCode.NOT_FOUND_MISSION);
+              .missionName(missionRequestDto.getMissionName())
+              .complete(true)
+              .level(loginMember.getLevel())
+              .nextLevelExp(needNextLevelExpAfterAddExp - loginMember.getExp())
+              .needNextLevelExp(needNextLevelExpAfterAddExp)
+              .build();
+    } else throw new CustomException(ErrorCode.NOT_FOUND_MISSION);
   }
+
+  private void currentExpCompareToNeedNextLevelExp(Member loginMember, Integer needNextLevelExpBeforeAddExp) {
+    if (loginMember.getExp() == needNextLevelExpBeforeAddExp) {
+      loginMember.levelUp();
+      loginMember.initExp();
+    } else if (loginMember.getExp() > needNextLevelExpBeforeAddExp) {
+      loginMember.levelUp();
+      loginMember.minusExp(needNextLevelExpBeforeAddExp);
+    }
+  }
+
 
 }
 
