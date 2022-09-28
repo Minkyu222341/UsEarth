@@ -45,7 +45,7 @@ public class Scheduler {
 		}
 	}
 
-	@Scheduled(cron = "0 0 0 * * 0")
+	@Scheduled(cron = "0 0 0 * * 0,4")
 	public void initializationWeekMissions() {
 		List<Member> allMembers = memberRepository.findAll();
 		for (Member member : allMembers) {
