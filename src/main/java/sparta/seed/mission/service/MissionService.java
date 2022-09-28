@@ -15,13 +15,13 @@ import sparta.seed.mission.domain.dto.responsedto.MissionResponseDto;
 import sparta.seed.mission.repository.ClearMissionRepository;
 import sparta.seed.mission.repository.MissionRepository;
 import sparta.seed.sercurity.UserDetailsImpl;
-import sparta.seed.util.DateUtil;
 import sparta.seed.util.RedisService;
 
 import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class MissionService {
   private final MissionRepository missionRepository;
   private final MemberRepository memberRepository;
   private final ClearMissionRepository clearMissionRepository;
-  private final DateUtil dateUtil;
+  private final RedisService redisService;
 
 
   /**
@@ -52,9 +52,15 @@ public class MissionService {
 
       Map<String, Boolean> dailyMission = loginMember.getDailyMission();
 
-      while (dailyMission.size() < 5) { // 맴버가 가진 미션해시맵의 길이가 5이 될 때까지 반복
-        dailyMission.put(missionRepository.findById((long) (Math.random() * missionRepository.count()))
-            .get().getContent(), false); // 미션의 내용을 맴버가 가진 미션해시맵에 넣어줌
+      while (dailyMission.size() < 5) {
+        Mission mission = missionRepository.findById((long) ((Math.random() * missionRepository.count())+1)).get();
+        String missionId = String.valueOf(mission.getId());
+        Set<String> missionSet = redisService.getMissionSet(String.valueOf(userDetails.getId()));
+
+        if(!missionSet.contains(missionId)){
+          dailyMission.put(mission.getContent(), false);
+          redisService.addMission(String.valueOf(userDetails.getId()), missionId);
+        }
       }
 
       MissionResponseDto missionResponseDto = MissionResponseDto.builder()
@@ -71,11 +77,15 @@ public class MissionService {
     }else throw new CustomException(ErrorCode.UNKNOWN_ERROR);
   }
 
+  public void deleteMissionSet(String memberId){
+    redisService.deleteMissionSet(memberId);
+  }
+
   /**
    * 미션 완료
    */
   @Transactional
-  public MissionClearResponseDto completeMission(UserDetailsImpl userDetails, MissionRequestDto missionRequestDto) throws ParseException {
+  public MissionClearResponseDto completeMission(UserDetailsImpl userDetails, MissionRequestDto missionRequestDto) {
     Member loginMember = memberRepository.findById(userDetails.getId())
         .orElseThrow(()-> new CustomException(ErrorCode.UNKNOWN_USER));
     ClearMission clearMission = ClearMission.builder()

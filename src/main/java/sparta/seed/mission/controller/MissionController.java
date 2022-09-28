@@ -34,11 +34,20 @@ public class MissionController {
 	}
 
 	/**
+	 * 레디스 캐시에 있는 중복미션 방지 데이터 삭제
+	 */
+	@GetMapping ("/api/missions/delete")
+	public String deleteMissionSet (@RequestParam String memberId){
+		missionService.deleteMissionSet(memberId);
+		return "레디스 삭제완료";
+	}
+
+	/**
 	 * 미션 완료
 	 */
 	@PatchMapping("/api/missions")
 	public MissionClearResponseDto completeMission(@AuthenticationPrincipal UserDetailsImpl userDetails,
-	                                               @RequestBody MissionRequestDto missionRequestDto) throws ParseException {
+	                                               @RequestBody MissionRequestDto missionRequestDto) {
 		return missionService.completeMission(userDetails, missionRequestDto);
 	}
 }
