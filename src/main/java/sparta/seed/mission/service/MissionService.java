@@ -45,10 +45,12 @@ public class MissionService {
    * 유저한테 랜덤 미션 5개 넣어주기 (비워주는건 스케줄러 연동)
    */
   @Transactional
-  public MissionResponseDto injectMission(UserDetailsImpl userDetails) {
+  public MissionResponseDto injectMission(UserDetailsImpl userDetails, int memberLevel) {
     if (userDetails != null) {
       Member loginMember = memberRepository.findById(userDetails.getId())
           .orElseThrow(() -> new CustomException(ErrorCode.UNKNOWN_USER));
+
+//      int memberLevel = loginMember.getLevel();
 
       Map<String, Boolean> dailyMission = loginMember.getDailyMission();
 
@@ -58,8 +60,21 @@ public class MissionService {
         Set<String> missionSet = redisService.getMissionSet(String.valueOf(userDetails.getId()));
 
         if(!missionSet.contains(missionId)){
-          dailyMission.put(mission.getContent(), false);
-          redisService.addMission(String.valueOf(userDetails.getId()), missionId);
+          if(memberLevel < 4){
+            if(mission.getContent().startsWith("[하]")){
+              dailyMission.put(mission.getContent(), false);
+              redisService.addMission(String.valueOf(userDetails.getId()), missionId);
+            }
+          } else if (memberLevel < 8 ) {
+            if(mission.getContent().startsWith("[하]") || mission.getContent().startsWith("[중]")) {
+              dailyMission.put(mission.getContent(), false);
+              redisService.addMission(String.valueOf(userDetails.getId()), missionId);
+            }
+          }else {
+            dailyMission.put(mission.getContent(), false);
+            redisService.addMission(String.valueOf(userDetails.getId()), missionId);
+          }
+
         }
       }
 

@@ -29,8 +29,8 @@ public class MissionController {
 	 * 유저한테 랜덤 미션 5개 넣어주기 (스케줄러 연동)
 	 */
 	@GetMapping("/api/missions")
-	public MissionResponseDto injectMission(@AuthenticationPrincipal UserDetailsImpl userDetails){
-		return missionService.injectMission(userDetails);
+	public MissionResponseDto injectMission(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam int memberLevel){
+		return missionService.injectMission(userDetails, memberLevel);
 	}
 
 	/**
