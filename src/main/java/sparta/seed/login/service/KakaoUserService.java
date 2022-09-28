@@ -143,6 +143,7 @@ public class KakaoUserService {
               .password(password)
               .profileImage(profileImage)
               .authority(authority)
+              .level(1)
               .build();
       return memberRepository.save(signUp);
     }

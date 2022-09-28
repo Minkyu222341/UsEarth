@@ -4,6 +4,7 @@ package sparta.seed.member.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import sparta.seed.member.domain.dto.requestdto.NicknameRequestDto;
 import sparta.seed.util.BaseEntity;
 
@@ -33,6 +34,10 @@ public class Member extends BaseEntity {
 
   private String profileImage;
 
+  private int exp;
+
+  private int level;
+
 
   @ElementCollection
   private Map<String,Boolean> dailyMission = new HashMap<>(6,1);
@@ -40,7 +45,7 @@ public class Member extends BaseEntity {
   private boolean isSecret;
 
   @Builder
-  public Member(Long id, String username, String password, String nickname, String socialId, Authority authority, String profileImage) {
+  public Member(Long id, String username, String password, String nickname, String socialId, Authority authority, String profileImage,int exp,int level) {
     this.id = id;
     this.username = username;
     this.password = password;
@@ -48,6 +53,8 @@ public class Member extends BaseEntity {
     this.socialId = socialId;
     this.authority = authority;
     this.profileImage = profileImage;
+    this.exp = exp;
+    this.level = level;
   }
 
   public void updateNickname(NicknameRequestDto requestDto) {
@@ -56,5 +63,20 @@ public class Member extends BaseEntity {
 
   public void updateIsSecret(boolean isSecret) {
     this.isSecret = isSecret;
+  }
+
+  public void addExp(int exp) {
+    this.exp += exp;
+  }
+
+  public void initExp() {
+    this.exp = 0;
+  }
+
+  public void minusExp(int exp) {
+    this.exp -= exp;
+  }
+  public void levelUp() {
+    this.level += 1;
   }
 }

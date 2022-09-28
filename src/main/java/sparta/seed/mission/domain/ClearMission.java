@@ -23,14 +23,12 @@ public class ClearMission{
   private Long memberId;
   //완료한 미션
   private String content;
-  private String weekOfMonth;
   private LocalDate clearTime;
 
   @Builder
-  public ClearMission(Long memberId, String content, String weekOfMonth, LocalDate clearTime) {
+  public ClearMission(Long memberId, String content, LocalDate clearTime) {
     this.memberId = memberId;
     this.content = content;
-    this.weekOfMonth = weekOfMonth;
     this.clearTime = clearTime;
   }
 }

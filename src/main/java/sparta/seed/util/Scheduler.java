@@ -18,6 +18,7 @@ import java.util.List;
 public class Scheduler {
 	private final AirQualityApi api;
 	private final MemberRepository memberRepository;
+	private final RedisService redisService;
 
 	@Transactional
 	@Scheduled(cron = "0 0 0 * * *")
@@ -41,6 +42,14 @@ public class Scheduler {
 				i++;
 				Thread.sleep(1000*60*2);
 			}
+		}
+	}
+
+	@Scheduled(cron = "0 0 0 * * 0,4")
+	public void initializationWeekMissions() {
+		List<Member> allMembers = memberRepository.findAll();
+		for (Member member : allMembers) {
+			redisService.deleteMissionSet(String.valueOf(member.getId()));
 		}
 	}
 }

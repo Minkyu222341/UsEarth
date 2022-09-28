@@ -140,6 +140,7 @@ public class GoogleUserService {
               .profileImage(profileImage)
               .socialId(socialId)
               .authority(Authority.ROLE_USER)
+              .level(1)
               .build();
       memberRepository.save(signUpMember);
       return signUpMember;

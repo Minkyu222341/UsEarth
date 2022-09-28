@@ -2,9 +2,9 @@ package sparta.seed.campaign.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import sparta.seed.campaign.crawling.AirQualityApi;
 import sparta.seed.campaign.domain.dto.requestdto.CampaignRequestDto;
 import sparta.seed.campaign.domain.dto.responsedto.CampaignResponseDto;
 import sparta.seed.campaign.service.CampaignService;
@@ -38,6 +38,7 @@ public class CampaignController {
 	 * 캠페인 작성 (관리자용)
 	 */
 	@PostMapping(value = "/api/campaigns", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public CampaignResponseDto createCampaign(@Valid @RequestPart(value = "dto") CampaignRequestDto campaignRequestDto,
 																						@RequestPart List<MultipartFile> multipartFile) throws IOException {
 		return campaignService.createCampaign(campaignRequestDto, multipartFile);
@@ -47,6 +48,7 @@ public class CampaignController {
 	 * 캠페인 작성
 	 */
 	@GetMapping("/campaigns")
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public Boolean insertCampaign() throws InterruptedException {
 		return campaignService.insertCampaign();
 	}
