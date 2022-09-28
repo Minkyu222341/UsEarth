@@ -34,15 +34,12 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
   private final MemberRepository memberRepository;
-  private final CommunityRepository communityRepository;
   private final ClearMissionRepository clearMissionRepository;
-  private final ParticipantsRepository participantsRepository;
   private final DateUtil dateUtil;
   private final TokenProvider tokenProvider;
   private final ProofRepository proofRepository;

@@ -78,11 +78,9 @@ public class MissionService {
   public MissionClearResponseDto completeMission(UserDetailsImpl userDetails, MissionRequestDto missionRequestDto) throws ParseException {
     Member loginMember = memberRepository.findById(userDetails.getId())
         .orElseThrow(()-> new CustomException(ErrorCode.UNKNOWN_USER));
-    String weekOfMonth = dateUtil.weekOfMonth();
     ClearMission clearMission = ClearMission.builder()
             .memberId(userDetails.getId())
             .content(missionRequestDto.getMissionName())
-            .weekOfMonth(weekOfMonth)
             .clearTime(LocalDate.now())
             .build();
 
@@ -90,6 +88,8 @@ public class MissionService {
       loginMember.getDailyMission().put(missionRequestDto.getMissionName(), true);
       clearMissionRepository.save(clearMission);
 
+
+      
       double clearMissionCnt = clearMissionRepository.countAllByMemberId(loginMember.getId());
       double missionDiv = clearMissionCnt / 5;
       String stringDiv = missionDiv +"";
