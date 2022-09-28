@@ -144,7 +144,7 @@ public class MissionService {
               .missionName(missionRequestDto.getMissionName())
               .complete(true)
               .level(loginMember.getLevel())
-              .nextLevelExp(needNextLevelExpAfterAddExp - loginMember.getExp())
+              .nextLevelExp(loginMember.getExp())
               .needNextLevelExp(needNextLevelExpAfterAddExp)
               .build();
     } else throw new CustomException(ErrorCode.NOT_FOUND_MISSION);
