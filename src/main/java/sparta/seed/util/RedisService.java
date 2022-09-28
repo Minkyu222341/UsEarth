@@ -14,14 +14,13 @@ import java.util.Set;
 public class RedisService {
   private final RedisTemplate<String, String> redisTemplate;
 
-  public void setValues(String key, String data) {
-    ValueOperations<String, String> values = redisTemplate.opsForValue();
-    values.set(key, data);
-  }
-
   public void setValues(String key, String data, Duration duration) {
     ValueOperations<String, String> values = redisTemplate.opsForValue();
     values.set(key, data, duration);
+  }
+
+  public void deleteValues(String key) {
+    redisTemplate.delete(key);
   }
 
   public void addSlang(String data) {
@@ -29,17 +28,22 @@ public class RedisService {
     values.add("slang", data);
   }
 
-  public String getValues(String key) {
-    ValueOperations<String, String> values = redisTemplate.opsForValue();
-    return values.get(key);
-  }
-
   public Set<String> getSlangSet() {
     SetOperations<String, String> values = redisTemplate.opsForSet();
     return values.members("slang");
   }
 
-  public void deleteValues(String key) {
-    redisTemplate.delete(key);
+  public void addMission(String memberId , String missionId) {
+    SetOperations<String, String> values = redisTemplate.opsForSet();
+    values.add("owner_"+memberId, missionId);
+  }
+
+  public Set<String> getMissionSet(String memberId) {
+    SetOperations<String, String> values = redisTemplate.opsForSet();
+    return values.members("owner_"+memberId);
+  }
+
+  public void deleteMissionSet(String memberId) {
+    redisTemplate.delete("owner_"+memberId);
   }
 }

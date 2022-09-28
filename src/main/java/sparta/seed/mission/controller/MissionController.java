@@ -28,8 +28,17 @@ public class MissionController {
 	 * 유저한테 랜덤 미션 5개 넣어주기 (스케줄러 연동)
 	 */
 	@GetMapping("/api/missions")
-	public MissionResponseDto injectMission(@AuthenticationPrincipal UserDetailsImpl userDetails){
-		return missionService.injectMission(userDetails);
+	public MissionResponseDto injectMission(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam int memberLevel){
+		return missionService.injectMission(userDetails, memberLevel);
+	}
+
+	/**
+	 * 레디스 캐시에 있는 중복미션 방지 데이터 삭제
+	 */
+	@GetMapping ("/api/missions/delete")
+	public String deleteMissionSet (@RequestParam String memberId){
+		missionService.deleteMissionSet(memberId);
+		return "레디스 삭제완료";
 	}
 
 	/**
