@@ -91,7 +91,7 @@ public class MissionService {
 
       for (String key : dailyMission.keySet()) {
         boolean value = dailyMission.get(key);
-        MissionDetailResponseDto missionDetailResponseDto = new MissionDetailResponseDto(key.substring(3), key.substring(0, 2), value);
+        MissionDetailResponseDto missionDetailResponseDto = new MissionDetailResponseDto(key.substring(3), key.substring(0, 3), value);
         missionResponseDto.addMisson(missionDetailResponseDto);
       }
 
