@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sparta.seed.community.domain.Community;
 import sparta.seed.community.domain.dto.responsedto.CommunityMyJoinResponseDto;
 import sparta.seed.community.repository.CommunityRepository;
+import sparta.seed.community.repository.ParticipantsRepository;
 import sparta.seed.community.repository.ProofRepository;
 import sparta.seed.community.service.SlangService;
 import sparta.seed.exception.CustomException;
@@ -41,6 +42,7 @@ public class MemberService {
   private final MemberRepository memberRepository;
   private final CommunityRepository communityRepository;
   private final ClearMissionRepository clearMissionRepository;
+  private final ParticipantsRepository participantsRepository;
   private final DateUtil dateUtil;
   private final TokenProvider tokenProvider;
   private final ProofRepository proofRepository;
@@ -91,7 +93,7 @@ public class MemberService {
    */
   public ResponseEntity<List<CommunityMyJoinResponseDto>> showGroupMissionList(UserDetailsImpl userDetails) {
     try {
-      List<Community> communityList = communityRepository.findByMemberIdOrderByCreatedAtDesc(userDetails.getId());
+      List<Community> communityList = memberRepository.getCommunityBelongToMember(userDetails.getId());
       List<CommunityMyJoinResponseDto> responseDtoList = new ArrayList<>();
       for (Community community : communityList) {
         responseDtoList.add(CommunityMyJoinResponseDto.builder()
