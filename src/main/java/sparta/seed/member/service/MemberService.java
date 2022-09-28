@@ -214,7 +214,7 @@ public class MemberService {
             .profileImage(member.getProfileImage())
             .level(member.getLevel())
             .totalClear((int) clearMission)
-            .nextLevelExp(needNextLevelExp - member.getExp())
+            .nextLevelExp(member.getExp())
             .needNextLevelExp(needNextLevelExp)
             .isSecret(member.isSecret())
             .build();
