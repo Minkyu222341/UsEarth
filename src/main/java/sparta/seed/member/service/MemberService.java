@@ -98,7 +98,7 @@ public class MemberService {
                 .communityId(community.getId())
                 .title(community.getTitle())
                 .img(community.getImg())
-                .writer(Objects.equals(userDetails.getId(), community.getMemberId()))
+                .writer(userDetails.getId().equals(community.getMemberId()))
                 .currentPercent(((double) community.getParticipantsList().size() / community.getLimitParticipants()) * 100)
                 .successPercent((((double) proofRepository.getCertifiedProof(community) / (double) community.getParticipantsList().size()) / community.getLimitScore()) * 100)
                 .startDate(community.getStartDate())
