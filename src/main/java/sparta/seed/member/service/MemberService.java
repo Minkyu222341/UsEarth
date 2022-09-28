@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sparta.seed.community.domain.Community;
 import sparta.seed.community.domain.dto.responsedto.CommunityMyJoinResponseDto;
 import sparta.seed.community.repository.CommunityRepository;
+import sparta.seed.community.repository.ParticipantsRepository;
 import sparta.seed.community.repository.ProofRepository;
 import sparta.seed.community.service.SlangService;
 import sparta.seed.exception.CustomException;
@@ -33,6 +34,7 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +42,7 @@ public class MemberService {
   private final MemberRepository memberRepository;
   private final CommunityRepository communityRepository;
   private final ClearMissionRepository clearMissionRepository;
+  private final ParticipantsRepository participantsRepository;
   private final DateUtil dateUtil;
   private final TokenProvider tokenProvider;
   private final ProofRepository proofRepository;
@@ -90,15 +93,16 @@ public class MemberService {
    */
   public ResponseEntity<List<CommunityMyJoinResponseDto>> showGroupMissionList(UserDetailsImpl userDetails) {
     try {
-      List<Community> communityList = communityRepository.findByMemberIdOrderByCreatedAtDesc(userDetails.getId());
+      List<Community> communityList = memberRepository.getCommunityBelongToMember(userDetails.getId());
       List<CommunityMyJoinResponseDto> responseDtoList = new ArrayList<>();
       for (Community community : communityList) {
         responseDtoList.add(CommunityMyJoinResponseDto.builder()
                 .communityId(community.getId())
                 .title(community.getTitle())
                 .img(community.getImg())
-                .currentPercent(((double) community.getParticipantsList().size() / (double) community.getLimitParticipants()) * 100)
-                .successPercent(((Double.valueOf(proofRepository.getCertifiedProof(community)) / (double) community.getParticipantsList().size()) / (double) community.getLimitScore()) * 100)
+                .writer(userDetails.getId().equals(community.getMemberId()))
+                .currentPercent(((double) community.getParticipantsList().size() / community.getLimitParticipants()) * 100)
+                .successPercent((((double) proofRepository.getCertifiedProof(community) / (double) community.getParticipantsList().size()) / community.getLimitScore()) * 100)
                 .startDate(community.getStartDate())
                 .endDate(community.getEndDate())
                 .dateStatus(getDateStatus(community))
