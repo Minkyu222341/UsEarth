@@ -52,12 +52,12 @@ public class MissionService {
    * 유저한테 랜덤 미션 5개 넣어주기 (비워주는건 스케줄러 연동)
    */
   @Transactional
-  public MissionResponseDto injectMission(UserDetailsImpl userDetails, int memberLevel) {
+  public MissionResponseDto injectMission(UserDetailsImpl userDetails) {
     if (userDetails != null) {
       Member loginMember = memberRepository.findById(userDetails.getId())
               .orElseThrow(() -> new CustomException(ErrorCode.UNKNOWN_USER));
 
-//      int memberLevel = loginMember.getLevel();
+      int memberLevel = loginMember.getLevel();
 
       Map<String, Boolean> dailyMission = loginMember.getDailyMission();
 
