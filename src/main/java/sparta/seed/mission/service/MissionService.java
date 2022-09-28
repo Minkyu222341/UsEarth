@@ -15,13 +15,19 @@ import sparta.seed.mission.domain.dto.responsedto.MissionResponseDto;
 import sparta.seed.mission.repository.ClearMissionRepository;
 import sparta.seed.mission.repository.MissionRepository;
 import sparta.seed.sercurity.UserDetailsImpl;
+import sparta.seed.util.DateUtil;
+import sparta.seed.util.ExpUtil;
 import sparta.seed.util.RedisService;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Set;
+
+
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +36,7 @@ public class MissionService {
   private final MemberRepository memberRepository;
   private final ClearMissionRepository clearMissionRepository;
   private final RedisService redisService;
+  private final ExpUtil expUtil;
 
 
   /**
@@ -48,7 +55,7 @@ public class MissionService {
   public MissionResponseDto injectMission(UserDetailsImpl userDetails, int memberLevel) {
     if (userDetails != null) {
       Member loginMember = memberRepository.findById(userDetails.getId())
-          .orElseThrow(() -> new CustomException(ErrorCode.UNKNOWN_USER));
+              .orElseThrow(() -> new CustomException(ErrorCode.UNKNOWN_USER));
 
 //      int memberLevel = loginMember.getLevel();
 
@@ -79,8 +86,8 @@ public class MissionService {
       }
 
       MissionResponseDto missionResponseDto = MissionResponseDto.builder()
-          .memberId(userDetails.getId())
-          .build();
+              .memberId(userDetails.getId())
+              .build();
 
       for (String key : dailyMission.keySet()) {
         boolean value = dailyMission.get(key);
@@ -89,9 +96,12 @@ public class MissionService {
       }
 
       return missionResponseDto;
-    }else throw new CustomException(ErrorCode.UNKNOWN_ERROR);
+    } else throw new CustomException(ErrorCode.UNKNOWN_ERROR);
   }
 
+   /**
+   * 레디스 중복미션 제
+   */
   public void deleteMissionSet(String memberId){
     redisService.deleteMissionSet(memberId);
   }
@@ -101,33 +111,55 @@ public class MissionService {
    */
   @Transactional
   public MissionClearResponseDto completeMission(UserDetailsImpl userDetails, MissionRequestDto missionRequestDto) {
+
+    String difficulty = missionRequestDto.getDifficulty();
+    String clearMissionName = difficulty + missionRequestDto.getMissionName();
     Member loginMember = memberRepository.findById(userDetails.getId())
-        .orElseThrow(()-> new CustomException(ErrorCode.UNKNOWN_USER));
+            .orElseThrow(() -> new CustomException(ErrorCode.UNKNOWN_USER));
     ClearMission clearMission = ClearMission.builder()
             .memberId(userDetails.getId())
             .content(missionRequestDto.getMissionName())
             .clearTime(LocalDate.now())
             .build();
 
-    if (!loginMember.getDailyMission().get(missionRequestDto.getMissionName())) {
-      loginMember.getDailyMission().put(missionRequestDto.getMissionName(), true);
+    if (!loginMember.getDailyMission().get(clearMissionName)) {
+      loginMember.getDailyMission().put(clearMissionName, true);
       clearMissionRepository.save(clearMission);
 
+      Integer needNextLevelExpBeforeAddExp = expUtil.getNextLevelExp().get(loginMember.getLevel());
 
-      
-      double clearMissionCnt = clearMissionRepository.countAllByMemberId(loginMember.getId());
-      double missionDiv = clearMissionCnt / 5;
-      String stringDiv = missionDiv +"";
-      String[] split = stringDiv.split("\\.");
+      if (difficulty.equals("[상]")) {
+        loginMember.addExp(3);
+        currentExpCompareToNeedNextLevelExp(loginMember, needNextLevelExpBeforeAddExp);
+      } else if (difficulty.equals("[중]")) {
+        loginMember.addExp(2);
+        currentExpCompareToNeedNextLevelExp(loginMember, needNextLevelExpBeforeAddExp);
+      } else {
+        loginMember.addExp(1);
+        currentExpCompareToNeedNextLevelExp(loginMember, needNextLevelExpBeforeAddExp);
+      }
+      Integer needNextLevelExpAfterAddExp = expUtil.getNextLevelExp().get(loginMember.getLevel());
 
       return MissionClearResponseDto.builder()
-          .missionName(missionRequestDto.getMissionName())
-          .complete(true)
-          .level((int) (missionDiv + 1))
-          .nextLevelExp(5 - (Integer.parseInt(split[1]) / 2))
-          .totalClear((int) clearMissionCnt).build();
-    }else throw new CustomException(ErrorCode.NOT_FOUND_MISSION);
+              .missionName(missionRequestDto.getMissionName())
+              .complete(true)
+              .level(loginMember.getLevel())
+              .nextLevelExp(needNextLevelExpAfterAddExp - loginMember.getExp())
+              .needNextLevelExp(needNextLevelExpAfterAddExp)
+              .build();
+    } else throw new CustomException(ErrorCode.NOT_FOUND_MISSION);
   }
+
+  private void currentExpCompareToNeedNextLevelExp(Member loginMember, Integer needNextLevelExpBeforeAddExp) {
+    if (loginMember.getExp() == needNextLevelExpBeforeAddExp) {
+      loginMember.levelUp();
+      loginMember.initExp();
+    } else if (loginMember.getExp() > needNextLevelExpBeforeAddExp) {
+      loginMember.levelUp();
+      loginMember.minusExp(needNextLevelExpBeforeAddExp);
+    }
+  }
+
 
 }
 

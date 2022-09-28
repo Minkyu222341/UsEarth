@@ -146,6 +146,7 @@ public class NaverUserService {
               .profileImage(profileImage)
               .nickname(nickname)
               .authority(Authority.ROLE_USER)
+              .level(1)
               .build();
 
       memberRepository.save(signUpMember);
