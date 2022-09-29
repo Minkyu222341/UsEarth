@@ -100,7 +100,7 @@ public class MissionService {
   }
 
    /**
-   * 레디스 중복미션 제
+   * 레디스 중복미션 제거
    */
   public void deleteMissionSet(String memberId){
     redisService.deleteMissionSet(memberId);
@@ -119,8 +119,12 @@ public class MissionService {
     ClearMission clearMission = ClearMission.builder()
             .memberId(userDetails.getId())
             .content(missionRequestDto.getMissionName())
-            .clearTime(LocalDate.now())
+            .clearTime(LocalDate.now().plusDays(1))
             .build();
+
+    if(!loginMember.getDailyMission().containsKey(clearMissionName)){
+      throw new CustomException(ErrorCode.NOT_FOUND_MISSION);
+    }
 
     if (!loginMember.getDailyMission().get(clearMissionName)) {
       loginMember.getDailyMission().put(clearMissionName, true);
@@ -147,7 +151,7 @@ public class MissionService {
               .nextLevelExp(loginMember.getExp())
               .needNextLevelExp(needNextLevelExpAfterAddExp)
               .build();
-    } else throw new CustomException(ErrorCode.NOT_FOUND_MISSION);
+    } else throw new CustomException(ErrorCode.ALREADY_DONE_MISSION);
   }
 
   private void currentExpCompareToNeedNextLevelExp(Member loginMember, Integer needNextLevelExpBeforeAddExp) {
