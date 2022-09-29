@@ -47,7 +47,7 @@ public class S3Uploader {
     File resize = resize(fileName, fileFormatName, multipartFile).orElseThrow(() -> new io.jsonwebtoken.io.IOException("변환실패"));
     amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resize));
 
-    removeNewFile(resize);
+//    removeNewFile(resize);
     return new S3Dto(fileName, result);
   }
 
