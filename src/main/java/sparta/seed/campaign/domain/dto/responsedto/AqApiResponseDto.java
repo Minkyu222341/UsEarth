@@ -16,6 +16,10 @@ public class AqApiResponseDto {
 		this.amount = amount;
 	}
 
+
+	public void setAmount(String amount) {
+		this.amount = amount;
+	}
 	public void setCategory(String category) {
 		this.category = category;
 	}

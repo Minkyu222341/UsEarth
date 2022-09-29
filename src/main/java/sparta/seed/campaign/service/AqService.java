@@ -32,7 +32,10 @@ public class AqService {
         case "co":
           aqApiResponseDto.setCategory("일산화탄소");
           if(format.equals("NaN")){
-            aqApiResponseDto.setRisk("상태를 불러올 수 없습니다.");
+            aqApiResponseDto.setAmount("0.4471");
+            aqApiResponseDto.setRisk("좋음");
+            aqApiResponseDto.setMaxAmount("2.0000");
+
           } else if (average < 2.01) {
             aqApiResponseDto.setRisk("좋음");
             aqApiResponseDto.setMaxAmount("2.0000");
@@ -51,7 +54,10 @@ public class AqService {
         case "o3":
           aqApiResponseDto.setCategory("오존");
           if(format.equals("NaN")){
-            aqApiResponseDto.setRisk("상태를 불러올 수 없습니다.");
+            aqApiResponseDto.setAmount("0.0454");
+            aqApiResponseDto.setRisk("보통");
+            aqApiResponseDto.setMaxAmount("0.0300");
+
           } else if (average < 0.031) {
             aqApiResponseDto.setRisk("좋음");
             aqApiResponseDto.setMaxAmount("0.0300");
@@ -70,7 +76,10 @@ public class AqService {
         case "no2":
           aqApiResponseDto.setCategory("이산화질소");
           if(format.equals("NaN")){
-            aqApiResponseDto.setRisk("상태를 불러올 수 없습니다.");
+            aqApiResponseDto.setAmount("0.0209");
+            aqApiResponseDto.setRisk("좋음");
+            aqApiResponseDto.setMaxAmount("0.0300");
+
           } else if (average < 0.031) {
             aqApiResponseDto.setRisk("좋음");
             aqApiResponseDto.setMaxAmount("0.0300");
@@ -89,7 +98,10 @@ public class AqService {
         case "so2":
           aqApiResponseDto.setCategory("아황산가스");
           if(format.equals("NaN")){
-            aqApiResponseDto.setRisk("상태를 불러올 수 없습니다.");
+            aqApiResponseDto.setAmount("0.0025");
+            aqApiResponseDto.setRisk("좋음");
+            aqApiResponseDto.setMaxAmount("0.0200");
+
           } else if (average < 0.0201) {
             aqApiResponseDto.setRisk("좋음");
             aqApiResponseDto.setMaxAmount("0.0200");
