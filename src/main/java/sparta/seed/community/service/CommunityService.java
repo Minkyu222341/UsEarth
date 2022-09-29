@@ -97,6 +97,7 @@ public class CommunityService {
             .limitScore(community.getLimitScore())
             .currentPercent(getCurrentPercent(community))
             .successPercent(getSuccessPercent(community, certifiedProof))
+            .currentCertifiedProof(certifiedProof)
             .startDate(community.getStartDate())
             .endDate(community.getEndDate())
             .dateStatus(getDateStatus(community))

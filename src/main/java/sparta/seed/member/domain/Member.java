@@ -32,11 +32,15 @@ public class Member extends BaseEntity {
   @Enumerated(EnumType.STRING)
   private Authority authority;
 
+  @Enumerated(EnumType.STRING)
+  private LoginType loginType;
+
   private String profileImage;
 
   private int exp;
 
   private int level;
+
 
 
   @ElementCollection
@@ -45,7 +49,7 @@ public class Member extends BaseEntity {
   private boolean isSecret;
 
   @Builder
-  public Member(Long id, String username, String password, String nickname, String socialId, Authority authority, String profileImage,int exp,int level) {
+  public Member(Long id, String username, String password, String nickname, String socialId, Authority authority, String profileImage,int exp,int level,LoginType loginType) {
     this.id = id;
     this.username = username;
     this.password = password;
@@ -55,6 +59,7 @@ public class Member extends BaseEntity {
     this.profileImage = profileImage;
     this.exp = exp;
     this.level = level;
+    this.loginType = loginType;
   }
 
   public void updateNickname(NicknameRequestDto requestDto) {
