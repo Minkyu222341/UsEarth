@@ -122,6 +122,10 @@ public class MissionService {
             .clearTime(LocalDate.now().plusDays(1))
             .build();
 
+    if(!loginMember.getDailyMission().containsKey(clearMissionName)){
+      throw new CustomException(ErrorCode.NOT_FOUND_MISSION);
+    }
+
     if (!loginMember.getDailyMission().get(clearMissionName)) {
       loginMember.getDailyMission().put(clearMissionName, true);
       clearMissionRepository.save(clearMission);
@@ -147,7 +151,7 @@ public class MissionService {
               .nextLevelExp(loginMember.getExp())
               .needNextLevelExp(needNextLevelExpAfterAddExp)
               .build();
-    } else throw new CustomException(ErrorCode.NOT_FOUND_MISSION);
+    } else throw new CustomException(ErrorCode.ALREADY_DONE_MISSION);
   }
 
   private void currentExpCompareToNeedNextLevelExp(Member loginMember, Integer needNextLevelExpBeforeAddExp) {
