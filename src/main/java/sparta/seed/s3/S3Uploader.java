@@ -47,9 +47,9 @@ public class S3Uploader {
     ObjectMetadata objectMetadata = new ObjectMetadata();
     objectMetadata.setContentLength(resize.getSize());
     objectMetadata.setContentType(resize.getContentType());
-    amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resize.getInputStream(), objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
+    amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resize.getInputStream(), objectMetadata).withCannedAcl(CannedAccessControlList.PublicReadWrite));
     String result = amazonS3Client.getUrl(bucket, fileName).toString();
-    removeNewFile(new File(Objects.requireNonNull(resize.getOriginalFilename())));
+//    removeNewFile(new File(Objects.requireNonNull(resize.getOriginalFilename())));
     return new S3Dto(fileName, result);
   }
 
