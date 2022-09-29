@@ -323,7 +323,7 @@ public class CommunityService {
   }
 
   private double getSuccessPercent(Community community, Long certifiedProof) {
-    return (((double)certifiedProof / community.getParticipantsList().size()) / community.getLimitScore()) * 100;
+    return ((double)certifiedProof / community.getLimitScore()) * 100;
   }
 
   private String isChangedNickname(CommunityRequestDto requestDto, UserDetailsImpl userDetails) {
