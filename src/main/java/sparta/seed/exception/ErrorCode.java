@@ -52,6 +52,7 @@ public enum ErrorCode {
      * 미션
      */
     NOT_FOUND_MISSION(HttpStatus.BAD_REQUEST, "400", "오늘의 미션에서 찾을 수 없습니다."),
+    ALREADY_DONE_MISSION(HttpStatus.BAD_REQUEST, "400", "이미 완료된 미션입니다."),
 
     /**
      * 비속어 필터
