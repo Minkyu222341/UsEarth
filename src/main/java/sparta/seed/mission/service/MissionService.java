@@ -24,6 +24,7 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Set;
 
@@ -119,7 +120,7 @@ public class MissionService {
     ClearMission clearMission = ClearMission.builder()
             .memberId(userDetails.getId())
             .content(missionRequestDto.getMissionName())
-            .clearTime(LocalDate.now().plusDays(1))
+            .clearTime(String.valueOf(LocalDate.now()))
             .build();
 
     if(!loginMember.getDailyMission().containsKey(clearMissionName)){
