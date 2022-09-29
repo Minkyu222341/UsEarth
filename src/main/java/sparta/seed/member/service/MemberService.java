@@ -125,7 +125,7 @@ public class MemberService {
    */
   public ResponseEntity<ClearMissionResponseDto> targetDayMission(String selectedDate, UserDetailsImpl userDetails) {
     try {
-      List<ClearMission> clearMissionList = clearMissionRepository.findAllByMemberIdAndClearTime(userDetails.getId(), LocalDate.parse(selectedDate));
+      List<ClearMission> clearMissionList = clearMissionRepository.findAllByMemberIdAndClearTime(userDetails.getId(), LocalDate.parse(selectedDate).plusDays(1));
       return ResponseEntity.ok(ClearMissionResponseDto.builder()
               .clearTime(LocalDate.parse(selectedDate))
               .clearMissionList(clearMissionList)
