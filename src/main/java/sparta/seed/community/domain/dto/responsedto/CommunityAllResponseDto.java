@@ -9,8 +9,8 @@ public class CommunityAllResponseDto {
 	private String nickname;
 	private String title;
 	private String img;
-	private long currentPercent;
-	private long successPercent;
+	private int currentPercent;
+	private int successPercent;
 	private String dateStatus;
 	private boolean secret;
 	private String password;
@@ -22,8 +22,8 @@ public class CommunityAllResponseDto {
 		this.nickname = nickname;
 		this.title = title;
 		this.img = img;
-		this.currentPercent = (long) currentPercent;
-		this.successPercent = (long) successPercent;
+		this.currentPercent = (int) currentPercent;
+		this.successPercent = (int) successPercent;
 		this.dateStatus = dateStatus;
 		this.secret = secret;
 		this.password = password;
