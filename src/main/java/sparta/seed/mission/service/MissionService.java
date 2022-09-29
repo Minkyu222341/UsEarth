@@ -100,7 +100,7 @@ public class MissionService {
   }
 
    /**
-   * 레디스 중복미션 제
+   * 레디스 중복미션 제거
    */
   public void deleteMissionSet(String memberId){
     redisService.deleteMissionSet(memberId);
