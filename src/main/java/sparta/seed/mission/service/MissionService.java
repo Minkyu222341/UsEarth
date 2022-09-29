@@ -119,7 +119,7 @@ public class MissionService {
     ClearMission clearMission = ClearMission.builder()
             .memberId(userDetails.getId())
             .content(missionRequestDto.getMissionName())
-            .clearTime(LocalDate.now())
+            .clearTime(LocalDate.now().plusDays(1))
             .build();
 
     if (!loginMember.getDailyMission().get(clearMissionName)) {
