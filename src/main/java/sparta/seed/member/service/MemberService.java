@@ -30,7 +30,6 @@ import sparta.seed.util.RedisService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -125,9 +124,9 @@ public class MemberService {
    */
   public ResponseEntity<ClearMissionResponseDto> targetDayMission(String selectedDate, UserDetailsImpl userDetails) {
     try {
-      List<ClearMission> clearMissionList = clearMissionRepository.findAllByMemberIdAndClearTime(userDetails.getId(), LocalDate.parse(selectedDate).plusDays(1));
+      List<ClearMission> clearMissionList = clearMissionRepository.findAllByMemberIdAndClearTime(userDetails.getId(), selectedDate);
       return ResponseEntity.ok(ClearMissionResponseDto.builder()
-              .clearTime(LocalDate.parse(selectedDate))
+              .clearTime(selectedDate)
               .clearMissionList(clearMissionList)
               .count(clearMissionList.size())
               .build());
