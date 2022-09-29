@@ -23,15 +23,16 @@ public class CommunityResponseDto {
   private List<Participants> participantsList;
   private String content;
   private Integer participantsCnt;
-  private long limitParticipants;
+  private int limitParticipants;
   //참여 퍼센트
-  private long currentPercent;
+  private int currentPercent;
   //로그인한 사용자가 현재 모임에 참여했는지 여부
   private boolean participant;
   //목표 인증글 수
-  private long limitScore;
+  private int limitScore;
   //인증 퍼센트
-  private long successPercent;
+  private int successPercent;
+  private long currentCertifiedProof;
   private String startDate;
   private String endDate;
   //진행 여부
@@ -42,7 +43,7 @@ public class CommunityResponseDto {
 
   @QueryProjection
   @Builder
-  public CommunityResponseDto(Long communityId, String img, String title, boolean participant, List<Participants> participantsList, double limitScore, double limitParticipants, double successPercent, double currentPercent, Integer participantsCnt, String nickname, String startDate, String endDate, boolean secret, String password, String content, String dateStatus, String createAt, boolean writer) {
+  public CommunityResponseDto(Long communityId, String img, String title, boolean participant, List<Participants> participantsList, double limitScore, double limitParticipants, double successPercent, long currentCertifiedProof, double currentPercent, Integer participantsCnt, String nickname, String startDate, String endDate, boolean secret, String password, String content, String dateStatus, String createAt, boolean writer) {
     this.communityId = communityId;
     this.createAt = createAt;
     this.nickname = nickname;
@@ -51,11 +52,12 @@ public class CommunityResponseDto {
     this.img = img;
     this.participantsList = participantsList;
     this.participantsCnt = participantsCnt;
-    this.limitParticipants = (long)limitParticipants;
-    this.currentPercent = (long) currentPercent;
+    this.limitParticipants = (int)limitParticipants;
+    this.currentPercent = (int) currentPercent;
     this.participant = participant;
-    this.limitScore = (long)limitScore;
-    this.successPercent = (long) successPercent;
+    this.limitScore = (int)limitScore;
+    this.successPercent = (int) successPercent;
+    this.currentCertifiedProof = currentCertifiedProof;
     this.startDate = startDate;
     this.endDate = endDate;
     this.dateStatus = dateStatus;
