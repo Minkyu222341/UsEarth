@@ -1,6 +1,7 @@
 package sparta.seed.mission.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import sparta.seed.mission.domain.Mission;
@@ -36,6 +37,7 @@ public class MissionController {
 	 * 레디스 캐시에 있는 중복미션 방지 데이터 삭제
 	 */
 	@GetMapping ("/api/missions/delete")
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public String deleteMissionSet (@RequestParam String memberId){
 		missionService.deleteMissionSet(memberId);
 		return "레디스 삭제완료";
