@@ -216,6 +216,7 @@ public class MemberService {
             .nextLevelExp(member.getExp())
             .needNextLevelExp(needNextLevelExp)
             .isSecret(member.isSecret())
+            .loginType(member.getLoginType())
             .build();
     return ResponseEntity.ok().body(userInfoResponseDto);
   }

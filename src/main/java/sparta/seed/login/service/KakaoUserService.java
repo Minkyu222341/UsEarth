@@ -23,6 +23,7 @@ import sparta.seed.jwt.TokenProvider;
 import sparta.seed.login.domain.dto.requestdto.SocialMemberRequestDto;
 import sparta.seed.login.domain.dto.responsedto.TokenResponseDto;
 import sparta.seed.member.domain.Authority;
+import sparta.seed.member.domain.LoginType;
 import sparta.seed.member.domain.Member;
 import sparta.seed.member.repository.MemberRepository;
 import sparta.seed.sercurity.UserDetailsImpl;
@@ -144,6 +145,7 @@ public class KakaoUserService {
               .profileImage(profileImage)
               .authority(authority)
               .level(1)
+              .loginType(LoginType.KAKAO)
               .build();
       return memberRepository.save(signUp);
     }
