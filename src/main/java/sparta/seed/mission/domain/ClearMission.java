@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.time.LocalDate;
 
 
 @Getter
@@ -23,10 +22,10 @@ public class ClearMission{
   private Long memberId;
   //완료한 미션
   private String content;
-  private LocalDate clearTime;
+  private String clearTime;
 
   @Builder
-  public ClearMission(Long memberId, String content, LocalDate clearTime) {
+  public ClearMission(Long memberId, String content, String clearTime) {
     this.memberId = memberId;
     this.content = content;
     this.clearTime = clearTime;
