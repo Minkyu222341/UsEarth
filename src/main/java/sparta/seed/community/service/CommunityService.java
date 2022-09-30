@@ -111,6 +111,8 @@ public class CommunityService {
       throw new CustomException(ErrorCode.UNDEFINDED_PATH);
     } catch (NullPointerException e) {
       throw new CustomException(ErrorCode.NOT_FOUND_COMMUNITY);
+    } catch (Exception e) {
+      throw new CustomException(ErrorCode.UNDEFINDED_PATH);
     }
 
   }
