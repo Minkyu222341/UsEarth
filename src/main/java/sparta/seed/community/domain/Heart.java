@@ -16,9 +16,10 @@ public class Heart {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "proofId")
+    @JoinColumn(name = "proofId",nullable = false)
     private Proof proof;
     //누른 유저의 Pk
+    @Column(nullable = false)
     private Long memberId;
 
     @Builder
