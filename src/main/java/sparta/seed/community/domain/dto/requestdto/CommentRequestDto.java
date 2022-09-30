@@ -11,3 +11,4 @@ public class CommentRequestDto {
 	private boolean delete;
 	private String changeNickname;
 }
+
