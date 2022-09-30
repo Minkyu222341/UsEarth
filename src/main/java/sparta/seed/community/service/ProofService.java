@@ -85,6 +85,8 @@ public class ProofService {
       Proof proof = findTheProofById(proofId);
       return buildProofResponseDto(userDetails, proof);
     } catch (RequestRejectedException e) {
+      throw new CustomException(ErrorCode.UNDEFINDED_PATH);
+    } catch (NullPointerException e) {
       throw new CustomException(ErrorCode.NOT_FOUND_PROOF);
     }
   }
