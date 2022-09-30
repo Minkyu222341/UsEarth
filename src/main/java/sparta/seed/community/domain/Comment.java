@@ -17,10 +17,13 @@ public class Comment extends BaseEntity {
   private Long id;
   //닉네임
   private String nickname;
+  @Column(nullable = false)
   //작성한 유저의 Pk
   private Long memberId;
+  @Column(nullable = false)
   //내용
   private String content;
+
   private String img;
   //인증글
   @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)

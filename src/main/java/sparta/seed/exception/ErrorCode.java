@@ -30,6 +30,7 @@ public enum ErrorCode {
     /**
      * 커뮤니티
      */
+    UNDEFINDED_PATH(HttpStatus.BAD_REQUEST,"400","올바른 경로를 입력해주세요."),
     EXCESS_PARTICIPANT(HttpStatus.BAD_REQUEST,"400","참가 인원 초과"),
     INCORRECT_USERID(HttpStatus.BAD_REQUEST, "400", "작성자가 아닙니다."),
     ALREADY_PARTICIPATED(HttpStatus.BAD_REQUEST,"400","이미 참여 했습니다."),

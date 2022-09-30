@@ -10,8 +10,6 @@ import sparta.seed.community.domain.Community;
 import sparta.seed.community.domain.dto.requestdto.CommunitySearchCondition;
 import sparta.seed.community.repository.customrepository.CommunityRepositoryCustom;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -24,7 +22,7 @@ public class CommunityRepositoryImpl implements CommunityRepositoryCustom {
 
   @Override
   public QueryResults<Community> getAllCommunity(Pageable pageable, CommunitySearchCondition condition) {
-    return queryFactory // querydsl 강의 뒷쪽 페이징 참고
+    return queryFactory
             .selectFrom(community)
             .where(titleEq(condition))
             .offset(pageable.getOffset())

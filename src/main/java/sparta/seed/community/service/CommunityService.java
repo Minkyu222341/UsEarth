@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -81,31 +82,37 @@ public class CommunityService {
   public ResponseEntity<CommunityResponseDto> getDetailCommunity(Long id, UserDetailsImpl userDetails, HttpServletRequest servletRequest) throws ParseException {
 
     tokenProvider.validateHttpHeader(servletRequest);
+    try {
+      Community community = findTheCommunityByMemberId(id);
+      Long certifiedProof = getCertifiedProof(community);
+      CommunityResponseDto communityResponseDto = CommunityResponseDto.builder()
+              .communityId(community.getId())
+              .createAt(String.valueOf(community.getCreatedAt()))
+              .nickname(community.getNickname())
+              .title(community.getTitle())
+              .content(community.getContent())
+              .img(community.getImg())
+              .participantsCnt(community.getParticipantsList().size())
+              .limitParticipants(community.getLimitParticipants())
+              .participant(userDetails != null && participant(userDetails, community))
+              .limitScore(community.getLimitScore())
+              .currentPercent(getCurrentPercent(community))
+              .successPercent(getSuccessPercent(community, certifiedProof))
+              .currentCertifiedProof(certifiedProof)
+              .startDate(community.getStartDate())
+              .endDate(community.getEndDate())
+              .dateStatus(getDateStatus(community))
+              .secret(community.isPasswordFlag())
+              .password(community.getPassword())
+              .writer(userDetails != null && community.getMemberId().equals(userDetails.getId()))
+              .build();
+      return ResponseEntity.ok().body(communityResponseDto);
+    } catch (RequestRejectedException e) {
+      throw new CustomException(ErrorCode.UNDEFINDED_PATH);
+    } catch (NullPointerException e) {
+      throw new CustomException(ErrorCode.NOT_FOUND_COMMUNITY);
+    }
 
-    Community community = findTheCommunityByMemberId(id);
-    Long certifiedProof = getCertifiedProof(community);
-    CommunityResponseDto communityResponseDto = CommunityResponseDto.builder()
-            .communityId(community.getId())
-            .createAt(String.valueOf(community.getCreatedAt()))
-            .nickname(community.getNickname())
-            .title(community.getTitle())
-            .content(community.getContent())
-            .img(community.getImg())
-            .participantsCnt(community.getParticipantsList().size())
-            .limitParticipants(community.getLimitParticipants())
-            .participant(userDetails != null && participant(userDetails, community))
-            .limitScore(community.getLimitScore())
-            .currentPercent(getCurrentPercent(community))
-            .successPercent(getSuccessPercent(community, certifiedProof))
-            .currentCertifiedProof(certifiedProof)
-            .startDate(community.getStartDate())
-            .endDate(community.getEndDate())
-            .dateStatus(getDateStatus(community))
-            .secret(community.isPasswordFlag())
-            .password(community.getPassword())
-            .writer(userDetails != null && community.getMemberId().equals(userDetails.getId()))
-            .build();
-    return ResponseEntity.ok().body(communityResponseDto);
   }
 
   /**
@@ -121,7 +128,7 @@ public class CommunityService {
       slangService.checkSlang(communityRequestDto.getTitle());
       slangService.checkSlang(communityRequestDto.getContent());
 
-      community.update(communityRequestDto,nickname);
+      community.update(communityRequestDto, nickname);
 
       if (communityRequestDto.isDelete() || multipartFile != null) {
         community.setImg(returnImageUrl(multipartFile));
@@ -212,8 +219,8 @@ public class CommunityService {
     }
     return hasNext;
   }
-  private List<CommunityAllResponseDto> getAllCommunityList(QueryResults<Community> allCommunity, UserDetailsImpl
-          userDetails) throws ParseException {
+
+  private List<CommunityAllResponseDto> getAllCommunityList(QueryResults<Community> allCommunity, UserDetailsImpl userDetails) throws ParseException {
     List<CommunityAllResponseDto> communityList = new ArrayList<>();
     for (Community community : allCommunity.getResults()) {
       Long certifiedProof = getCertifiedProof(community);
@@ -321,12 +328,12 @@ public class CommunityService {
   }
 
   private double getSuccessPercent(Community community, Long certifiedProof) {
-    return ((double)certifiedProof / community.getLimitScore()) * 100;
+    return ((double) certifiedProof / community.getLimitScore()) * 100;
   }
 
   private String isChangedNickname(CommunityRequestDto requestDto, UserDetailsImpl userDetails) {
     String nickname;
-    if (requestDto.getChangeNickname()== null) {
+    if (requestDto.getChangeNickname() == null) {
       nickname = userDetails.getNickname();
     } else {
       nickname = requestDto.getChangeNickname();
