@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -42,16 +43,17 @@ public class S3Uploader {
 
     String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
     String fileFormatName = multipartFile.getContentType().substring(multipartFile.getContentType().lastIndexOf("/") + 1);
+    MultipartFile resize = resize(fileName, fileFormatName, multipartFile);
+    ObjectMetadata objectMetadata = new ObjectMetadata();
+    objectMetadata.setContentLength(resize.getSize());
+    objectMetadata.setContentType(resize.getContentType());
+    amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resize.getInputStream(), objectMetadata).withCannedAcl(CannedAccessControlList.PublicReadWrite));
     String result = amazonS3Client.getUrl(bucket, fileName).toString();
-
-    File resize = resize(fileName, fileFormatName, multipartFile).orElseThrow(() -> new io.jsonwebtoken.io.IOException("변환실패"));
-    amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resize));
-
-    removeNewFile(resize);
+//    removeNewFile(new File(Objects.requireNonNull(resize.getOriginalFilename())));
     return new S3Dto(fileName, result);
   }
 
-  private Optional<File> resize(String fileName, String fileFormatName, MultipartFile originalImage) throws IOException {
+  private MultipartFile resize(String fileName, String fileFormatName, MultipartFile originalImage) throws IOException {
 
     // 요청 받은 파일로 부터 BufferedImage 객체를 생성합니다.
     BufferedImage srcImg = ImageIO.read(originalImage.getInputStream());
@@ -70,21 +72,19 @@ public class S3Uploader {
     if (demandWidth >= originWidth) {
       newWidth = originWidth;
       newHeight = originHeight;
-    }else {
+    } else {
       newWidth = demandWidth;
       newHeight = (demandWidth * originHeight) / originWidth;
     }
 
-    // crop 된 이미지로 썸네일을 생성합니다.
     BufferedImage destImg = Scalr.resize(srcImg, newWidth, newHeight);
 
-    // 썸네일을 저장합니다.
-    File resizedImage = new File(fileName);
-    if (resizedImage.createNewFile()) {
-      ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
-      return Optional.of(resizedImage);
-    }
-    return Optional.empty();
+
+    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    ImageIO.write(destImg, fileFormatName.toLowerCase(), byteArrayOutputStream);
+    byteArrayOutputStream.flush();
+    destImg.flush();
+    return new MockMultipartFile(fileName, byteArrayOutputStream.toByteArray());
   }
 
   private void removeNewFile(File targetFile) {
