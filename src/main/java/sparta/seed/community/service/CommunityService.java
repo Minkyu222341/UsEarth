@@ -299,7 +299,6 @@ public class CommunityService {
           userDetails) throws ParseException {
     List<CommunityAllResponseDto> communityList = new ArrayList<>();
     for (Community community : communities) {
-      if (!community.isPasswordFlag() && community.getLimitParticipants() > community.getParticipantsList().size()) {
         Long certifiedProof = getCertifiedProof(community);
         communityList.add(CommunityAllResponseDto.builder()
                 .communityId(community.getId())
@@ -314,7 +313,6 @@ public class CommunityService {
                 .writer(userDetails != null && community.getMemberId().equals(userDetails.getId()))
                 .build());
       }
-    }
     return communityList;
   }
 

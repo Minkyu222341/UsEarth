@@ -36,15 +36,15 @@ public class CommunityRepositoryImpl implements CommunityRepositoryCustom {
 
   public List<Community> activeCommunity() {
     return queryFactory.selectFrom(community)
-            .where(community.endDate.goe(String.valueOf(LocalDate.now())), community.startDate.loe(String.valueOf(LocalDate.now()))) // 종료일 > 현재 시간 , 시작일 <= 현재시간
+            .where(community.endDate.goe(String.valueOf(LocalDate.now())), community.startDate.loe(String.valueOf(LocalDate.now())), (community.proofList.size()).goe(1)) // 종료일 > 현재 시간 , 시작일 <= 현재시간
             .orderBy(community.proofList.size().desc()).limit(10) // 인증글 갯수대로 정렬 , 10개 출력
             .fetch(); //
   }
 
   public List<Community> endOfCommunity() {
     return queryFactory.selectFrom(community)
-            .where(community.startDate.gt(String.valueOf(LocalDate.now()))) // 종료일 > 현재 시간 , 시작일 <= 현재시간
-            .orderBy(community.startDate.desc(),community.participantsList.size().desc()).limit(10)
+            .where(community.endDate.gt(String.valueOf(LocalDate.now())), (community.limitParticipants).gt(community.participantsList.size())) // 종료일 > 현재 시간 , 시작일 <= 현재시간
+            .orderBy(community.endDate.asc(),community.participantsList.size().desc()).limit(10)
             .fetch();
   }
 
