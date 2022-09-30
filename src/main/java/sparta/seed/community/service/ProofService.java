@@ -1,6 +1,9 @@
 package sparta.seed.community.service;
 
 import lombok.RequiredArgsConstructor;
+
+
+import org.junit.jupiter.api.Assertions;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -81,6 +84,7 @@ public class ProofService {
   public ProofResponseDto getProof(Long proofId, UserDetailsImpl userDetails, HttpServletRequest servletRequest) {
 
     tokenProvider.validateHttpHeader(servletRequest);
+
     try {
       Proof proof = findTheProofById(proofId);
       return buildProofResponseDto(userDetails, proof);
@@ -88,8 +92,6 @@ public class ProofService {
       throw new CustomException(ErrorCode.UNDEFINDED_PATH);
     } catch (NullPointerException e) {
       throw new CustomException(ErrorCode.NOT_FOUND_PROOF);
-    } catch (Exception e) {
-      throw new CustomException(ErrorCode.UNDEFINDED_PATH);
     }
   }
 
@@ -231,7 +233,7 @@ public class ProofService {
   }
 
   private Proof findTheProofById(Long proofId) {
-    return proofRepository.findById(proofId).orElseThrow(() -> new NullPointerException(ErrorCode.NOT_FOUND_PROOF.getMsg()));
+    return proofRepository.findById(proofId).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PROOF));
   }
 
   private ProofResponseDto buildProofResponseDto(UserDetailsImpl userDetails, Proof proof) {
