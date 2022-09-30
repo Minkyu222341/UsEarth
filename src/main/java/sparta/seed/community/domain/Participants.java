@@ -16,7 +16,6 @@ public class Participants {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   @ManyToOne
-  @Column(nullable = false)
   private Community community;
   @Column(nullable = false)
   private Long memberId;

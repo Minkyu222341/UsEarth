@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor
 @Getter
@@ -12,9 +13,9 @@ public class CommunityRequestDto {
   private String startDate;
   @NotEmpty(message = "종료 날짜를 입력해 주세요.")
   private String endDate;
-  @NotEmpty(message = "달성목표를 설정해 주세요.")
+  @NotNull(message = "달성목표를 설정해 주세요.")
   private Integer limitScore;
-  @NotEmpty(message = "참가인원을 설정해 주세요.")
+  @NotNull(message = "참가인원을 설정해 주세요.")
   private Integer limitParticipants;
   private boolean secret;
   private String password;
