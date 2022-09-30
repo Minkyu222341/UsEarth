@@ -34,15 +34,15 @@ public class CommunityRepositoryImpl implements CommunityRepositoryCustom {
 
   public List<Community> activeCommunity() {
     return queryFactory.selectFrom(community)
-            .where(community.endDate.goe(String.valueOf(LocalDate.now())), community.startDate.loe(String.valueOf(LocalDate.now())))
+            .where(community.endDate.goe(String.valueOf(LocalDate.now())), (community.proofList.size()).goe(1))
             .orderBy(community.proofList.size().desc()).limit(10)
             .fetch();
   }
 
   public List<Community> endOfCommunity() {
     return queryFactory.selectFrom(community)
-            .where(community.startDate.gt(String.valueOf(LocalDate.now())))
-            .orderBy(community.startDate.desc(),community.participantsList.size().desc()).limit(10)
+            .where(community.startDate.gt(String.valueOf(LocalDate.now())), (community.limitParticipants).gt(community.participantsList.size()))
+            .orderBy(community.startDate.asc(),community.participantsList.size().desc()).limit(10)
             .fetch();
   }
 
