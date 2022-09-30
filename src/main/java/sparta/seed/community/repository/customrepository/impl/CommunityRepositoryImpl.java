@@ -41,8 +41,8 @@ public class CommunityRepositoryImpl implements CommunityRepositoryCustom {
 
   public List<Community> endOfCommunity() {
     return queryFactory.selectFrom(community)
-            .where(community.startDate.gt(String.valueOf(LocalDate.now())), (community.limitParticipants).gt(community.participantsList.size()))
-            .orderBy(community.startDate.asc(),community.participantsList.size().desc()).limit(10)
+            .where(community.endDate.gt(String.valueOf(LocalDate.now())), (community.limitParticipants).gt(community.participantsList.size()))
+            .orderBy(community.endDate.asc(),community.participantsList.size().desc()).limit(10)
             .fetch();
   }
 
