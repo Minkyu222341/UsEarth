@@ -24,20 +24,27 @@ public class Community extends BaseEntity {
   private Long id;
   //제목
   private String title;
+  @Column(nullable = false)
   //작성자
   private String nickname;
+  @Column(nullable = false)
   //작성한 유저의 PK
   private Long memberId;
   //내용
+  @Column(nullable = false)
   private String content;
   private String img;
   //캠페인시작일
+  @Column(nullable = false)
   private String startDate;
   //캠페인마감일
+  @Column(nullable = false)
   private String endDate;
   //목표 달성 횟수
+  @Column(nullable = false)
   private double limitScore;
   //참가인원 제한
+  @Column(nullable = false)
   private double limitParticipants;
   //비밀글여부
   private boolean passwordFlag;

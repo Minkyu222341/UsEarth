@@ -4,8 +4,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import sparta.seed.campaign.repository.custom.AqRepositoryCustom;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 import static sparta.seed.campaign.domain.QAqApiData.aqApiData;

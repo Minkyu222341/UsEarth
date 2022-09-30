@@ -24,7 +24,7 @@ public class SeedApplication {
   }
   public static final String APPLICATION_LOCATIONS = "spring.config.location="
           + "classpath:application.properties,"
-          + "/app/config/springboot-webservice/application.yml";
+          + "/home/ec2-user/application.yml";
 
   public static void main(String[] args) {
     new SpringApplicationBuilder(SeedApplication.class)
