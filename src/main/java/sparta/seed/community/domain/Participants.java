@@ -17,7 +17,9 @@ public class Participants {
   private Long id;
   @ManyToOne
   private Community community;
+  @Column(nullable = false)
   private Long memberId;
+  @Column(nullable = false)
   private String nickname;
 
   @Builder

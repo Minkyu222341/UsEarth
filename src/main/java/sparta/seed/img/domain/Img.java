@@ -17,7 +17,7 @@ public class Img extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
+  @Column(nullable = false)
   private String imgUrl;
 
   @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)

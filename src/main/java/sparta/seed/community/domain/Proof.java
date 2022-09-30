@@ -21,22 +21,23 @@ public class Proof extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
+  @Column(nullable = false)
   private String nickname;
-
+  @Column(nullable = false)
   private Long memberId;
-
+  @Column(nullable = false)
   private String title;
-
+  @Column(nullable = false)
   private String content;
 
 
   @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
-  @JoinColumn(name = "community_id")
+  @JoinColumn(name = "community_id",nullable = false)
   private Community community;
 
   //이미지리스트
-  @OneToMany(mappedBy = "proof",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "proof", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @Column(nullable = false)
   private List<Img> imgList = new ArrayList<>();
 
   //댓글리스트

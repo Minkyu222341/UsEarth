@@ -57,7 +57,7 @@ public class CommunityController {
    */
   @PostMapping(value = "/api/community", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
 
-  public ResponseEntity<String> creatMemo(@RequestPart(value = "dto") CommunityRequestDto requestDto,
+  public ResponseEntity<String> creatMemo(@Valid @RequestPart(value = "dto") CommunityRequestDto requestDto,
                                           @RequestPart(required = false) MultipartFile multipartFile,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {   //메모를 생성하려면 데이터를 물고다닐 Dto가 필요하다.  // 날아오는 녀석을 그대로 requestDto에 넣어주기 위해서 해당 어노테이션을 씀
 

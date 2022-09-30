@@ -10,8 +10,6 @@ import sparta.seed.community.domain.Community;
 import sparta.seed.community.domain.dto.requestdto.CommunitySearchCondition;
 import sparta.seed.community.repository.customrepository.CommunityRepositoryCustom;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -24,7 +22,7 @@ public class CommunityRepositoryImpl implements CommunityRepositoryCustom {
 
   @Override
   public QueryResults<Community> getAllCommunity(Pageable pageable, CommunitySearchCondition condition) {
-    return queryFactory // querydsl 강의 뒷쪽 페이징 참고
+    return queryFactory
             .selectFrom(community)
             .where(titleEq(condition))
             .offset(pageable.getOffset())
@@ -36,14 +34,14 @@ public class CommunityRepositoryImpl implements CommunityRepositoryCustom {
 
   public List<Community> activeCommunity() {
     return queryFactory.selectFrom(community)
-            .where(community.endDate.goe(String.valueOf(LocalDate.now())), community.startDate.loe(String.valueOf(LocalDate.now()))) // 종료일 > 현재 시간 , 시작일 <= 현재시간
-            .orderBy(community.proofList.size().desc()).limit(10) // 인증글 갯수대로 정렬 , 10개 출력
-            .fetch(); //
+            .where(community.endDate.goe(String.valueOf(LocalDate.now())), community.startDate.loe(String.valueOf(LocalDate.now())))
+            .orderBy(community.proofList.size().desc()).limit(10)
+            .fetch();
   }
 
   public List<Community> endOfCommunity() {
     return queryFactory.selectFrom(community)
-            .where(community.startDate.gt(String.valueOf(LocalDate.now()))) // 종료일 > 현재 시간 , 시작일 <= 현재시간
+            .where(community.startDate.gt(String.valueOf(LocalDate.now())))
             .orderBy(community.startDate.desc(),community.participantsList.size().desc()).limit(10)
             .fetch();
   }

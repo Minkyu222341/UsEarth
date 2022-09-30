@@ -20,33 +20,29 @@ public class Member extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
+  @Column(nullable = false)
   private String username;
-
+  @Column(nullable = false)
   private String password;
-
+  @Column(nullable = false)
   private String nickname;
-
+  @Column(nullable = false)
   private String socialId;
-
   @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
   private Authority authority;
-
   @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
   private LoginType loginType;
-
+  @Column(nullable = false)
   private String profileImage;
-
+  private boolean isSecret;
   private int exp;
-
   private int level;
-
-
-
   @ElementCollection
   private Map<String,Boolean> dailyMission = new HashMap<>(6,1);
 
-  private boolean isSecret;
+
 
   @Builder
   public Member(Long id, String username, String password, String nickname, String socialId, Authority authority, String profileImage,int exp,int level,LoginType loginType) {
