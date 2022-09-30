@@ -14,36 +14,6 @@ import java.util.List;
 
 @Component
 public class DateUtil {
-
-  private static class TIME_MAXIMUM {
-    public static final int SEC = 60;
-    public static final int MIN = 60;
-    public static final int HOUR = 24;
-    public static final int DAY = 30;
-    public static final int MONTH = 12;
-  }
-
-  public String weekOfMonth() throws ParseException {
-    LocalDate now = LocalDate.now();
-    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-    Date date = formatter.parse(String.valueOf(now));
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(date);
-    return String.valueOf(cal.get(Calendar.WEEK_OF_MONTH));
-  }
-
-  public List<LocalDate> scopeOfStats(MissionSearchCondition condition) {
-    String startDate = condition.getStartDate();
-    String endDate = condition.getEndDate();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    LocalDate start = LocalDate.parse(startDate, formatter);
-    LocalDate end = LocalDate.parse(endDate, formatter);
-    List<LocalDate> result = new ArrayList<>();
-    result.add(start);
-    result.add(end);
-    return result;
-  }
-
   public String dateStatus(String startDate, String endDate) throws ParseException {
     String todayfm = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
 
