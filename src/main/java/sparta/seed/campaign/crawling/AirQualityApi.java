@@ -27,6 +27,7 @@ public class AirQualityApi {
 
 	public void saveApiData(int index) throws IOException {
 		String[] itemCodeList = {"co", "o3", "no2", "so2", "pm10", "pm25"};
+		String targetTime = null;
 		List<AqApiData> aqApiDataList = new ArrayList<>();
 		for (String itemCode : itemCodeList) {
 
@@ -65,6 +66,8 @@ public class AirQualityApi {
 							formatter)).replace("T", " ");
 				}
 
+				targetTime = dataTime;
+
 				if (!parseAmount.equals("null")) {
 					AqApiData aqApiData = AqApiData.builder()
 							.category(itemCode)
@@ -76,6 +79,12 @@ public class AirQualityApi {
 				}
 			}
 		}
+		aqApiDataList.add(AqApiData.builder()
+						.amount(0)
+						.category("targetTime")
+						.region("targetTime")
+						.datetime(targetTime)
+				.build());
 		aqApiDataRepository.saveAll(aqApiDataList);
 	}
 }
