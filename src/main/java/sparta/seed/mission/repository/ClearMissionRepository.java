@@ -10,4 +10,6 @@ public interface ClearMissionRepository extends JpaRepository<ClearMission,Long>
 
 	int countAllByMemberId(Long memberId);
 	List<ClearMission> findAllByMemberIdAndClearTime(Long memberId, String clearTime);
+
+  void deleteByMemberId(Long id);
 }

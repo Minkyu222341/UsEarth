@@ -226,6 +226,7 @@ public class MemberService {
   @Transactional
   public ResponseEntity<String> withdrawal(UserDetailsImpl userDetails) {
     participantsRepository.deleteByMemberId(userDetails.getId());
+    clearMissionRepository.deleteByMemberId(userDetails.getId());
     memberRepository.deleteById(userDetails.getId());
     return ResponseEntity.ok().body(ResponseMsg.WITHDRAWAL_SUCCESS.getMsg());
   }
