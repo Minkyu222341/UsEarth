@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import sparta.seed.community.domain.dto.responsedto.CommunityMyJoinResponseDto;
 import sparta.seed.member.domain.dto.requestdto.NicknameRequestDto;
 import sparta.seed.member.domain.dto.responsedto.NicknameResponseDto;
@@ -13,6 +14,7 @@ import sparta.seed.mission.domain.dto.requestdto.MissionSearchCondition;
 import sparta.seed.mission.domain.dto.responsedto.ClearMissionResponseDto;
 import sparta.seed.sercurity.UserDetailsImpl;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -85,5 +87,14 @@ public class MemberController {
   @PatchMapping("/api/mypage/secret")
   public ResponseEntity<Boolean> isSecret(@AuthenticationPrincipal UserDetailsImpl userDetails) {
     return memberService.isSceret(userDetails);
+  }
+
+  /**
+   * 프로필 이미지 변경
+   */
+  @PatchMapping("/api/mypage/changeimg")
+  public ResponseEntity<Boolean> changeProfileImage(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                    @RequestPart(required = false) MultipartFile multipartFile) throws IOException {
+    return memberService.changeProfileImage(userDetails, multipartFile);
   }
 }

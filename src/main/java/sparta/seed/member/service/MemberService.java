@@ -5,6 +5,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import sparta.seed.community.domain.Community;
 import sparta.seed.community.domain.dto.responsedto.CommunityMyJoinResponseDto;
 import sparta.seed.community.repository.ProofRepository;
@@ -22,6 +23,7 @@ import sparta.seed.mission.domain.dto.requestdto.MissionSearchCondition;
 import sparta.seed.mission.domain.dto.responsedto.ClearMissionResponseDto;
 import sparta.seed.mission.repository.ClearMissionRepository;
 import sparta.seed.msg.ResponseMsg;
+import sparta.seed.s3.S3Uploader;
 import sparta.seed.sercurity.UserDetailsImpl;
 import sparta.seed.util.DateUtil;
 import sparta.seed.util.ExpUtil;
@@ -29,6 +31,7 @@ import sparta.seed.util.RedisService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +48,7 @@ public class MemberService {
   public static final String AUTHORIZATION_HEADER = "Authorization";
   private final RedisService redisService;
   private final SlangService slangService;
+  private final S3Uploader s3Uploader;
   private final ExpUtil expUtil;
 
   /**
@@ -219,5 +223,22 @@ public class MemberService {
             .loginType(member.getLoginType())
             .build();
     return ResponseEntity.ok().body(userInfoResponseDto);
+  }
+
+  /**
+   * 프로필 이미지 변경
+   */
+  @Transactional
+  public ResponseEntity<Boolean> changeProfileImage(UserDetailsImpl userDetails, MultipartFile multipartFile) throws IOException {
+    Member member = memberRepository.findById(userDetails.getId())
+        .orElseThrow(() -> new CustomException(ErrorCode.UNKNOWN_USER));
+
+    if(multipartFile == null){
+      throw new CustomException(ErrorCode.NOT_FOUND_IMG);
+    }
+
+    member.changeProfileImage(s3Uploader.upload(multipartFile).getUploadImageUrl());
+
+    return ResponseEntity.ok().body(true);
   }
 }

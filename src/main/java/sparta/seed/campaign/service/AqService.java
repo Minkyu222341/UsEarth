@@ -2,6 +2,7 @@ package sparta.seed.campaign.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import sparta.seed.campaign.domain.AqApiData;
 import sparta.seed.campaign.domain.dto.responsedto.AqApiResponseDto;
 import sparta.seed.campaign.repository.AqRepository;
 
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +21,15 @@ public class AqService {
 
   public List<AqApiResponseDto> airQualityData() {
     String[] categoryList = {"co","o3","no2","so2"};
-    String datetime = LocalDateTime.now().minusHours(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:00"));
+    int cnt = 1;
+    String datetime = LocalDateTime.now().minusHours(cnt).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:00"));
+    Optional<AqApiData> targetTime = aqApiDataRepository.findByDatetimeAndRegion(datetime, "targetTime");
+
+    while (targetTime.isEmpty()){
+      cnt++;
+      datetime = LocalDateTime.now().minusHours(cnt).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:00"));
+      targetTime = aqApiDataRepository.findByDatetimeAndRegion(datetime, "targetTime");
+    }
 
     List<AqApiResponseDto> aqApiResponseDtoList = new ArrayList<>();
 
@@ -31,12 +41,7 @@ public class AqService {
       switch (category) {
         case "co":
           aqApiResponseDto.setCategory("일산화탄소");
-          if(format.equals("NaN")){
-            aqApiResponseDto.setAmount("0.4471");
-            aqApiResponseDto.setRisk("좋음");
-            aqApiResponseDto.setMaxAmount("2.0000");
-
-          } else if (average < 2.01) {
+            if (average < 2.01) {
             aqApiResponseDto.setRisk("좋음");
             aqApiResponseDto.setMaxAmount("2.0000");
           } else if (average < 9.01) {
@@ -53,12 +58,7 @@ public class AqService {
 
         case "o3":
           aqApiResponseDto.setCategory("오존");
-          if(format.equals("NaN")){
-            aqApiResponseDto.setAmount("0.0454");
-            aqApiResponseDto.setRisk("보통");
-            aqApiResponseDto.setMaxAmount("0.0300");
-
-          } else if (average < 0.031) {
+            if (average < 0.031) {
             aqApiResponseDto.setRisk("좋음");
             aqApiResponseDto.setMaxAmount("0.0300");
           } else if (average < 0.091) {
@@ -75,12 +75,7 @@ public class AqService {
 
         case "no2":
           aqApiResponseDto.setCategory("이산화질소");
-          if(format.equals("NaN")){
-            aqApiResponseDto.setAmount("0.0209");
-            aqApiResponseDto.setRisk("좋음");
-            aqApiResponseDto.setMaxAmount("0.0300");
-
-          } else if (average < 0.031) {
+            if (average < 0.031) {
             aqApiResponseDto.setRisk("좋음");
             aqApiResponseDto.setMaxAmount("0.0300");
           } else if (average < 0.061) {
@@ -97,12 +92,7 @@ public class AqService {
 
         case "so2":
           aqApiResponseDto.setCategory("아황산가스");
-          if(format.equals("NaN")){
-            aqApiResponseDto.setAmount("0.0025");
-            aqApiResponseDto.setRisk("좋음");
-            aqApiResponseDto.setMaxAmount("0.0200");
-
-          } else if (average < 0.0201) {
+            if (average < 0.0201) {
             aqApiResponseDto.setRisk("좋음");
             aqApiResponseDto.setMaxAmount("0.0200");
           } else if (average < 0.0501) {
