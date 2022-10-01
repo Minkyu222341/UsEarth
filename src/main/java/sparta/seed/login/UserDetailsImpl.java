@@ -1,4 +1,4 @@
-package sparta.seed.sercurity;
+package sparta.seed.login;
 
 
 import org.springframework.security.core.GrantedAuthority;

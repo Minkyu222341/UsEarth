@@ -10,7 +10,7 @@ import sparta.seed.login.service.GoogleUserService;
 import sparta.seed.login.service.KakaoUserService;
 import sparta.seed.login.service.NaverUserService;
 import sparta.seed.member.service.MemberService;
-import sparta.seed.sercurity.UserDetailsImpl;
+import sparta.seed.login.UserDetailsImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -62,11 +62,5 @@ public class LoginController {
   public ResponseEntity<String> reissue(HttpServletRequest request, HttpServletResponse response) {
     return memberService.reissue(request, response);
   }
-  /**
-   헬스체크 컨트롤러
-   */
-  @GetMapping("/user/health")
-  public String checkHealth() {
-    return "healthyV2";
-  }
+
 }

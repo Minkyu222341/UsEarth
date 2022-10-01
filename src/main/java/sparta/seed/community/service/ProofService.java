@@ -3,7 +3,6 @@ package sparta.seed.community.service;
 import lombok.RequiredArgsConstructor;
 
 
-import org.junit.jupiter.api.Assertions;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +31,7 @@ import sparta.seed.member.repository.MemberRepository;
 import sparta.seed.msg.ResponseMsg;
 import sparta.seed.s3.S3Dto;
 import sparta.seed.s3.S3Uploader;
-import sparta.seed.sercurity.UserDetailsImpl;
+import sparta.seed.login.UserDetailsImpl;
 import sparta.seed.util.DateUtil;
 
 import javax.servlet.http.HttpServletRequest;

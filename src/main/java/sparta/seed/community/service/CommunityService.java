@@ -25,7 +25,7 @@ import sparta.seed.exception.ErrorCode;
 import sparta.seed.jwt.TokenProvider;
 import sparta.seed.msg.ResponseMsg;
 import sparta.seed.s3.S3Uploader;
-import sparta.seed.sercurity.UserDetailsImpl;
+import sparta.seed.login.UserDetailsImpl;
 import sparta.seed.util.DateUtil;
 
 import javax.servlet.http.HttpServletRequest;

@@ -14,17 +14,12 @@ import sparta.seed.mission.domain.dto.responsedto.MissionDetailResponseDto;
 import sparta.seed.mission.domain.dto.responsedto.MissionResponseDto;
 import sparta.seed.mission.repository.ClearMissionRepository;
 import sparta.seed.mission.repository.MissionRepository;
-import sparta.seed.sercurity.UserDetailsImpl;
-import sparta.seed.util.DateUtil;
+import sparta.seed.login.UserDetailsImpl;
 import sparta.seed.util.ExpUtil;
 import sparta.seed.util.RedisService;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.text.ParseException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Set;
 

@@ -10,7 +10,7 @@ import sparta.seed.community.domain.dto.requestdto.CommentRequestDto;
 import sparta.seed.community.domain.dto.responsedto.CommentResponseDto;
 import sparta.seed.community.domain.dto.responsedto.CommentResponseListDto;
 import sparta.seed.community.service.CommentService;
-import sparta.seed.sercurity.UserDetailsImpl;
+import sparta.seed.login.UserDetailsImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;

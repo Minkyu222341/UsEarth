@@ -11,7 +11,7 @@ import sparta.seed.community.domain.dto.responsedto.ProofCountResponseDto;
 import sparta.seed.community.domain.dto.responsedto.ProofHeartResponseDto;
 import sparta.seed.community.domain.dto.responsedto.ProofResponseDto;
 import sparta.seed.community.service.ProofService;
-import sparta.seed.sercurity.UserDetailsImpl;
+import sparta.seed.login.UserDetailsImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
