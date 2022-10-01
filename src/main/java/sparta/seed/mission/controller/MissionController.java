@@ -9,7 +9,7 @@ import sparta.seed.mission.domain.dto.requestdto.MissionRequestDto;
 import sparta.seed.mission.domain.dto.responsedto.MissionClearResponseDto;
 import sparta.seed.mission.domain.dto.responsedto.MissionResponseDto;
 import sparta.seed.mission.service.MissionService;
-import sparta.seed.sercurity.UserDetailsImpl;
+import sparta.seed.login.UserDetailsImpl;
 
 
 @RestController

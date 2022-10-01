@@ -15,7 +15,7 @@ import sparta.seed.community.domain.dto.responsedto.CommunityAllResponseDto;
 import sparta.seed.community.domain.dto.responsedto.CommunityResponseDto;
 import sparta.seed.community.domain.dto.responsedto.ParticipantResponseDto;
 import sparta.seed.community.service.CommunityService;
-import sparta.seed.sercurity.UserDetailsImpl;
+import sparta.seed.login.UserDetailsImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
