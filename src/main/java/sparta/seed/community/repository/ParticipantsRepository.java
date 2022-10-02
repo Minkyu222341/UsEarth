@@ -6,5 +6,5 @@ import sparta.seed.community.domain.Participants;
 
 public interface ParticipantsRepository extends JpaRepository<Participants,Long> {
   Boolean existsByCommunityAndMemberId(Community Community, Long memberId);
-  Long deleteByMemberId(Long memberId);
+  void deleteByMemberId(Long memberId);
 }

@@ -12,7 +12,7 @@ import sparta.seed.member.domain.dto.responsedto.UserInfoResponseDto;
 import sparta.seed.member.service.MemberService;
 import sparta.seed.mission.domain.dto.requestdto.MissionSearchCondition;
 import sparta.seed.mission.domain.dto.responsedto.ClearMissionResponseDto;
-import sparta.seed.sercurity.UserDetailsImpl;
+import sparta.seed.login.UserDetailsImpl;
 
 import java.io.IOException;
 import java.util.List;
@@ -54,7 +54,7 @@ public class MemberController {
    */
   @PatchMapping("/api/mypage/nickname")
   public ResponseEntity<NicknameResponseDto> updateNickname(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody NicknameRequestDto requestDto) {
-    return memberService.updateNickname(userDetails,requestDto);
+    return memberService.updateNickname(userDetails, requestDto);
   }
 
   /**
@@ -70,14 +70,14 @@ public class MemberController {
    */
   @GetMapping("/api/mypage/stats")
   public List<ClearMissionResponseDto> getDailyMissionStats(MissionSearchCondition condition, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    return memberService.getDailyMissionStats(condition,userDetails);
+    return memberService.getDailyMissionStats(condition, userDetails);
   }
 
   /**
    * 일일 미션 달성 현황 확인
    */
   @GetMapping("/api/mypage/stats/day")
-  public ResponseEntity<ClearMissionResponseDto> targetDayMission(@RequestParam String targetDay, @AuthenticationPrincipal UserDetailsImpl userDetails){
+  public ResponseEntity<ClearMissionResponseDto> targetDayMission(@RequestParam String targetDay, @AuthenticationPrincipal UserDetailsImpl userDetails) {
     return memberService.targetDayMission(targetDay, userDetails);
   }
 
@@ -96,5 +96,13 @@ public class MemberController {
   public ResponseEntity<Boolean> changeProfileImage(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                     @RequestPart(required = false) MultipartFile multipartFile) throws IOException {
     return memberService.changeProfileImage(userDetails, multipartFile);
+  }
+
+  /**
+   * 회원탈퇴
+   */
+  @DeleteMapping("/api/mypage/withdrawal")
+  public ResponseEntity<String> withdrawal(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    return memberService.withdrawal(userDetails);
   }
 }

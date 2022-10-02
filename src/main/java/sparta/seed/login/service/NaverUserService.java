@@ -26,7 +26,7 @@ import sparta.seed.member.domain.Authority;
 import sparta.seed.member.domain.LoginType;
 import sparta.seed.member.domain.Member;
 import sparta.seed.member.repository.MemberRepository;
-import sparta.seed.sercurity.UserDetailsImpl;
+import sparta.seed.login.UserDetailsImpl;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Random;
