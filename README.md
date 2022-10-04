@@ -22,13 +22,15 @@
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"> <img src="https://img.shields.io/badge/githubactions -2088FF?style=for-the-badge&logo=githubactions&logoColor=white"> <img src="https://img.shields.io/badge/postman -FF6C37?style=for-the-badge&logo=postman&logoColor=white"> <img src="https://img.shields.io/badge/nginx -009639?style=for-the-badge&logo=nginx&logoColor=white"> <img src="https://img.shields.io/badge/slack -4A154B?style=for-the-badge&logo=slack&logoColor=white"> 
 <img src="https://img.shields.io/badge/redis -DC382D?style=for-the-badge&logo=redis&logoColor=white">
 <img src="https://img.shields.io/badge/Selenium -43B02A?style=for-the-badge&logo=Selenium&logoColor=white">
+<img src="https://img.shields.io/badge/jwt -000000?style=for-the-badge&logo=jwt&logoColor=white">
 
-
+# ERD
+[ERD(Entity Relationship Diagram)-WIKI이동](https://github.com/Us-Earth/UsEarth-BE/wiki/ERD)
 # Architecture
 ![UsEarth아키텍처](https://user-images.githubusercontent.com/108817236/193409607-020133eb-0686-462b-8e87-ee643a1deb13.png)
 
 # 트러블슈팅
-  1. [CI/CD(지속적 통합 지속적 제공)](https://github.com/Minkyu222341/UsEarth/wiki/CI-CD-(-%EC%A7%80%EC%86%8D%EC%A0%81-%ED%86%B5%ED%95%A9-%EC%A7%80%EC%86%8D%EC%A0%81-%EC%A0%9C%EA%B3%B5-))
-  2. [웹페이지 크롤링](https://github.com/Us-Earth/UsEarth/wiki/Selenium-%ED%81%AC%EB%A1%A4%EB%A7%81)
-  3. [Slack Webook](https://github.com/Us-Earth/UsEarth/wiki/Slack-WebWook---%EC%97%90%EB%9F%AC%EB%A1%9C%EA%B7%B8)
-  4. [QueryDsl 도입](https://github.com/pnci1029/hanghae_8D_BE/wiki/QueryDSL-%EC%A0%81%EC%9A%A9)
+  1. [CI/CD(지속적 통합 지속적 제공)-WIKI이동](https://github.com/Minkyu222341/UsEarth/wiki/CI-CD-(-%EC%A7%80%EC%86%8D%EC%A0%81-%ED%86%B5%ED%95%A9-%EC%A7%80%EC%86%8D%EC%A0%81-%EC%A0%9C%EA%B3%B5-))
+  2. [웹페이지 크롤링-WIKI이동](https://github.com/Us-Earth/UsEarth/wiki/Selenium-%ED%81%AC%EB%A1%A4%EB%A7%81)
+  3. [Slack Webook-WIKI이동](https://github.com/Us-Earth/UsEarth/wiki/Slack-WebWook---%EC%97%90%EB%9F%AC%EB%A1%9C%EA%B7%B8)
+  4. [QueryDsl 도입-WIKI이동](https://github.com/pnci1029/hanghae_8D_BE/wiki/QueryDSL-%EC%A0%81%EC%9A%A9)
