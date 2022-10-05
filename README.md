@@ -24,8 +24,9 @@
 <img src="https://img.shields.io/badge/Selenium -43B02A?style=for-the-badge&logo=Selenium&logoColor=white">
 <img src="https://img.shields.io/badge/jwt -000000?style=for-the-badge&logo=jwt&logoColor=white">
 
-# ERD
-[ERD(Entity Relationship Diagram)-WIKI이동](https://github.com/Us-Earth/UsEarth-BE/wiki/ERD)
+# ERD / API
+* [ERD(Entity Relationship Diagram)-WIKI이동](https://github.com/Us-Earth/UsEarth-BE/wiki/ERD)
+* [API-WIKI이동](https://github.com/Us-Earth/UsEarth-BE/wiki/API)
 # Architecture
 ![UsEarth아키텍처](https://user-images.githubusercontent.com/108817236/193409607-020133eb-0686-462b-8e87-ee643a1deb13.png)
 
