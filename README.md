@@ -34,3 +34,5 @@
   2. [웹페이지 크롤링-WIKI이동](https://github.com/Us-Earth/UsEarth/wiki/Selenium-%ED%81%AC%EB%A1%A4%EB%A7%81)
   3. [Slack Webook-WIKI이동](https://github.com/Us-Earth/UsEarth/wiki/Slack-WebWook---%EC%97%90%EB%9F%AC%EB%A1%9C%EA%B7%B8)
   4. [QueryDsl 도입-WIKI이동](https://github.com/pnci1029/hanghae_8D_BE/wiki/QueryDSL-%EC%A0%81%EC%9A%A9)
+  5. [대기질 API 스케줄러 미작동-WIKI이동](https://github.com/Us-Earth/UsEarth-BE/wiki/%EB%8C%80%EA%B8%B0%EC%A7%88-API-%EC%8A%A4%EC%BC%80%EC%A4%84%EB%9F%AC-%EB%AF%B8%EC%9E%91%EB%8F%99-%EB%AC%B8%EC%A0%9C)
+  6. [비속어 필터 메서드 실행속도-WIKI이동](https://github.com/Us-Earth/UsEarth-BE/wiki/%EB%B9%84%EC%86%8D%EC%96%B4-%ED%95%84%ED%84%B0-%EB%A9%94%EC%84%9C%EB%93%9C-%EC%8B%A4%ED%96%89%EC%86%8D%EB%8F%84-%EB%AC%B8%EC%A0%9C)
