@@ -40,3 +40,4 @@
   4. [QueryDsl 도입-WIKI이동](https://github.com/pnci1029/hanghae_8D_BE/wiki/QueryDSL-%EC%A0%81%EC%9A%A9)
   5. [대기질 API 스케줄러 미작동-WIKI이동](https://github.com/Us-Earth/UsEarth-BE/wiki/%EB%8C%80%EA%B8%B0%EC%A7%88-API-%EC%8A%A4%EC%BC%80%EC%A4%84%EB%9F%AC-%EB%AF%B8%EC%9E%91%EB%8F%99-%EB%AC%B8%EC%A0%9C)
   6. [비속어 필터 메서드 실행속도-WIKI이동](https://github.com/Us-Earth/UsEarth-BE/wiki/%EB%B9%84%EC%86%8D%EC%96%B4-%ED%95%84%ED%84%B0-%EB%A9%94%EC%84%9C%EB%93%9C-%EC%8B%A4%ED%96%89%EC%86%8D%EB%8F%84-%EB%AC%B8%EC%A0%9C)
+  7. [MySQL 8.2.0 LocalDate 타입 데이터 하루 전으로 들어가는 문제-WIKI이동](https://github.com/Us-Earth/UsEarth-BE/wiki/MySQL-8.2.0-LocalDate-%ED%83%80%EC%9E%85-%EB%8D%B0%EC%9D%B4%ED%84%B0-%ED%95%98%EB%A3%A8-%EC%A0%84%EC%9C%BC%EB%A1%9C-%EB%93%A4%EC%96%B4%EA%B0%80%EB%8A%94-%EB%AC%B8%EC%A0%9C)
