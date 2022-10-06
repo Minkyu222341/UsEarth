@@ -3,6 +3,7 @@
   * 커뮤니티를 통해 함께 환경 캠페인에 도전할 사람을 모으고, 환경 관련 소식도 받아볼 수 있습니다.
 # 서비스사이트
   * [UsEarth 바로가기](https://usearth.co.kr)
+  * [시연 영상+발표 영상](https://youtu.be/cB17NoXBuds)
 # 개발환경
   * 언어  : JAVA 11
   * 프레임워크 : Spring boot 2.5.3
