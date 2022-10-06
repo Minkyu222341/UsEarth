@@ -9,8 +9,8 @@ public class CommunityMyJoinResponseDto {
 	private boolean writer;
 	private String img;
 	private String title;
-	private double currentPercent;
-	private double successPercent;
+	private int currentPercent;
+	private int successPercent;
 	private String startDate;
 	private String endDate;
 	private String dateStatus;
@@ -21,8 +21,8 @@ public class CommunityMyJoinResponseDto {
 		this.title = title;
 		this.img = img;
 		this.writer = writer;
-		this.currentPercent = currentPercent;
-		this.successPercent = successPercent;
+		this.currentPercent = (int)currentPercent;
+		this.successPercent = (int)successPercent;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.dateStatus = dateStatus;

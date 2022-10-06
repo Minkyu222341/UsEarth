@@ -28,17 +28,16 @@ public class CommunityRepositoryImpl implements CommunityRepositoryCustom {
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize() + 1)
             .orderBy(community.id.desc())
-            .where()
             .fetchResults();
   }
-
+  @Override
   public List<Community> activeCommunity() {
     return queryFactory.selectFrom(community)
             .where(community.endDate.goe(String.valueOf(LocalDate.now())), (community.proofList.size()).goe(1))
             .orderBy(community.proofList.size().desc()).limit(10)
             .fetch();
   }
-
+  @Override
   public List<Community> endOfCommunity() {
     return queryFactory.selectFrom(community)
             .where(community.endDate.gt(String.valueOf(LocalDate.now())), (community.limitParticipants).gt(community.participantsList.size()))

@@ -25,7 +25,7 @@ import sparta.seed.exception.ErrorCode;
 import sparta.seed.jwt.TokenProvider;
 import sparta.seed.msg.ResponseMsg;
 import sparta.seed.s3.S3Uploader;
-import sparta.seed.sercurity.UserDetailsImpl;
+import sparta.seed.login.UserDetailsImpl;
 import sparta.seed.util.DateUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -84,7 +84,10 @@ public class CommunityService {
     tokenProvider.validateHttpHeader(servletRequest);
     try {
       Community community = findTheCommunityByMemberId(id);
-      Long certifiedProof = getCertifiedProof(community);
+
+      Long certifiedProof = countOfCertifiedProofBy(community);
+
+
       CommunityResponseDto communityResponseDto = CommunityResponseDto.builder()
               .communityId(community.getId())
               .createAt(String.valueOf(community.getCreatedAt()))
@@ -223,7 +226,7 @@ public class CommunityService {
   private List<CommunityAllResponseDto> getAllCommunityList(QueryResults<Community> allCommunity, UserDetailsImpl userDetails) throws ParseException {
     List<CommunityAllResponseDto> communityList = new ArrayList<>();
     for (Community community : allCommunity.getResults()) {
-      Long certifiedProof = getCertifiedProof(community);
+      Long certifiedProof = countOfCertifiedProofBy(community);
       communityList.add(CommunityAllResponseDto.builder()
               .communityId(community.getId())
               .nickname(community.getNickname())
@@ -276,8 +279,12 @@ public class CommunityService {
     return communityRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_COMMUNITY));
   }
 
-  private Long getCertifiedProof(Community community) {
-    return proofRepository.getCertifiedProof(community);
+  private Long countOfCertifiedProofBy(Community community) {
+    if (community.getParticipantsList().size() >= 2) {
+      return proofRepository.countOfCertifiedProofByMoreThanTwoPeople(community);
+    } else {
+      return proofRepository.countOfCertifiedProofByOnePeople(community);
+    }
   }
 
   private Boolean validateWriter(UserDetailsImpl userDetails, Community community) {
@@ -306,7 +313,7 @@ public class CommunityService {
           userDetails) throws ParseException {
     List<CommunityAllResponseDto> communityList = new ArrayList<>();
     for (Community community : communities) {
-        Long certifiedProof = getCertifiedProof(community);
+        Long certifiedProof = countOfCertifiedProofBy(community);
         communityList.add(CommunityAllResponseDto.builder()
                 .communityId(community.getId())
                 .nickname(community.getNickname())

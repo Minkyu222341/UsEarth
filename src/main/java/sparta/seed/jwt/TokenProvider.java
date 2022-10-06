@@ -14,7 +14,7 @@ import sparta.seed.exception.CustomException;
 import sparta.seed.exception.ErrorCode;
 import sparta.seed.member.domain.Authority;
 import sparta.seed.member.domain.Member;
-import sparta.seed.sercurity.UserDetailsImpl;
+import sparta.seed.login.UserDetailsImpl;
 import sparta.seed.util.RedisService;
 
 import javax.servlet.http.HttpServletRequest;

@@ -5,8 +5,10 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import sparta.seed.community.domain.Community;
 import sparta.seed.community.domain.dto.responsedto.CommunityMyJoinResponseDto;
+import sparta.seed.community.repository.ParticipantsRepository;
 import sparta.seed.community.repository.ProofRepository;
 import sparta.seed.community.service.SlangService;
 import sparta.seed.exception.CustomException;
@@ -22,13 +24,15 @@ import sparta.seed.mission.domain.dto.requestdto.MissionSearchCondition;
 import sparta.seed.mission.domain.dto.responsedto.ClearMissionResponseDto;
 import sparta.seed.mission.repository.ClearMissionRepository;
 import sparta.seed.msg.ResponseMsg;
-import sparta.seed.sercurity.UserDetailsImpl;
+import sparta.seed.s3.S3Uploader;
+import sparta.seed.login.UserDetailsImpl;
 import sparta.seed.util.DateUtil;
 import sparta.seed.util.ExpUtil;
 import sparta.seed.util.RedisService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,14 +42,16 @@ import java.util.List;
 public class MemberService {
   private final MemberRepository memberRepository;
   private final ClearMissionRepository clearMissionRepository;
-  private final DateUtil dateUtil;
-  private final TokenProvider tokenProvider;
   private final ProofRepository proofRepository;
-  public static final String BEARER_PREFIX = "Bearer ";
-  public static final String AUTHORIZATION_HEADER = "Authorization";
+  private final ParticipantsRepository participantsRepository;
   private final RedisService redisService;
   private final SlangService slangService;
+  private final TokenProvider tokenProvider;
+  private final S3Uploader s3Uploader;
+  private final DateUtil dateUtil;
   private final ExpUtil expUtil;
+  public static final String BEARER_PREFIX = "Bearer ";
+  public static final String AUTHORIZATION_HEADER = "Authorization";
 
   /**
    * 마이페이지
@@ -92,13 +98,14 @@ public class MemberService {
       List<Community> communityList = memberRepository.getCommunityBelongToMember(userDetails.getId());
       List<CommunityMyJoinResponseDto> responseDtoList = new ArrayList<>();
       for (Community community : communityList) {
+        Long certifiedProof = countOfCertifiedProofBy(community);
         responseDtoList.add(CommunityMyJoinResponseDto.builder()
                 .communityId(community.getId())
                 .title(community.getTitle())
                 .img(community.getImg())
                 .writer(userDetails.getId().equals(community.getMemberId()))
                 .currentPercent(((double) community.getParticipantsList().size() / community.getLimitParticipants()) * 100)
-                .successPercent((((double) proofRepository.getCertifiedProof(community) / (double) community.getParticipantsList().size()) / community.getLimitScore()) * 100)
+                .successPercent(((double) certifiedProof / community.getLimitScore()) * 100)
                 .startDate(community.getStartDate())
                 .endDate(community.getEndDate())
                 .dateStatus(getDateStatus(community))
@@ -178,10 +185,10 @@ public class MemberService {
     if (!tokenProvider.validateToken(refreshToken)) {
       throw new CustomException(ErrorCode.BE_NOT_VALID_TOKEN);
     }
-      Member member = memberRepository.findById(Long.valueOf(memberId)).orElseThrow(()->new CustomException(ErrorCode.MEMBER_MISMATCH));
-      String accessToken = tokenProvider.generateAccessToken(memberId, member.getNickname(),member.getAuthority().toString());
-      response.setHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + accessToken);
-      return ResponseEntity.ok().body(ResponseMsg.ISSUANCE_SUCCESS.getMsg());
+    Member member = memberRepository.findById(Long.valueOf(memberId)).orElseThrow(() -> new CustomException(ErrorCode.MEMBER_MISMATCH));
+    String accessToken = tokenProvider.generateAccessToken(memberId, member.getNickname(), member.getAuthority().toString());
+    response.setHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + accessToken);
+    return ResponseEntity.ok().body(ResponseMsg.ISSUANCE_SUCCESS.getMsg());
   }
 
   /**
@@ -199,6 +206,31 @@ public class MemberService {
     }
   }
 
+  /**
+   * 프로필 이미지 변경
+   */
+  @Transactional
+  public ResponseEntity<Boolean> changeProfileImage(UserDetailsImpl userDetails, MultipartFile multipartFile) throws IOException {
+    Member member = memberRepository.findById(userDetails.getId())
+            .orElseThrow(() -> new CustomException(ErrorCode.UNKNOWN_USER));
+
+    if (multipartFile == null) {
+      throw new CustomException(ErrorCode.NOT_FOUND_IMG);
+    }
+    member.changeProfileImage(s3Uploader.upload(multipartFile).getUploadImageUrl());
+    return ResponseEntity.ok().body(true);
+  }
+
+  /**
+   * 회월 탈퇴
+   */
+  @Transactional
+  public ResponseEntity<String> withdrawal(UserDetailsImpl userDetails) {
+    participantsRepository.deleteByMemberId(userDetails.getId());
+    clearMissionRepository.deleteByMemberId(userDetails.getId());
+    memberRepository.deleteById(userDetails.getId());
+    return ResponseEntity.ok().body(ResponseMsg.WITHDRAWAL_SUCCESS.getMsg());
+  }
 
 
   // 유저 정보 뽑기
@@ -219,5 +251,13 @@ public class MemberService {
             .loginType(member.getLoginType())
             .build();
     return ResponseEntity.ok().body(userInfoResponseDto);
+  }
+
+  private Long countOfCertifiedProofBy(Community community) {
+    if (community.getParticipantsList().size() >= 2) {
+      return proofRepository.countOfCertifiedProofByMoreThanTwoPeople(community);
+    } else {
+      return proofRepository.countOfCertifiedProofByOnePeople(community);
+    }
   }
 }
