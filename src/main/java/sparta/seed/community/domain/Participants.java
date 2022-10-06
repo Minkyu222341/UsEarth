@@ -23,7 +23,8 @@ public class Participants {
   private String nickname;
 
   @Builder
-  public Participants(Community community, Long memberId,String nickname) {
+  public Participants(Long id,Community community, Long memberId,String nickname) {
+    this.id = id;
     this.community = community;
     this.memberId = memberId;
     this.nickname = nickname;
