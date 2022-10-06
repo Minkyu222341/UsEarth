@@ -27,6 +27,7 @@ import sparta.seed.exception.ErrorCode;
 import sparta.seed.img.domain.Img;
 import sparta.seed.img.repository.ImgRepository;
 import sparta.seed.jwt.TokenProvider;
+import sparta.seed.member.domain.Member;
 import sparta.seed.member.repository.MemberRepository;
 import sparta.seed.msg.ResponseMsg;
 import sparta.seed.s3.S3Dto;
@@ -39,6 +40,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -237,11 +239,17 @@ public class ProofService {
 
   private ProofResponseDto buildProofResponseDto(UserDetailsImpl userDetails, Proof proof) {
 
+    String profileImage = "https://ssl.pstatic.net/static/pwe/address/img_profile.png"; // 회원탈퇴시 네이버 기본이미지로
+    Optional<Member> writer = memberRepository.findById(proof.getMemberId());
+    if(writer.isPresent()){
+      profileImage = writer.get().getProfileImage();
+    }
+
     return ProofResponseDto.builder()
             .proofId(proof.getId())
             .creatAt(proof.getCreatedAt())
             .nickname(proof.getNickname())
-            .profileImage(memberRepository.findById(proof.getMemberId()).get().getProfileImage())
+            .profileImage(profileImage)
             .title(proof.getTitle())
             .content(proof.getContent())
             .img(proof.getImgList())
