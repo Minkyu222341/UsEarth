@@ -98,13 +98,14 @@ public class MemberService {
       List<Community> communityList = memberRepository.getCommunityBelongToMember(userDetails.getId());
       List<CommunityMyJoinResponseDto> responseDtoList = new ArrayList<>();
       for (Community community : communityList) {
+        Long certifiedProof = countOfCertifiedProofBy(community);
         responseDtoList.add(CommunityMyJoinResponseDto.builder()
                 .communityId(community.getId())
                 .title(community.getTitle())
                 .img(community.getImg())
                 .writer(userDetails.getId().equals(community.getMemberId()))
                 .currentPercent(((double) community.getParticipantsList().size() / community.getLimitParticipants()) * 100)
-                .successPercent((((double) proofRepository.getCertifiedProof(community) / (double) community.getParticipantsList().size()) / community.getLimitScore()) * 100)
+                .successPercent(((double) certifiedProof / community.getLimitScore()) * 100)
                 .startDate(community.getStartDate())
                 .endDate(community.getEndDate())
                 .dateStatus(getDateStatus(community))
@@ -250,5 +251,13 @@ public class MemberService {
             .loginType(member.getLoginType())
             .build();
     return ResponseEntity.ok().body(userInfoResponseDto);
+  }
+
+  private Long countOfCertifiedProofBy(Community community) {
+    if (community.getParticipantsList().size() >= 2) {
+      return proofRepository.countOfCertifiedProofByMoreThanTwoPeople(community);
+    } else {
+      return proofRepository.countOfCertifiedProofByOnePeople(community);
+    }
   }
 }

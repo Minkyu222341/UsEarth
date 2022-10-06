@@ -18,14 +18,7 @@ public class CrawlingExampleV2 {
 
   public void process() throws InterruptedException {
     System.setProperty("webdriver.chrome.driver", "C:\\chromedriver_win32\\chromedriver.exe");
-
-
-    //크롬 드라이버 셋팅 (드라이버 설치한 경로 입력)
-
     driver = new ChromeDriver();
-    //브라우저 선택
-
-
     try {
       getDataList();
     } catch (InterruptedException e) {
@@ -33,14 +26,10 @@ public class CrawlingExampleV2 {
     }
   }
 
-
-  /**
-   * data가져오기
-   */
   private List<String> getDataList() throws InterruptedException {
     List<String> list = new ArrayList<>();
-    driver.get(url);    //브라우저에서 url로 이동한다.
-    Thread.sleep(1000); //브라우저 로딩될때까지 잠시 기다린다.
+    driver.get(url);
+    Thread.sleep(1000);
 
     for (int i = 0; i < 49; i++) {
       driver.findElement(By.cssSelector("body > div.outer_block_container > section.advanced-search > div > div.multiple-search-result > div.has-load-more > button")).sendKeys(Keys.ENTER);
@@ -56,11 +45,11 @@ public class CrawlingExampleV2 {
       } catch (Throwable e) {
         try {
           WebElement elementList = driver.findElement(By.cssSelector("body > div.outer_block_container > section.advanced-search > div > div.multiple-search-result > div.results-list > a:nth-child(" + (i + 1) + ")"));
-          count +=1;
+          count += 1;
           elementList.sendKeys(Keys.ENTER);
         } catch (Throwable e2) {
           WebElement elementList = driver.findElement(By.cssSelector("body > div.outer_block_container > section.advanced-search > div > div.multiple-search-result > div.results-list > a:nth-child(" + (i + 2) + ")"));
-          count +=2;
+          count += 2;
           elementList.sendKeys(Keys.ENTER);
         }
       }
@@ -68,28 +57,20 @@ public class CrawlingExampleV2 {
       WebElement element = driver.findElement(By.cssSelector("body > div.outer_block_container"));
       List<WebElement> img = element.findElements(By.tagName("img"));
       List<WebElement> p = element.findElements(By.tagName("p"));
-      System.out.println("**********************************사진********************************************");
-        for (WebElement webElement : img) {
-          String attribute = webElement.getAttribute("src");
-          System.out.println(attribute);
-        }
-      System.out.println("**********************************사진********************************************");
-
-      System.out.println("**********************************본문********************************************");
+      for (WebElement webElement : img) {
+        String attribute = webElement.getAttribute("src");
+      }
       for (WebElement webElement : p) {
         String text = webElement.getText();
         if (text.equals("관련 뉴스")) {
           continue;
         }
         if (!text.equals("") && !text.equals("  ")) {
-          System.out.println("P태그 : "+text);
         }
       }
-      System.out.println(count+"**********************************본문********************************************");
 
       Thread.sleep(5000);
       this.driver.navigate().back();
-      System.out.println("-----------------------------------------다음글-----------------------------------------------------");
       count++;
     }
 
