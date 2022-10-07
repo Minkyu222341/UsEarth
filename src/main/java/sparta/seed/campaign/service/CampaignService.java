@@ -17,6 +17,7 @@ import sparta.seed.img.repository.ImgRepository;
 import sparta.seed.s3.S3Dto;
 import sparta.seed.s3.S3Uploader;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -97,10 +98,14 @@ public class CampaignService {
 	/**
 	 * 캠페인작성
 	 */
-
-	public Boolean insertCampaign() throws InterruptedException {
+	@Transactional
+	public Boolean insertCampaign() {
+		try {
 			crawlingV1.process();
 			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 

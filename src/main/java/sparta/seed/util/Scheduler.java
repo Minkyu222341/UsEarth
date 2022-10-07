@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import sparta.seed.campaign.crawling.AirQualityApi;
+import sparta.seed.campaign.service.CampaignService;
 import sparta.seed.member.domain.Member;
 import sparta.seed.member.repository.MemberRepository;
 
@@ -19,6 +20,7 @@ public class Scheduler {
 	private final AirQualityApi api;
 	private final MemberRepository memberRepository;
 	private final RedisService redisService;
+	private final CampaignService campaignService;
 
 	@Transactional
 	@Scheduled(cron = "0 0 0 * * *")
@@ -52,4 +54,16 @@ public class Scheduler {
 			redisService.deleteMissionSet(String.valueOf(member.getId()));
 		}
 	}
+
+	@Scheduled(cron = "0 0 5 1 * *")
+	public void greenPeaceWebScraping(){
+		while (true) {
+			if (!campaignService.insertCampaign()) {
+				campaignService.insertCampaign();
+			} else {
+				break;
+			}
+		}
+	}
+
 }
