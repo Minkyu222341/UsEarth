@@ -25,7 +25,8 @@ public class CrawlingV1 {
 
 
   public void process(){
-    System.setProperty("webdriver.chrome.driver", "C:\\chromedriver_win32\\chromedriver.exe");
+//    System.setProperty("webdriver.chrome.driver", "C:\\chromedriver_win32\\chromedriver.exe");
+    System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
     ChromeOptions options = new ChromeOptions();
     options.addArguments("headless");
     driver = new ChromeDriver(options);
