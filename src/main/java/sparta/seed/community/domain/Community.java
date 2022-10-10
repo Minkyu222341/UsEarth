@@ -46,13 +46,6 @@ public class Community extends BaseEntity {
   //참가인원 제한
   @Column(nullable = false)
   private double limitParticipants;
-  //비밀글여부
-  private boolean passwordFlag;
-  //글비밀번호
-  private String password;
-  //모집여부
-  @ColumnDefault("true")
-  private boolean recruitment;
   @OneToMany(mappedBy = "community", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
   private List<Proof> proofList = new ArrayList<>();
 
@@ -62,7 +55,7 @@ public class Community extends BaseEntity {
 
 
   @Builder
-  public Community(Long id, String title, String nickname, Long memberId, String content, String img, String startDate, String endDate, double limitScore, double limitParticipants, boolean secret, String password, boolean recruitment, List<Proof> proofList, List<Participants> participantsList) {
+  public Community(Long id, String title, String nickname, Long memberId, String content, String img, String startDate, String endDate, double limitScore, double limitParticipants, List<Proof> proofList, List<Participants> participantsList) {
     this.id = id;
     this.title = title;
     this.nickname = nickname;
@@ -73,9 +66,6 @@ public class Community extends BaseEntity {
     this.endDate = endDate;
     this.limitScore = limitScore;
     this.limitParticipants = limitParticipants;
-    this.passwordFlag = secret;
-    this.password = password;
-    this.recruitment = recruitment;
     this.proofList = proofList;
     this.participantsList = participantsList;
   }
@@ -85,8 +75,6 @@ public class Community extends BaseEntity {
     this.endDate = requestDto.getEndDate();
     this.limitScore = requestDto.getLimitScore();
     this.limitParticipants = requestDto.getLimitParticipants();
-    this.passwordFlag = requestDto.isSecret();
-    this.password = requestDto.getPassword();
     this.title = requestDto.getTitle();
     this.content = requestDto.getContent();
     this.nickname = nickname;
