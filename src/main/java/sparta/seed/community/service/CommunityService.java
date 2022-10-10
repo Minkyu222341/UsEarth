@@ -105,8 +105,6 @@ public class CommunityService {
               .startDate(community.getStartDate())
               .endDate(community.getEndDate())
               .dateStatus(getDateStatus(community))
-              .secret(community.isPasswordFlag())
-              .password(community.getPassword())
               .writer(userDetails != null && community.getMemberId().equals(userDetails.getId()))
               .build();
       return ResponseEntity.ok().body(communityResponseDto);
@@ -235,8 +233,6 @@ public class CommunityService {
               .currentPercent(getCurrentPercent(community))
               .successPercent(getSuccessPercent(community, certifiedProof))
               .dateStatus(getDateStatus(community))
-              .secret(community.isPasswordFlag())
-              .password(community.getPassword())
               .writer(userDetails != null && community.getMemberId().equals(userDetails.getId()))
               .build());
     }
@@ -256,8 +252,6 @@ public class CommunityService {
             .title(requestDto.getTitle())
             .content(requestDto.getContent())
             .img(returnImageUrl(multipartFile))
-            .secret(requestDto.isSecret())
-            .password(requestDto.getPassword())
             .memberId(loginUserId)
             .nickname(nickname)
             .startDate(requestDto.getStartDate())
@@ -322,8 +316,6 @@ public class CommunityService {
                 .currentPercent(getCurrentPercent(community))
                 .successPercent(getSuccessPercent(community, certifiedProof))
                 .dateStatus(getDateStatus(community))
-                .secret(community.isPasswordFlag())
-                .password(community.getPassword())
                 .writer(userDetails != null && community.getMemberId().equals(userDetails.getId()))
                 .build());
     }
